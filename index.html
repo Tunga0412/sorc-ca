@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SORC — Systematic Outcomes Research Collaborative</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Lato:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy:   #0F2347;
+      --navy2:  #162E5A;
+      --blue:   #3B82C4;
+      --blue2:  #5BA3E0;
+      --bg:     #F8F9FC;
+      --bg2:    #EEF1F7;
+      --text:   #0F2347;
+      --mid:    #1B3A6B;
+      --muted:  #5A6A85;
+      --rule:   #D0D8E8;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      line-height: 1.7;
+      min-height: 100vh;
+    }
+
+    /* ── Nav ─────────────────────────────────────────────────────── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      background: rgba(248,249,252,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--rule);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 3rem;
+      height: 56px;
+    }
+
+    .nav-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 700;
+      font-size: 1.35rem;
+      color: var(--navy);
+      letter-spacing: -0.02em;
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2.5rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-family: 'Lato', sans-serif;
+      font-weight: 400;
+      font-size: 0.8rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--mid);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--blue); }
+    .nav-links a.active { color: var(--blue); }
+
+    /* ── Hero ────────────────────────────────────────────────────── */
+    .hero {
+      padding: 120px 3rem 80px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .hero-logo {
+      margin-bottom: 2.5rem;
+    }
+
+    /* Animated SVG mark inline */
+    .hero-tagline {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 400;
+      color: var(--navy);
+      line-height: 1.2;
+      max-width: 640px;
+      margin-bottom: 1.25rem;
+    }
+
+    .hero-tagline em {
+      font-style: italic;
+      color: var(--blue);
+    }
+
+    .hero-sub {
+      font-size: 0.95rem;
+      color: var(--muted);
+      max-width: 520px;
+      letter-spacing: 0.01em;
+    }
+
+    .hero-rule {
+      width: 60px;
+      height: 2px;
+      background: var(--blue);
+      margin: 2rem 0;
+      opacity: 0.6;
+    }
+
+    /* ── Section ─────────────────────────────────────────────────── */
+    .section {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 3rem 80px;
+    }
+
+    .section-label {
+      font-family: 'Lato', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 400;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--blue);
+      margin-bottom: 2rem;
+    }
+
+    /* ── Filter bar ──────────────────────────────────────────────── */
+    .filter-bar {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 2.5rem;
+    }
+
+    .filter-btn {
+      font-family: 'Lato', sans-serif;
+      font-size: 0.72rem;
+      font-weight: 400;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.35rem 0.85rem;
+      border: 1px solid var(--rule);
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      border-radius: 2px;
+      transition: all 0.18s;
+    }
+
+    .filter-btn:hover,
+    .filter-btn.active {
+      background: var(--navy);
+      color: white;
+      border-color: var(--navy);
+    }
+
+    /* ── Publication list ────────────────────────────────────────── */
+    .pub-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .pub-item {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 1rem 2rem;
+      align-items: start;
+      padding: 1.6rem 0;
+      border-bottom: 1px solid var(--rule);
+      transition: background 0.15s;
+      animation: fadeUp 0.4s ease both;
+    }
+
+    .pub-item:first-child { border-top: 1px solid var(--rule); }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .pub-meta {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 0.4rem;
+    }
+
+    .badge {
+      font-size: 0.62rem;
+      font-weight: 400;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 0.18rem 0.55rem;
+      border-radius: 2px;
+    }
+
+    .badge-sorc {
+      background: var(--navy);
+      color: white;
+    }
+
+    .badge-member {
+      background: transparent;
+      border: 1px solid var(--navy);
+      color: var(--navy);
+    }
+
+    .badge-soo {
+      background: #1a3a2a;
+      color: #a8d5b5;
+    }
+
+    .badge-published  { background: #1a3a2a; color: #a8d5b5; }
+    .badge-submitted  { background: #2a2a1a; color: #d5d0a8; }
+    .badge-accepted   { background: #1a2a3a; color: #a8c5d5; }
+    .badge-inprogress { background: #2a1a2a; color: #d5a8d0; }
+
+    .pub-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--navy);
+      line-height: 1.4;
+      margin-bottom: 0.3rem;
+    }
+
+    .pub-title a {
+      color: inherit;
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.2s;
+    }
+
+    .pub-title a:hover {
+      border-bottom-color: var(--blue);
+      color: var(--blue);
+    }
+
+    .pub-authors {
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-bottom: 0.25rem;
+      line-height: 1.5;
+    }
+
+    .pub-authors strong {
+      color: var(--mid);
+      font-weight: 400;
+    }
+
+    .pub-journal {
+      font-size: 0.8rem;
+      color: var(--muted);
+      font-style: italic;
+    }
+
+    .pub-year {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1rem;
+      color: var(--muted);
+      font-weight: 400;
+      white-space: nowrap;
+      padding-top: 0.15rem;
+    }
+
+    /* ── Footer ──────────────────────────────────────────────────── */
+    footer {
+      border-top: 1px solid var(--rule);
+      padding: 2rem 3rem;
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-left {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    .footer-right {
+      font-size: 0.75rem;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+    }
+
+    /* ── Animated mark CSS ───────────────────────────────────────── */
+    .line-outer-top {
+      stroke-dasharray: 107.703;
+      animation: draw-outer-top 6000ms ease infinite;
+    }
+    @keyframes draw-outer-top {
+      0%     { stroke-dashoffset: 107.703; animation-timing-function: cubic-bezier(0,0,0.2,1); }
+      5.00%  { stroke-dashoffset: 0; }
+      85.33% { stroke-dashoffset: 0; animation-timing-function: cubic-bezier(0.8,0,1,1); }
+      93.67% { stroke-dashoffset: 107.703; }
+      100%   { stroke-dashoffset: 107.703; }
+    }
+    .line-outer-bot {
+      stroke-dasharray: 107.703;
+      animation: draw-outer-bot 6000ms ease infinite;
+    }
+    @keyframes draw-outer-bot {
+      0%     { stroke-dashoffset: 107.703; }
+      5.50%  { stroke-dashoffset: 107.703; animation-timing-function: cubic-bezier(0,0,0.2,1); }
+      10.50% { stroke-dashoffset: 0; }
+      85.33% { stroke-dashoffset: 0; animation-timing-function: cubic-bezier(0.8,0,1,1); }
+      93.67% { stroke-dashoffset: 107.703; }
+      100%   { stroke-dashoffset: 107.703; }
+    }
+    .line-inner-top {
+      stroke-dasharray: 101.980;
+      animation: draw-inner-top 6000ms ease infinite;
+    }
+    @keyframes draw-inner-top {
+      0%     { stroke-dashoffset: 101.980; }
+      11.00% { stroke-dashoffset: 101.980; animation-timing-function: cubic-bezier(0,0,0.2,1); }
+      16.00% { stroke-dashoffset: 0; }
+      85.33% { stroke-dashoffset: 0; animation-timing-function: cubic-bezier(0.8,0,1,1); }
+      93.67% { stroke-dashoffset: 101.980; }
+      100%   { stroke-dashoffset: 101.980; }
+    }
+    .line-inner-bot {
+      stroke-dasharray: 101.980;
+      animation: draw-inner-bot 6000ms ease infinite;
+    }
+    @keyframes draw-inner-bot {
+      0%     { stroke-dashoffset: 101.980; }
+      16.50% { stroke-dashoffset: 101.980; animation-timing-function: cubic-bezier(0,0,0.2,1); }
+      21.50% { stroke-dashoffset: 0; }
+      85.33% { stroke-dashoffset: 0; animation-timing-function: cubic-bezier(0.8,0,1,1); }
+      93.67% { stroke-dashoffset: 101.980; }
+      100%   { stroke-dashoffset: 101.980; }
+    }
+    .line-centre {
+      stroke-dasharray: 100;
+      animation: draw-centre 6000ms ease infinite;
+    }
+    @keyframes draw-centre {
+      0%     { stroke-dashoffset: 100; }
+      22.00% { stroke-dashoffset: 100; animation-timing-function: cubic-bezier(0,0,0.2,1); }
+      27.00% { stroke-dashoffset: 0; }
+      85.33% { stroke-dashoffset: 0; animation-timing-function: cubic-bezier(0.8,0,1,1); }
+      93.67% { stroke-dashoffset: 100; }
+      100%   { stroke-dashoffset: 100; }
+    }
+    .origin-dot {
+      animation: origin-dot 6000ms ease infinite;
+    }
+    @keyframes origin-dot {
+      0%, 27%  { opacity: 0; }
+      31%      { opacity: 1; }
+      85.33%   { opacity: 1; }
+      87%      { opacity: 0; }
+      100%     { opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Nav -->
+  <nav>
+    <a href="index.html" class="nav-logo">SORC</a>
+    <ul class="nav-links">
+      <li><a href="index.html" class="active">Research</a></li>
+    </ul>
+  </nav>
+
+  <!-- Hero with animated logo -->
+  <div class="hero">
+    <div class="hero-logo">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 180" width="390" height="135">
+        <defs>
+          <linearGradient id="navy" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#0F2347"/>
+            <stop offset="100%" stop-color="#162E5A"/>
+          </linearGradient>
+        </defs>
+        <rect x="18" y="18" width="144" height="144" rx="10" fill="url(#navy)"/>
+        <rect x="18" y="155" width="144" height="3.5" rx="1.75" fill="#3B82C4" opacity="0.7"/>
+        <line x1="134" y1="90" x2="34" y2="50" stroke="white" stroke-width="2" stroke-linecap="butt" opacity="0.45" class="line-outer-top"/>
+        <line x1="134" y1="90" x2="34" y2="130" stroke="white" stroke-width="2" stroke-linecap="butt" opacity="0.45" class="line-outer-bot"/>
+        <line x1="134" y1="90" x2="34" y2="70" stroke="white" stroke-width="2" stroke-linecap="butt" opacity="0.6" class="line-inner-top"/>
+        <line x1="134" y1="90" x2="34" y2="110" stroke="white" stroke-width="2" stroke-linecap="butt" opacity="0.6" class="line-inner-bot"/>
+        <line x1="134" y1="90" x2="34" y2="90" stroke="#3B82C4" stroke-width="2.5" stroke-linecap="butt" class="line-centre"/>
+        <circle cx="134" cy="90" r="6" fill="#3B82C4"/>
+        <circle cx="134" cy="90" r="2.5" fill="white"/>
+        <circle cx="34" cy="90" r="3.5" fill="#3B82C4" class="origin-dot"/>
+        <text x="182" y="74" font-family="Georgia, 'Times New Roman', serif" font-size="62" font-weight="700" fill="#0F2347" letter-spacing="-1">SORC</text>
+        <rect x="182" y="83" width="320" height="1.2" fill="#3B82C4" opacity="0.35"/>
+        <text x="183" y="105" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#1B3A6B" letter-spacing="2.6">SYSTEMATIC OUTCOMES RESEARCH</text>
+        <text x="183" y="121" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#1B3A6B" letter-spacing="2.6">COLLABORATIVE</text>
+        <text x="184" y="145" font-family="Georgia, 'Times New Roman', serif" font-size="11" fill="#3B82C4" letter-spacing="0.5" font-style="italic">Evidence, systematically.</text>
+      </svg>
+    </div>
+
+    <div class="hero-rule"></div>
+
+    <p class="hero-sub">An independent research collaborative producing methodologically rigorous work using publicly available data. We prioritise bringing early-career researchers into substantive contributory roles.</p>
+  </div>
+
+  <!-- Publications -->
+  <div class="section">
+    <div class="section-label">Publications &amp; Works</div>
+
+    <div class="filter-bar">
+      <button class="filter-btn active" data-filter="all">All</button>
+      <button class="filter-btn" data-filter="sorc">SORC</button>
+      <button class="filter-btn" data-filter="member">Member Works</button>
+      <button class="filter-btn" data-filter="published">Published</button>
+      <button class="filter-btn" data-filter="inprogress">In Progress</button>
+    </div>
+
+    <div class="pub-list" id="pub-list">
+
+      <!-- ── SORC Published ─────────────────────────────────────── -->
+      <div class="pub-item" data-affil="sorc" data-status="published">
+        <div>
+          <div class="pub-meta">
+            <span class="badge badge-sorc">SORC</span>
+            <span class="badge badge-published">Published</span>
+          </div>
+          <div class="pub-title">
+            <a href="https://doi.org/10.33137/utmj.v100i1.38937" target="_blank" rel="noopener">
+              Debiasing and Educational Interventions in Medical Diagnosis: A Systematic Review
+            </a>
+          </div>
+          <div class="pub-authors"><strong>Tung A</strong>, <strong>Melchiorre M</strong>.</div>
+          <div class="pub-journal">University of Toronto Medical Journal. 2023 Feb 28; 100(1).</div>
+        </div>
+        <div class="pub-year">2023</div>
+      </div>
+
+      <!-- ── SORC Submitted ─────────────────────────────────────── -->
+      <div class="pub-item" data-affil="sorc" data-status="submitted">
+        <div>
+          <div class="pub-meta">
+            <span class="badge badge-sorc">SORC</span>
+            <span class="badge badge-submitted">Submitted</span>
+          </div>
+          <div class="pub-title">
+            Thrombotic Microangiopathy Following Systemic Adeno-Associated Virus Gene Therapy: A Systematic Review of Clinical Presentation and Management
+          </div>
+          <div class="pub-authors"><strong>Tung A</strong>, Wolfman D, Acharya S, Villarreal Andrade D, <strong>Melchiorre M</strong>, Kolski H, Sun HL.</div>
+          <div class="pub-journal">Submitted to Yale Journal of Biology and Medicine. 2026.</div>
+        </div>
+        <div class="pub-year">2026</div>
+      </div>
+
+      <!-- ── SORC In Progress ───────────────────────────────────── -->
+      <div class="pub-item" data-affil="sorc" data-status="inprogress">
+        <div>
+          <div class="pub-meta">
+            <span class="badge badge-sorc">SORC</span>
+            <span class="badge badge-inprogress">In Progress</span>
+          </div>
+          <div class="pub-title">
+            Burn and Inhalation Injuries Associated With Lithium-Ion Battery Fires in Electric Mobility Devices: A Systematic Review
+          </div>
+          <div class="pub-authors"><strong>Tung A</strong>, <strong>Thornton J</strong>, <strong>Melchiorre M</strong>, Wolfman D, Wong JN, Rosenfield D, Rowe BH.</div>
+          <div class="pub-journal">Systematic Review. In preparation.</div>
+        </div>
+        <div class="pub-year">2026</div>
+      </div>
+
+      <div class="pub-item" data-affil="sorc" data-status="inprogress">
+        <div>
+          <div class="pub-meta">
+            <span class="badge badge-sorc">SORC</span>
+            <span class="badge badge-inprogress">In Progress</span>
+          </div>
+          <div class="pub-title">
+            Temporary Emergency Department Service Disruptions in Alberta: A Retrospective Archive-Based Analysis of Burden, Distribution, and Stated Causes, 2021–2026
+          </div>
+          <div class="pub-authors"><strong>Tung A</strong> et al.</div>
+          <div class="pub-journal">Original Study. In preparation.</div>
+        </div>
+        <div class="pub-year">2026</div>
+      </div>
+
+      <!-- ── Member Works — Published ──────────────────────────── -->
+      <div class="pub-item" data-affil="member" data-status="published">
+        <div>
+          <div class="pub-meta">
+            <span class="badge badge-member">Member Work</span>
+            <span class="badge badge-published">Published</span>
+          </div>
+          <div class="pub-title">
+            <a href="https://doi.org/10.1213/ANE.0000000000007965" target="_blank" rel="noopener">
+              Latent Threats Identified During In Situ Simulated Local Anesthetic Systemic Toxicity Crises in the Operating Room: Implications for System Safety
+            </a>
+          </div>
+          <div class="pub-authors">Armstrong BA, <strong>Tung A</strong>, Gronas R, Bloom I, Branton S, Nayee H, Fan M, Rock R, Wuyungerile W, Hemani T, Trbovich PL.</div>
+          <div class="pub-journal">Anesthesia &amp; Analgesia. 2026 Feb 16.</div>
+        </div>
+        <div class="pub-year">2026</div>
+      </div>
+
+      <div class="pub-item" data-affil="member" data-status="published">
+        <div>
+          <div class="pub-meta">
+            <span class="badge badge-member">Member Work</span>
+            <span class="badge badge-soo">SOO</span>
+            <span class="badge badge-published">Published</span>
+          </div>
+          <div class="pub-title">
+            <a href="https://doi.org/10.5817/OEJV2025-0267" target="_blank" rel="noopener">
+              Multi-Timescale Period Refinement of Four Luminous Blue Variables
+            </a>
+          </div>
+          <div class="pub-authors"><strong>Tung A.</strong></div>
+          <div class="pub-journal">Open European Journal of Variable Stars. 2025 Oct 22; 267.</div>
+        </div>
+        <div class="pub-year">2025</div>
+      </div>
+
+      <div class="pub-item" data-affil="member" data-status="published">
+        <div>
+          <div class="pub-meta">
+            <span class="badge badge-member">Member Work</span>
+            <span class="badge badge-published">Published</span>
+          </div>
+          <div class="pub-title">
+            <a href="https://doi.org/10.1097/AS9.0000000000000558" target="_blank" rel="noopener">
+              Maximizing Surgical Success by Aligning Interventions to Outcomes: A Systematic Review
+            </a>
+          </div>
+          <div class="pub-authors">Armstrong BA, <strong>Tung A</strong>, Lo L, Abssy SS, Zulfiqar M, van Oost J, Wong J, Janevski J, Martyniuk J, Trbovich P.</div>
+          <div class="pub-journal">Annals of Surgery Open. 2025 Mar 7; 6(1).</div>
+        </div>
+        <div class="pub-year">2025</div>
+      </div>
+
+      <div class="pub-item" data-affil="member" data-status="published">
+        <div>
+          <div class="pub-meta">
+            <span class="badge badge-member">Member Work</span>
+            <span class="badge badge-published">Published</span>
+          </div>
+          <div class="pub-title">
+            <a href="https://doi.org/10.1017/cjn.2025.39" target="_blank" rel="noopener">
+              The Prevalence and Long-Term Outcomes of Headaches After Aneurysmal Subarachnoid Hemorrhage: A Systematic Review
+            </a>
+          </div>
+          <div class="pub-authors">Jung Y, Vasconcellos de Oliveira Souza N, Kishibe T, Akarsu FG, Wong E, Pontes Almeida EPR, <strong>Tung A</strong> et al.</div>
+          <div class="pub-journal">Canadian Journal of Neurological Sciences. 2025 Mar 3.</div>
+        </div>
+        <div class="pub-year">2025</div>
+      </div>
+
+      <div class="pub-item" data-affil="member" data-status="published">
+        <div>
+          <div class="pub-meta">
+            <span class="badge badge-member">Member Work</span>
+            <span class="badge badge-published">Published</span>
+          </div>
+          <div class="pub-title">
+            <a href="https://doi.org/10.1177/2327857923121031" target="_blank" rel="noopener">
+              Amplifiers and Dampeners of Patient Safety Risk in the Operating Room: Interim Analysis of Surgical Video Recorded with the Operating Room Black Box
+            </a>
+          </div>
+          <div class="pub-authors"><strong>Tung A</strong>, Fan M, Pinkney S, Armstrong BA, Catchpole K, Trbovich PL.</div>
+          <div class="pub-journal">Proceedings of the International Symposium on Human Factors and Ergonomics in Health Care. 2023 Jun 7; 12(1).</div>
+        </div>
+        <div class="pub-year">2023</div>
+      </div>
+
+      <div class="pub-item" data-affil="member" data-status="published">
+        <div>
+          <div class="pub-meta">
+            <span class="badge badge-member">Member Work</span>
+            <span class="badge badge-published">Published</span>
+          </div>
+          <div class="pub-title">
+            <a href="https://doi.org/10.1093/bjs/znad004" target="_blank" rel="noopener">
+              Cognitive Biases in Surgery: A Systematic Review
+            </a>
+          </div>
+          <div class="pub-authors">Armstrong BA, Dutescu IA, <strong>Tung A</strong>, Carter DN, Trbovich PL, Wong S et al.</div>
+          <div class="pub-journal">British Journal of Surgery. 2023 Feb 8; 110(6).</div>
+        </div>
+        <div class="pub-year">2023</div>
+      </div>
+
+      <div class="pub-item" data-affil="member" data-status="published">
+        <div>
+          <div class="pub-meta">
+            <span class="badge badge-member">Member Work</span>
+            <span class="badge badge-published">Published</span>
+          </div>
+          <div class="pub-title">
+            <a href="https://doi.org/10.1007/s00464-022-09799-2" target="_blank" rel="noopener">
+              Electroencephalography Can Provide Advance Warning of Technical Errors During Laparoscopic Surgery
+            </a>
+          </div>
+          <div class="pub-authors">Armstrong BA, Nemrodov D, <strong>Tung A</strong>, Graham SJ, Grantcharov T.</div>
+          <div class="pub-journal">Surgical Endoscopy. 2022 Dec 7; 37.</div>
+        </div>
+        <div class="pub-year">2022</div>
+      </div>
+
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-left">© 2026 Systematic Outcomes Research Collaborative</div>
+    <div class="footer-right">sorc.ca — Evidence, systematically.</div>
+  </footer>
+
+  <script>
+    const btns = document.querySelectorAll('.filter-btn');
+    const items = document.querySelectorAll('.pub-item');
+
+    btns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        btns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        const f = btn.dataset.filter;
+        items.forEach(item => {
+          const affil  = item.dataset.affil;
+          const status = item.dataset.status;
+          const show =
+            f === 'all'        ? true :
+            f === 'sorc'       ? affil  === 'sorc' :
+            f === 'member'     ? affil  === 'member' :
+            f === 'published'  ? status === 'published' :
+            f === 'inprogress' ? (status === 'inprogress' || status === 'submitted') :
+            false;
+
+          item.style.display = show ? 'grid' : 'none';
+        });
+      });
+    });
+  </script>
+
+</body>
+</html>
