@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About — SORC</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Lato:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy:  #0F2347;
+      --navy2: #162E5A;
+      --blue:  #3B82C4;
+      --bg:    #F8F9FC;
+      --text:  #0F2347;
+      --mid:   #1B3A6B;
+      --muted: #5A6A85;
+      --rule:  #D0D8E8;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      line-height: 1.7;
+    }
+
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      background: rgba(248,249,252,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--rule);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 3rem;
+      height: 56px;
+    }
+
+    .nav-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 700;
+      font-size: 1.35rem;
+      color: var(--navy);
+      letter-spacing: -0.02em;
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2.5rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-family: 'Lato', sans-serif;
+      font-weight: 400;
+      font-size: 0.8rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--mid);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover  { color: var(--blue); }
+    .nav-links a.active { color: var(--blue); }
+
+    .page-header {
+      padding: 120px 3rem 64px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-size: 0.7rem;
+      font-weight: 400;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--blue);
+      margin-bottom: 1.25rem;
+    }
+
+    .page-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 400;
+      color: var(--navy);
+      line-height: 1.2;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-rule {
+      width: 60px;
+      height: 2px;
+      background: var(--blue);
+      margin: 1.75rem 0;
+      opacity: 0.6;
+    }
+
+    .page-intro {
+      font-size: 0.95rem;
+      color: var(--muted);
+      max-width: 660px;
+      line-height: 1.85;
+    }
+
+    .section {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 3rem 72px;
+    }
+
+    /* Pillars */
+    .pillars {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      border-top: 1px solid var(--rule);
+      margin-bottom: 72px;
+    }
+
+    .pillar {
+      padding: 2rem 2rem 2rem 0;
+      border-right: 1px solid var(--rule);
+    }
+
+    .pillar:nth-child(2) { padding-left: 2rem; }
+
+    .pillar:last-child {
+      border-right: none;
+      padding-left: 2rem;
+      padding-right: 0;
+    }
+
+    .pillar-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2rem;
+      font-weight: 400;
+      color: var(--blue);
+      opacity: 0.35;
+      line-height: 1;
+      margin-bottom: 0.75rem;
+    }
+
+    .pillar h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--navy);
+      margin-bottom: 0.6rem;
+    }
+
+    .pillar p {
+      font-size: 0.875rem;
+      color: var(--muted);
+      line-height: 1.8;
+    }
+
+    /* Team */
+    .team-label {
+      font-size: 0.7rem;
+      font-weight: 400;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--blue);
+      margin-bottom: 0.5rem;
+    }
+
+    .team-sublabel {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.4rem;
+      font-weight: 400;
+      color: var(--navy);
+      margin-bottom: 1.75rem;
+    }
+
+    .members-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      margin-bottom: 3.5rem;
+    }
+
+    .member-card {
+      background: white;
+      border: 1px solid var(--rule);
+      padding: 1.75rem;
+      position: relative;
+      overflow: hidden;
+      transition: box-shadow 0.2s;
+    }
+
+    .member-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 3px; height: 100%;
+      background: var(--blue);
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .member-card:hover { box-shadow: 0 4px 24px rgba(15,35,71,0.07); }
+    .member-card:hover::before { opacity: 1; }
+
+    .member-initials {
+      width: 44px; height: 44px;
+      background: var(--navy);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: white;
+      margin-bottom: 1.1rem;
+      flex-shrink: 0;
+    }
+
+    .member-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--navy);
+      margin-bottom: 0.15rem;
+    }
+
+
+    .member-bio {
+      font-size: 0.865rem;
+      color: var(--muted);
+      line-height: 1.8;
+      margin-bottom: 1rem;
+    }
+
+    .member-affil {
+      padding-top: 0.9rem;
+      border-top: 1px solid var(--rule);
+      font-size: 0.76rem;
+      color: var(--muted);
+      font-style: italic;
+    }
+
+    /* Contributors */
+    .divider {
+      border: none;
+      border-top: 1px solid var(--rule);
+      margin-bottom: 2rem;
+    }
+
+    .contrib-header {
+      display: flex;
+      align-items: baseline;
+      gap: 1rem;
+      margin-bottom: 1.1rem;
+    }
+
+    .contrib-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.4rem;
+      font-weight: 400;
+      color: var(--navy);
+    }
+
+    .contrib-note {
+      font-size: 0.76rem;
+      color: var(--muted);
+      font-style: italic;
+    }
+
+    .pending-note {
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.8;
+      max-width: 560px;
+    }
+
+    footer {
+      border-top: 1px solid var(--rule);
+      padding: 2rem 3rem;
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-left {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    .footer-right {
+      font-size: 0.75rem;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+    }
+
+    @media (max-width: 800px) {
+      .pillars { grid-template-columns: 1fr; }
+      .pillar { border-right: none; border-bottom: 1px solid var(--rule); padding: 1.5rem 0 !important; }
+      .members-grid { grid-template-columns: 1fr; }
+      nav, .page-header, .section { padding-left: 1.5rem; padding-right: 1.5rem; }
+      footer { flex-direction: column; gap: 0.5rem; padding: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="index.html" class="nav-logo">SORC</a>
+    <ul class="nav-links">
+      <li><a href="index.html">Research</a></li>
+      <li><a href="about.html" class="active">About</a></li>
+    </ul>
+  </nav>
+
+  <div class="page-header">
+    <div class="section-label">About</div>
+    <h1 class="page-title">Systematic Outcomes Research Collaborative</h1>
+    <div class="hero-rule"></div>
+    <p class="page-intro">SORC is an independent research collaborative that focuses on underexplored topics in medicine and health: questions that lack a robust synthesis or have not been examined using available evidence. We gather and synthesize that evidence using publicly available data, working alongside domain experts to ensure rigour and clinical relevance. Our work is investigator-initiated, self-funded, and designed to be reproducible. We prioritise bringing early-career researchers into substantive roles from study design through to publication.</p>
+  </div>
+
+  <div class="section">
+
+    <div class="pillars">
+      <div class="pillar">
+        <div class="pillar-num">01</div>
+        <h3>Question selection</h3>
+        <p>We focus on clinical and methodological questions where published evidence is sparse, scattered, or unsynthesised. Topics are investigator-initiated and chosen for their potential to add meaningful signal to the literature.</p>
+      </div>
+      <div class="pillar">
+        <div class="pillar-num">02</div>
+        <h3>Open data methods</h3>
+        <p>All SORC studies use publicly available data sources, enabling rigorous research without institutional funding or patient recruitment infrastructure. This model is intentionally sustainable across career transitions.</p>
+      </div>
+      <div class="pillar">
+        <div class="pillar-num">03</div>
+        <h3>Expert collaboration</h3>
+        <p>Senior researchers and clinicians contribute domain expertise and supervisory input on relevant projects. Study design, analysis, and writing are carried out by SORC members.</p>
+      </div>
+    </div>
+
+    <!-- Core Members -->
+    <div class="team-label">Team</div>
+    <div class="team-sublabel">Core Members</div>
+
+    <div class="members-grid">
+
+      <div class="member-card">
+        <div class="member-initials">AT</div>
+        <div class="member-name">Arthur Tung</div>
+        <div class="member-bio">Arthur is an MD student at the University of Alberta with six years of research experience in surgical patient safety, human factors, critical care, and simulation. He founded SORC to pursue investigator-initiated research independently from institutional lab structures. His work includes systematic reviews, original studies, and astronomical research under the Starry Overhead Observatory.</div>
+        <div class="member-affil">University of Alberta · North York General Hospital</div>
+      </div>
+
+      <div class="member-card">
+        <div class="member-initials">MM</div>
+        <div class="member-name">Michael Melchiorre</div>
+        <div class="member-bio">Michael is an educational clinician with a background in cognitive and learning science. He co-authored SORC's founding systematic review on debiasing and educational interventions in medical diagnosis, and continues to contribute to manuscript development and peer review.</div>
+        <div class="member-affil">Systematic Outcomes Research Collaborative</div>
+      </div>
+
+      <div class="member-card">
+        <div class="member-initials">JT</div>
+        <div class="member-name">Jack Thornton</div>
+        <div class="member-bio">Jack is an MASc student in Electrical and Computer Engineering at McMaster University, focusing on electric vehicles and energy systems. His engineering background contributes a technical perspective to SORC projects at the intersection of device safety and clinical outcomes, including the ongoing systematic review of injuries associated with lithium-ion battery fires.</div>
+        <div class="member-affil">McMaster University</div>
+      </div>
+
+    </div>
+
+    <!-- Associate Members -->
+    <hr class="divider">
+    <div class="contrib-header">
+      <div class="contrib-title">Associate Members</div>
+      <div class="contrib-note">To be updated</div>
+    </div>
+    <p class="pending-note">Associate members are SORC members who contribute to projects in substantive roles, from study design through to publication. This section will be updated once members have confirmed their participation.</p>
+
+  </div>
+
+  <footer>
+    <div class="footer-left">© 2026 Systematic Outcomes Research Collaborative</div>
+    <div class="footer-right">sorc.ca — Evidence, systematically.</div>
+  </footer>
+
+</body>
+</html>
