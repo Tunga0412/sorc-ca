@@ -22,7 +22,7 @@
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    html { scroll-behavior: smooth; }
+    html { scroll-behavior: smooth; overflow-x: hidden; }
 
     body {
       background: var(--bg);
@@ -31,6 +31,7 @@
       font-weight: 300;
       line-height: 1.7;
       min-height: 100vh;
+      overflow-x: hidden;
     }
 
     /* ── Nav ─────────────────────────────────────────────────────── */
@@ -80,6 +81,8 @@
       .nav-links { gap: 1.25rem; }
       .nav-logo { font-size: 1.15rem; }
       .nav-links a { font-size: 0.72rem; letter-spacing: 0.06em; }
+      .hero { padding: 100px 1.5rem 60px; }
+      .hero-logo svg { width: 100%; height: auto; max-width: 390px; }
     }
     .nav-links a.active { color: var(--blue); }
 
