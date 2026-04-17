@@ -75,6 +75,12 @@
     }
 
     .nav-links a:hover { color: var(--blue); }
+    @media (max-width: 600px) {
+      nav { padding: 0 1.25rem; }
+      .nav-links { gap: 1.25rem; }
+      .nav-logo { font-size: 1.15rem; }
+      .nav-links a { font-size: 0.72rem; letter-spacing: 0.06em; }
+    }
     .nav-links a.active { color: var(--blue); }
 
     /* ── Hero ────────────────────────────────────────────────────── */
@@ -398,8 +404,8 @@
     <a href="index.html" class="nav-logo">SORC</a>
     <ul class="nav-links">
       <li><a href="index.html" class="active">Research</a></li>
-      <li><a href="projects.html">Projects &amp; Opportunities</a></li>
-      <li><a href="about.html">About Us</a></li>
+      <li><a href="projects.html">Projects</a></li>
+      <li><a href="about.html">About</a></li>
     </ul>
   </nav>
 

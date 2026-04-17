@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Projects &amp; Opportunities — SORC</title>
+  <title>Projects — SORC</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Lato:wght@300;400&display=swap" rel="stylesheet">
   <style>
@@ -70,6 +70,12 @@
     }
 
     .nav-links a:hover  { color: var(--blue); }
+    @media (max-width: 600px) {
+      nav { padding: 0 1.25rem; }
+      .nav-links { gap: 1.25rem; }
+      .nav-logo { font-size: 1.15rem; }
+      .nav-links a { font-size: 0.72rem; letter-spacing: 0.06em; }
+    }
     .nav-links a.active { color: var(--blue); }
 
     .page-header {
@@ -350,13 +356,13 @@
     <a href="index.html" class="nav-logo">SORC</a>
     <ul class="nav-links">
       <li><a href="index.html">Research</a></li>
-      <li><a href="projects.html" class="active">Projects &amp; Opportunities</a></li>
-      <li><a href="about.html">About Us</a></li>
+      <li><a href="projects.html" class="active">Projects</a></li>
+      <li><a href="about.html">About</a></li>
     </ul>
   </nav>
 
   <div class="page-header">
-    <div class="section-label">Projects &amp; Opportunities</div>
+    <div class="section-label">Projects</div>
     <h1 class="page-title">What we are working on</h1>
     <div class="hero-rule"></div>
   </div>
