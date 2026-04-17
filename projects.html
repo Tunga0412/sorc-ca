@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Projects &amp; Opportunities — SORC</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Lato:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy:  #0F2347;
+      --navy2: #162E5A;
+      --blue:  #3B82C4;
+      --bg:    #F8F9FC;
+      --text:  #0F2347;
+      --mid:   #1B3A6B;
+      --muted: #5A6A85;
+      --rule:  #D0D8E8;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      line-height: 1.7;
+    }
+
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      background: rgba(248,249,252,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--rule);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 3rem;
+      height: 56px;
+    }
+
+    .nav-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 700;
+      font-size: 1.35rem;
+      color: var(--navy);
+      letter-spacing: -0.02em;
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2.5rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-family: 'Lato', sans-serif;
+      font-weight: 400;
+      font-size: 0.8rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--mid);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover  { color: var(--blue); }
+    .nav-links a.active { color: var(--blue); }
+
+    .page-header {
+      padding: 120px 3rem 64px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-size: 0.7rem;
+      font-weight: 400;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--blue);
+      margin-bottom: 1.25rem;
+    }
+
+    .page-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 400;
+      color: var(--navy);
+      line-height: 1.2;
+    }
+
+    .hero-rule {
+      width: 60px;
+      height: 2px;
+      background: var(--blue);
+      margin: 1.75rem 0;
+      opacity: 0.6;
+    }
+
+    .section {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 3rem 72px;
+    }
+
+    .subsection-label {
+      font-size: 0.7rem;
+      font-weight: 400;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--blue);
+      margin-bottom: 0.5rem;
+    }
+
+    .subsection-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.4rem;
+      font-weight: 400;
+      color: var(--navy);
+      margin-bottom: 2rem;
+    }
+
+    /* ── Project cards ───────────────────────────────────────────── */
+    .project-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      margin-bottom: 72px;
+    }
+
+    .project-card {
+      padding: 2rem 0;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .project-card:first-child { border-top: 1px solid var(--rule); }
+
+    .project-meta {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 0.6rem;
+    }
+
+    .badge {
+      font-size: 0.62rem;
+      font-weight: 400;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 0.18rem 0.55rem;
+      border-radius: 2px;
+    }
+
+    .badge-sorc       { background: var(--navy); color: white; }
+    .badge-inprogress { background: #2a1a2a; color: #d5a8d0; }
+    .badge-submitted  { background: #2a2a1a; color: #d5d0a8; }
+    .badge-collab     { background: var(--blue); color: white; }
+
+    .project-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: var(--navy);
+      line-height: 1.4;
+      margin-bottom: 0.4rem;
+    }
+
+    .project-authors {
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-bottom: 1.1rem;
+    }
+
+    .project-authors strong { color: var(--mid); font-weight: 400; }
+
+    .abstract-label {
+      font-size: 0.68rem;
+      font-weight: 400;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--blue);
+      margin-bottom: 0.5rem;
+    }
+
+    .abstract-section {
+      margin-bottom: 0.75rem;
+    }
+
+    .abstract-heading {
+      font-size: 0.8rem;
+      font-weight: 400;
+      color: var(--navy);
+      letter-spacing: 0.05em;
+      margin-bottom: 0.2rem;
+    }
+
+    .abstract-text {
+      font-size: 0.875rem;
+      color: var(--mid);
+      line-height: 1.8;
+    }
+
+    .collab-callout {
+      margin-top: 1.5rem;
+      padding: 1.25rem 1.5rem;
+      border-left: 3px solid var(--blue);
+      background: white;
+    }
+
+    .collab-callout-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--navy);
+      margin-bottom: 0.4rem;
+    }
+
+    .collab-callout p {
+      font-size: 0.875rem;
+      color: var(--mid);
+      line-height: 1.8;
+    }
+
+    .collab-callout a {
+      color: var(--blue);
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.2s;
+    }
+
+    .collab-callout a:hover { border-bottom-color: var(--blue); }
+
+    /* ── Divider ─────────────────────────────────────────────────── */
+    .divider {
+      border: none;
+      border-top: 1px solid var(--rule);
+      margin-bottom: 2.5rem;
+    }
+
+    /* ── Program card ────────────────────────────────────────────── */
+    .program-card {
+      background: white;
+      border: 1px solid var(--rule);
+      padding: 2.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .program-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 3px;
+      background: linear-gradient(90deg, var(--navy), var(--blue));
+    }
+
+    .program-year {
+      font-size: 0.7rem;
+      font-weight: 400;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--blue);
+      margin-bottom: 0.5rem;
+    }
+
+    .program-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.6rem;
+      font-weight: 600;
+      color: var(--navy);
+      margin-bottom: 1.25rem;
+    }
+
+    .program-body {
+      font-size: 0.9rem;
+      color: var(--mid);
+      line-height: 1.85;
+      max-width: 680px;
+    }
+
+    .program-body p { margin-bottom: 1rem; }
+    .program-body p:last-child { margin-bottom: 0; }
+
+    .program-details {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      margin-top: 2rem;
+      padding-top: 1.75rem;
+      border-top: 1px solid var(--rule);
+    }
+
+    .detail-item {}
+
+    .detail-label {
+      font-size: 0.68rem;
+      font-weight: 400;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--blue);
+      margin-bottom: 0.3rem;
+    }
+
+    .detail-value {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--navy);
+    }
+
+    footer {
+      border-top: 1px solid var(--rule);
+      padding: 2rem 3rem;
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-left {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    .footer-right {
+      font-size: 0.75rem;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+    }
+
+    @media (max-width: 800px) {
+      nav, .page-header, .section { padding-left: 1.5rem; padding-right: 1.5rem; }
+      .program-details { grid-template-columns: 1fr; gap: 1rem; }
+      footer { flex-direction: column; gap: 0.5rem; padding: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="index.html" class="nav-logo">SORC</a>
+    <ul class="nav-links">
+      <li><a href="index.html">Research</a></li>
+      <li><a href="projects.html" class="active">Projects &amp; Opportunities</a></li>
+      <li><a href="about.html">About</a></li>
+    </ul>
+  </nav>
+
+  <div class="page-header">
+    <div class="section-label">Projects &amp; Opportunities</div>
+    <h1 class="page-title">What we are working on</h1>
+    <div class="hero-rule"></div>
+  </div>
+
+  <div class="section">
+
+    <!-- Ongoing Projects -->
+    <div class="subsection-label">Ongoing</div>
+    <div class="subsection-title">Current Projects</div>
+
+    <div class="project-list">
+
+      <!-- ED Disruptions -->
+      <div class="project-card" id="ed-disruptions">
+        <div class="project-meta">
+          <span class="badge badge-sorc">SORC</span>
+          <span class="badge badge-inprogress">In Progress</span>
+          <span class="badge badge-collab">Seeking Collaborators</span>
+        </div>
+        <div class="project-title">Temporary Emergency Department Service Disruptions in Alberta: A Retrospective Archive-Based Analysis of Burden, Distribution, and Stated Causes, 2021–2026</div>
+        <div class="project-authors"><strong>Tung A</strong>, Nguyen V et al.</div>
+
+        <div class="abstract-label">Abstract</div>
+
+        <div class="abstract-section">
+          <div class="abstract-heading">Background</div>
+          <div class="abstract-text">Temporary emergency department service disruptions in Alberta are publicly posted by Alberta Health Services, but their cumulative burden has not been systematically reconstructed. We aimed to quantify emergency department disruption burden in Alberta using archived public records.</div>
+        </div>
+
+        <div class="abstract-section">
+          <div class="abstract-heading">Methods</div>
+          <div class="abstract-text">We conducted a retrospective archive-based descriptive study of Alberta Health Services temporary service disruption postings from August 1, 2021 to March 31, 2026. Emergency department-related postings were identified from archived snapshot pages of active disruptions and the Alberta Health Services notice archive. Records were deduplicated into disruption episodes, time intervals were reconstructed from posted text, intervals were clipped to the study window, and overlapping intervals were merged within site-year to estimate disruption hours. Notice-derived events underwent reconciliation against the main archive-based dataset, and remaining unresolved events or parser failures were manually reviewed and incorporated when supported by the source material.</div>
+        </div>
+
+        <div class="abstract-section">
+          <div class="abstract-heading">Results</div>
+          <div class="abstract-text">We identified substantial emergency department disruption burden across Alberta during the study period, totalling 147,442.5 estimated disruption hours. Multiple disruptions required reconciliation across source streams or manual adjudication because archived public postings varied in wording, timing detail, and continuity across postings. Manual review resolved remaining true zero-hour episodes and residual notice-derived events, yielding a fully dispositioned final analytic dataset.</div>
+        </div>
+
+        <div class="abstract-section">
+          <div class="abstract-heading">Interpretation</div>
+          <div class="abstract-text">Publicly archived disruption postings can be used to reconstruct province-wide emergency department disruption burden, but reliable estimation requires multi-source reconciliation, careful overlap handling, and targeted manual review of unresolved or ambiguously parsed events.</div>
+        </div>
+
+        <div class="collab-callout">
+          <div class="collab-callout-title">We are seeking collaborators for this project</div>
+          <p>We are looking for two clinicians or researchers with emergency medicine or Alberta Health Services context who can contribute to the interpretation and clinical significance of these findings, as well as two junior researchers interested in contributing to the analysis and manuscript. If either opportunity aligns with your work or interests, we would be glad to hear from you at <a href="mailto:tung2@ualberta.ca">tung2@ualberta.ca</a>.</p>
+        </div>
+      </div>
+
+      <!-- AAV-TMA -->
+      <div class="project-card" id="aav-tma">
+        <div class="project-meta">
+          <span class="badge badge-sorc">SORC</span>
+          <span class="badge badge-submitted">Submitted</span>
+        </div>
+        <div class="project-title">Thrombotic Microangiopathy Following Systemic Adeno-Associated Virus Gene Therapy: A Systematic Review of Clinical Presentation and Management</div>
+        <div class="project-authors"><strong>Tung A</strong>, Wolfman D, Acharya S, Villarreal Andrade D, <strong>Melchiorre M</strong>, Kolski H, Sun HL.</div>
+
+        <div class="abstract-label">Abstract</div>
+
+        <div class="abstract-section">
+          <div class="abstract-heading">Objective</div>
+          <div class="abstract-text">To synthesize patient-level evidence on adeno-associated virus-associated thrombotic microangiopathy (AAV-TMA), describing presentation, timing, investigations, management, outcomes, and supporting an initial approach.</div>
+        </div>
+
+        <div class="abstract-section">
+          <div class="abstract-heading">Methods</div>
+          <div class="abstract-text">We conducted a systematic review (PROSPERO CRD420251150401) in accordance with the Cochrane Handbook for Systematic Reviews of Interventions and reported in accordance with the updated PRISMA 2020 statement. On 16 September 2025, searches were conducted in Medline, Embase, Global Health, Scopus, Web of Science, and CINAHL. We included reports of post-AAV patients with TMA-like presentations. Two reviewers independently screened records and extracted study- and patient-level data. Study quality was appraised using the Joanna Briggs Institute checklists.</div>
+        </div>
+
+        <div class="abstract-section">
+          <div class="abstract-heading">Results</div>
+          <div class="abstract-text">We identified 656 records and included 12 records reporting 22 patients. Exposures were primarily onasemnogene abeparvovec (17/22) and fordadistrogene movaparvovec (3/22). Symptom onset clustered within the 5 to 10 days post-infusion window. Renal-predominant features were common (among cases with reporting: hypertension 15/17, oliguria/anuria 13/17, proteinuria 15/16, hematuria 9/9). Schistocytes were present in 16/16 cases, and thrombocytopenia was severe (median 17×10³/µL). ADAMTS13 activity was reported in 9/22, and none were severely deficient. Most patients received corticosteroids; PLEX was used in 6/17 cases and C5 inhibitors in 10/21 cases. ICU admission occurred in 8/10 cases, renal replacement therapy in 7/22, and mortality in 2/22.</div>
+        </div>
+
+        <div class="abstract-section">
+          <div class="abstract-heading">Conclusion</div>
+          <div class="abstract-text">Post-systemic AAV-TMA onset clustered in a narrow period with prominent renal involvement. These findings support phenotype- and ADAMTS13-informed triage, balancing thrombotic thrombocytopenic purpura (TTP) coverage with consideration of complement-directed therapy in severe presentations.</div>
+        </div>
+      </div>
+
+      <!-- Battery Fires -->
+      <div class="project-card" id="battery-fires">
+        <div class="project-meta">
+          <span class="badge badge-sorc">SORC</span>
+          <span class="badge badge-inprogress">In Progress</span>
+        </div>
+        <div class="project-title">Burn and Inhalation Injuries Associated With Lithium-Ion Battery Fires in Electric Mobility Devices: A Systematic Review</div>
+        <div class="project-authors"><strong>Tung A</strong>, <strong>Thornton J</strong>, <strong>Melchiorre M</strong>, Wolfman D, Wong JN, Rosenfield D, Rowe BH.</div>
+
+        <div class="abstract-label">Abstract</div>
+
+        <div class="abstract-section">
+          <div class="abstract-heading">Background</div>
+          <div class="abstract-text">Lithium-ion battery fires involving electric mobility devices are increasingly reported, but their clinical patterns remain poorly synthesised. We reviewed burn and inhalation injuries associated with these events and described incident characteristics, acute management, and outcomes.</div>
+        </div>
+
+        <div class="abstract-section">
+          <div class="abstract-heading">Methods</div>
+          <div class="abstract-text">We conducted a systematic review in accordance with the Cochrane Handbook and PRISMA 2020 and registered the protocol in PROSPERO (CRD420261341238). MEDLINE, Embase, Scopus, Web of Science Core Collection, and CINAHL were searched on March 13, 2026. Backward and forward citation searching and a targeted Google Scholar search were also performed. We included human studies reporting extractable original data on injuries associated with lithium-ion battery fires or explosions involving electric mobility devices.</div>
+        </div>
+
+        <div class="abstract-section">
+          <div class="abstract-heading">Results</div>
+          <div class="abstract-text">We included 11 records comprising 334 patients or casualties from 7 countries. Most were retrospective case series in burn-focused settings. Severe injuries were dominated by indoor electric micromobility fires, often during charging. Across the main admitted micromobility cohorts (128 patients), inhalation injury occurred in 97/128 (75.8%), operative management in 61/102 (59.8%), and mortality in 12/128 (9.4%). Reported burn severity was substantial, with mean total body surface area values ranging from 14.5% to 27.5% in the major cohorts. In contrast, one paediatric short-circuit series described uniformly minor hand burns managed non-operatively without mortality.</div>
+        </div>
+
+        <div class="abstract-section">
+          <div class="abstract-heading">Conclusions</div>
+          <div class="abstract-text">The dominant severe phenotype was an indoor, frequently charging-associated micromobility fire characterised by combined burn and inhalation injury, operative burden, prolonged hospitalisation, and non-trivial mortality. Paediatric short-circuit burns appeared to represent a distinct lower-severity pattern. Prevention should emphasise safer battery design, certified devices and chargers, and avoidance of indoor overnight charging whenever feasible and safe.</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Work With Us -->
+    <hr class="divider">
+    <div class="subsection-label">Work With Us</div>
+    <div class="subsection-title">Junior Investigator Program</div>
+
+    <div class="program-card">
+      <div class="program-year">Launching 2027</div>
+      <div class="program-title">SORC Junior Investigator Program</div>
+      <div class="program-body">
+        <p>SORC looks forward to welcoming its first cohort of junior investigators in 2027. The program will offer a small number of trainees the opportunity to contribute to a fully scoped, PROSPERO-registered systematic review from inception through to submission, with authorship commensurate with contribution.</p>
+        <p>Selected junior investigators will take on substantive roles across the full research lifecycle: screening, data extraction, risk of bias assessment, and manuscript preparation. Projects are designed to be appropriately scoped for trainee researchers and are supervised by SORC members alongside domain experts.</p>
+        <p>Further details on eligibility, selection, and the application process will be posted here ahead of the 2027 cycle. If you would like to be notified when applications open, contact us at <a href="mailto:tung2@ualberta.ca" style="color: var(--blue); text-decoration: none; border-bottom: 1px solid transparent; transition: border-color 0.2s;" onmouseover="this.style.borderBottomColor='var(--blue)'" onmouseout="this.style.borderBottomColor='transparent'">tung2@ualberta.ca</a>.</p>
+      </div>
+      <div class="program-details">
+        <div class="detail-item">
+          <div class="detail-label">Positions per cycle</div>
+          <div class="detail-value">3 junior investigators</div>
+        </div>
+        <div class="detail-item">
+          <div class="detail-label">Project duration</div>
+          <div class="detail-value">August to March</div>
+        </div>
+        <div class="detail-item">
+          <div class="detail-label">Cost to applicants</div>
+          <div class="detail-value">None</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>
+    <div class="footer-left">© 2026 Systematic Outcomes Research Collaborative</div>
+    <div class="footer-right">sorc.ca — Evidence, systematically.</div>
+  </footer>
+
+</body>
+</html>
