@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Standards — SORC</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Lato:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy:  #0F2347;
+      --navy2: #162E5A;
+      --blue:  #3B82C4;
+      --bg:    #F8F9FC;
+      --text:  #0F2347;
+      --mid:   #1B3A6B;
+      --muted: #5A6A85;
+      --rule:  #D0D8E8;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; overflow-x: hidden; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      background: rgba(248,249,252,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--rule);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 3rem;
+      height: 56px;
+    }
+
+    .nav-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 700;
+      font-size: 1.35rem;
+      color: var(--navy);
+      letter-spacing: -0.02em;
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2.5rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-family: 'Lato', sans-serif;
+      font-weight: 400;
+      font-size: 0.8rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--mid);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover  { color: var(--blue); }
+    .nav-links a.active { color: var(--blue); }
+
+    @media (max-width: 600px) {
+      nav { padding: 0 1.25rem; }
+      .nav-links { gap: 1.25rem; }
+      .nav-logo { font-size: 1.15rem; }
+      .nav-links a { font-size: 0.72rem; letter-spacing: 0.06em; }
+    }
+
+    .page-header {
+      padding: 120px 3rem 48px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-size: 0.7rem;
+      font-weight: 400;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--blue);
+      margin-bottom: 1.25rem;
+    }
+
+    .page-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 400;
+      color: var(--navy);
+      line-height: 1.2;
+    }
+
+    .hero-rule {
+      width: 60px;
+      height: 2px;
+      background: var(--blue);
+      margin: 1.75rem 0;
+      opacity: 0.6;
+    }
+
+    .page-intro {
+      font-size: 0.95rem;
+      color: var(--mid);
+      max-width: 660px;
+      line-height: 1.85;
+    }
+
+    .section {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 0 3rem 80px;
+    }
+
+    /* ── Standards blocks ────────────────────────────────────────── */
+    .standards-block {
+      margin-bottom: 3rem;
+      padding-bottom: 3rem;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .standards-block:last-child {
+      border-bottom: none;
+    }
+
+    .block-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.5rem;
+      font-weight: 400;
+      color: var(--blue);
+      opacity: 0.4;
+      line-height: 1;
+      margin-bottom: 0.4rem;
+    }
+
+    .block-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: var(--navy);
+      margin-bottom: 1rem;
+    }
+
+    .block-body {
+      font-size: 0.9rem;
+      color: var(--mid);
+      line-height: 1.85;
+    }
+
+    .block-body p {
+      margin-bottom: 0.85rem;
+    }
+
+    .block-body p:last-child {
+      margin-bottom: 0;
+    }
+
+    .block-body ul {
+      margin: 0.75rem 0 0.85rem 1.25rem;
+    }
+
+    .block-body li {
+      margin-bottom: 0.4rem;
+      font-size: 0.9rem;
+      color: var(--mid);
+      line-height: 1.75;
+    }
+
+    .block-body strong {
+      color: var(--navy);
+      font-weight: 400;
+    }
+
+    .version-note {
+      font-size: 0.78rem;
+      color: var(--muted);
+      font-style: italic;
+      margin-bottom: 2.5rem;
+    }
+
+    footer {
+      border-top: 1px solid var(--rule);
+      padding: 2rem 3rem;
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-left {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    .footer-right {
+      font-size: 0.75rem;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+    }
+
+    @media (max-width: 800px) {
+      .page-header, .section { padding-left: 1.5rem; padding-right: 1.5rem; }
+      footer { flex-direction: column; gap: 0.5rem; padding: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="index.html" class="nav-logo">SORC</a>
+    <ul class="nav-links">
+      <li><a href="index.html">Research</a></li>
+      <li><a href="projects.html">Projects</a></li>
+      <li><a href="about.html">About</a></li>
+    </ul>
+  </nav>
+
+  <div class="page-header">
+    <div class="section-label">Governance</div>
+    <h1 class="page-title">Authorship &amp; Collaboration Standards</h1>
+    <div class="hero-rule"></div>
+    <p class="page-intro">These standards govern how SORC conducts research, assigns authorship, and manages collaboration. They apply to all SORC-affiliated works and to participants in the SORC Junior Investigator Program.</p>
+  </div>
+
+  <div class="section">
+    <p class="version-note">Version 1.0 — Adopted April 2026</p>
+
+    <div class="standards-block">
+      <div class="block-num">01</div>
+      <div class="block-title">Authorship criteria</div>
+      <div class="block-body">
+        <p>SORC follows the International Committee of Medical Journal Editors (ICMJE) criteria for authorship. All named authors on SORC-affiliated works must meet all four of the following conditions:</p>
+        <ul>
+          <li>Substantial contributions to conception or design, or acquisition, analysis, or interpretation of data</li>
+          <li>Drafting or critically revising the work for important intellectual content</li>
+          <li>Final approval of the version to be published</li>
+          <li>Accountability for all aspects of the work, including appropriate investigation of accuracy and integrity</li>
+        </ul>
+        <p>Contributors who do not meet all four criteria may be acknowledged in the manuscript but will not be listed as authors. Authorship is earned through demonstrable contribution and cannot be granted as a courtesy.</p>
+      </div>
+    </div>
+
+    <div class="standards-block">
+      <div class="block-num">02</div>
+      <div class="block-title">Contribution expectations by role</div>
+      <div class="block-body">
+        <p><strong>Members</strong> are responsible for project conception, methodology, protocol registration, and overall quality assurance. They hold final editorial authority on all SORC-affiliated manuscripts.</p>
+        <p><strong>Junior investigators</strong> (participants in the SORC Junior Investigator Program) are expected to contribute to title/abstract screening, full-text review, data extraction, risk of bias assessment, and manuscript drafting for their assigned sections. Junior investigators who complete all assigned deliverables to an acceptable standard will be listed as authors, typically in positions 1 through 3.</p>
+        <p><strong>Expert collaborators</strong> are domain specialists or senior researchers brought in to strengthen a project's clinical or methodological rigour. They may be engaged at any stage of a project — including after data collection has begun — where their expertise adds meaningful value. Their specific contribution, authorship position, and scope of involvement are agreed upon at the point of engagement and documented by the lead investigator.</p>
+        <p>All contributors are expected to maintain their agreed participation throughout the project timeline. Significant lapses in contribution without prior notice may affect authorship standing.</p>
+      </div>
+    </div>
+
+    <div class="standards-block">
+      <div class="block-num">03</div>
+      <div class="block-title">Project withdrawal and contributor dropout</div>
+      <div class="block-body">
+        <p>We recognise that personal, academic, and professional circumstances can change. If a contributor anticipates difficulty meeting their obligations, they are asked to notify the lead investigator as early as possible so that the project can be managed accordingly.</p>
+        <p>Contributors who withdraw after having completed substantial work will be acknowledged in the manuscript and may retain authorship at the discretion of the lead investigator, depending on the nature and extent of their prior contribution.</p>
+        <p>Contributors who withdraw without notice and without having completed their assigned deliverables will be removed from the author list. Their contributions to that point may still be acknowledged.</p>
+        <p>SORC is a small collaborative. Reliability and communication are as important as technical skill.</p>
+      </div>
+    </div>
+
+    <div class="standards-block">
+      <div class="block-num">04</div>
+      <div class="block-title">Methodological standards</div>
+      <div class="block-body">
+        <p>All SORC systematic reviews are conducted in accordance with the Cochrane Handbook for Systematic Reviews of Interventions and reported in accordance with the PRISMA 2020 statement. Protocols are registered in PROSPERO prior to data collection.</p>
+        <p>All SORC original studies are reported in accordance with the applicable reporting guideline for the study design (STROBE, RECORD, or equivalent). Where publicly archived data is used, the source and access date are documented.</p>
+        <p>Screening and data extraction are performed independently by at least two reviewers on all SORC systematic reviews. Conflicts are resolved by discussion or by a third reviewer when consensus cannot be reached.</p>
+      </div>
+    </div>
+
+    <div class="standards-block">
+      <div class="block-num">05</div>
+      <div class="block-title">Conflicts of interest and funding</div>
+      <div class="block-body">
+        <p>SORC is self-funded and investigator-initiated. No external funding is currently held. All contributors disclose any relevant conflicts of interest at the outset of each project, and disclosures are reported in accordance with the target journal's requirements.</p>
+        <p>SORC does not accept funding that would constrain the independence of research questions, methods, or conclusions.</p>
+      </div>
+    </div>
+
+    <div class="standards-block">
+      <div class="block-num">06</div>
+      <div class="block-title">Dispute resolution</div>
+      <div class="block-body">
+        <p>Disputes regarding authorship, contribution, or conduct are addressed first through direct discussion between the parties involved. If resolution cannot be reached, the matter is escalated to the lead investigator whose decision is final for SORC-affiliated works.</p>
+        <p>Questions about these standards or their application to a specific project should be directed to <a href="mailto:info@sorc.ca" style="color: var(--blue); text-decoration: none; border-bottom: 1px solid transparent;">info@sorc.ca</a>.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>
+    <div class="footer-left">© 2026 Systematic Outcomes Research Collaborative</div>
+    <div class="footer-right">sorc.ca — Evidence, systematically.</div>
+  </footer>
+
+</body>
+</html>
