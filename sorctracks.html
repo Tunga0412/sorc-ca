@@ -400,7 +400,6 @@
       border: 1px solid var(--rule);
       background: white;
       margin-bottom: 4rem;
-      overflow: hidden;
     }
 
     .map-embed {
@@ -408,11 +407,10 @@
       height: 920px;
       border: 0;
       display: block;
-      transition: height 0.2s;
     }
 
     @media (max-width: 900px) { .map-embed { height: 700px; } }
-    @media (max-width: 600px) { .map-embed { height: 640px; } }
+    @media (max-width: 600px) { .map-embed { height: 1050px; } }
 
   </style>
 </head>
@@ -552,16 +550,5 @@ document.addEventListener('click', e => {
 });
 </script>
 
-<script>
-// Auto-resize iframe to match tool content height on mobile
-window.addEventListener('message', function(e) {
-  if (e.data && e.data.type === 'sorc-resize') {
-    if (window.matchMedia('(max-width: 768px)').matches) {
-      var iframe = document.querySelector('.map-embed');
-      if (iframe) iframe.style.height = e.data.height + 'px';
-    }
-  }
-});
-</script>
 </body>
 </html>

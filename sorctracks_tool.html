@@ -963,18 +963,10 @@ updateMarkers();
 updateLegend();
 renderHome();
 
-// Auto-resize: report content height to parent iframe
-function reportHeight() {
-  if (window.parent !== window) {
-    window.parent.postMessage(
-      { type: 'sorc-resize', height: document.body.scrollHeight },
-      '*'
-    );
-  }
+// Collapse legend by default on mobile
+if (window.matchMedia('(max-width: 640px)').matches && legendDiv) {
+  legendDiv.classList.add('collapsed');
 }
-reportHeight();
-const _ro = new ResizeObserver(reportHeight);
-_ro.observe(document.body);
 
 
 function refreshMapScale() {
