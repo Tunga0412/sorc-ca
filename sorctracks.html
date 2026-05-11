@@ -396,6 +396,23 @@
       .dropdown-menu a { padding: 0.5rem 1rem; font-size: 0.7rem; }
     }
 
+    .map-embed-wrap {
+      border: 1px solid var(--rule);
+      background: white;
+      margin-bottom: 4rem;
+      overflow: hidden;
+    }
+
+    .map-embed {
+      width: 100%;
+      height: 920px;
+      border: 0;
+      display: block;
+    }
+
+    @media (max-width: 900px) { .map-embed { height: 700px; } }
+    @media (max-width: 600px) { .map-embed { height: 560px; } }
+
   </style>
 </head>
 <body>
@@ -430,11 +447,8 @@
   <div class="section">
     <div class="subsection-label" style="margin-top: 1rem;">Tool</div>
     <div class="subsection-title">Alberta Service Disruption Map</div>
-    <div style="margin-bottom: 1rem;">
-      <a href="sorctracks_tool.html" target="_blank" rel="noopener" style="font-size: 0.8rem; color: var(--blue); text-decoration: none; border-bottom: 1px solid transparent; transition: border-color 0.2s;" onmouseover="this.style.borderBottomColor='var(--blue)'" onmouseout="this.style.borderBottomColor='transparent'">Open in full screen &rarr;</a>
-    </div>
-    <div style="border: 1px solid var(--rule); background: white; margin-bottom: 4rem; overflow: hidden;">
-      <iframe src="sorctracks_tool.html" style="width: 100%; height: 780px; border: 0; display: block;" title="Alberta Service Disruption Map"></iframe>
+    <div class="map-embed-wrap">
+      <iframe src="sorctracks_tool.html" class="map-embed" title="Alberta Service Disruption Map"></iframe>
     </div>
 
     <hr class="divider" style="margin-top: 1rem;">
