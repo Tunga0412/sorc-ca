@@ -963,10 +963,36 @@ updateMarkers();
 updateLegend();
 renderHome();
 
-// Collapse legend by default on mobile
-if (window.matchMedia('(max-width: 640px)').matches && legendDiv) {
-  legendDiv.classList.add('collapsed');
-}
+// Dynamic height reporting for mobile iframe embedding
+(function() {
+  if (window.parent === window) return; // not in an iframe
+
+  function getContentHeight() {
+    const header  = document.querySelector('header');
+    const mapEl   = document.getElementById('map');
+    const sidebar = document.getElementById('sidebar');
+    const footer  = document.querySelector('footer');
+    let h = 0;
+    if (header)  h += header.getBoundingClientRect().height;
+    if (mapEl)   h += mapEl.getBoundingClientRect().height;
+    if (sidebar) h += sidebar.scrollHeight;
+    if (footer)  h += footer.getBoundingClientRect().height;
+    return Math.ceil(h) + 24; // small buffer for borders/gaps
+  }
+
+  function reportHeight() {
+    window.parent.postMessage({ type: 'sorc-resize', height: getContentHeight() }, '*');
+  }
+
+  // Report on load, then watch sidebar for changes (site clicks expand it)
+  reportHeight();
+  const sidebar = document.getElementById('sidebar');
+  if (sidebar) {
+    new MutationObserver(reportHeight).observe(sidebar, { childList: true, subtree: true });
+    new ResizeObserver(reportHeight).observe(sidebar);
+  }
+  window.addEventListener('resize', reportHeight);
+})();
 
 
 function refreshMapScale() {
