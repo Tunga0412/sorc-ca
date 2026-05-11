@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="description" content="Ongoing SORC systematic reviews and original studies, including the AAV gene therapy thrombotic microangiopathy review, lithium-ion battery fires review, and wildfire hospital disruption review.">
+  <meta name="description" content="SORCTracks is a public-data visualization tool tracking temporary health service disruptions across Alberta, developed by SORC from publicly archived Alberta Health Services postings.">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ongoing Projects</title>
+  <title>SORCTracks</title>
     <link rel="icon" type="image/png" href="SORC_LOGO.png">
   <link rel="shortcut icon" href="SORC_LOGO.png">
   <link rel="apple-touch-icon" href="SORC_LOGO.png">
@@ -417,112 +417,98 @@
   </nav>
 
   <div class="page-header">
-    <div class="section-label">Ongoing Projects</div>
-    <h1 class="page-title">What we are working on</h1>
+    <div class="section-label">SORCTracks</div>
+    <h1 class="page-title">Tracking Alberta health service disruptions</h1>
     <div class="hero-rule"></div>
+    <p class="page-intro">SORC is primarily led by students in the University of Alberta MD Program and has a strong interest in Alberta's ongoing health service access challenges. This interest has led SORC to develop projects that make fragmented public health system data more accessible, interpretable, and useful for communities, clinicians, researchers, and policymakers.</p>
+    <p class="page-intro" style="margin-top: 1rem;">SORCTracks is a public-data visualization tool developed to track temporary health service disruptions across Alberta. The platform transforms publicly archived Alberta Health Services postings into an interactive, searchable map that allows users to explore where, when, and how often service disruptions have occurred.</p>
+    <p class="page-intro" style="margin-top: 1rem;">The tool currently includes a completed Emergency Department layer and a searchable reference layer of Alberta Health Services locations. Additional service layers, including maternity and obstetric services, acute care and inpatient services, surgery and operating rooms, endoscopy, urgent and ambulatory care, orthopedics, long-term care, home care, rehabilitation, detox, ophthalmology, and cardiology, will be added as those data are analyzed.</p>
+    <p class="page-intro" style="margin-top: 1rem;">SORCTracks is not a real-time operational dashboard. It is a reconstructed research and public-information resource based on archived public postings. Data will be updated quarterly as additional archived notices are reviewed and incorporated.</p>
+    <p style="font-size: 0.78rem; color: var(--muted); margin-top: 1rem; letter-spacing: 0.04em;">Version: Beta v0.1 · Released May 10, 2026</p>
   </div>
 
   <div class="section">
+    <div class="subsection-label" style="margin-top: 1rem;">Tool</div>
+    <div class="subsection-title">Alberta Service Disruption Map</div>
+    <div style="margin-bottom: 1rem;">
+      <a href="sorctracks_tool.html" target="_blank" rel="noopener" style="font-size: 0.8rem; color: var(--blue); text-decoration: none; border-bottom: 1px solid transparent; transition: border-color 0.2s;" onmouseover="this.style.borderBottomColor='var(--blue)'" onmouseout="this.style.borderBottomColor='transparent'">Open in full screen &rarr;</a>
+    </div>
+    <div style="border: 1px solid var(--rule); background: white; margin-bottom: 4rem; overflow: hidden;">
+      <iframe src="sorctracks_tool.html" style="width: 100%; height: 780px; border: 0; display: block;" title="Alberta Service Disruption Map"></iframe>
+    </div>
 
-    <div class="subsection-label">Ongoing</div>
-    <div class="subsection-title">Current Projects</div>
+    <hr class="divider" style="margin-top: 1rem;">
+    <div class="subsection-label">Studies</div>
+    <div class="subsection-title">Archive-based studies underpinning SORCTracks</div>
 
     <div class="project-list">
 
-      <!-- Wildfire Hospitals -->
-      <div class="project-card" id="wildfire-hospitals">
+      <!-- ED Disruptions -->
+      <div class="project-card" id="ed-disruptions">
         <div class="project-meta">
           <span class="badge badge-sorc">SORC</span>
           <span class="badge badge-inprogress">In Progress</span>
           <span class="badge badge-collab">Seeking Collaborators</span>
         </div>
-        <div class="project-title">Maintaining Acute Care Access During Wildfire-Related Hospital Disruptions: A Systematic Review</div>
-        <div style="font-size: 0.78rem; color: var(--blue); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 1rem;">Junior Investigator Program</div>
+        <div class="project-title">Temporary Emergency Department Service Disruptions in Alberta: A Retrospective Archive-Based Analysis of Burden, Distribution, and Stated Causes, 2021–2026</div>
+        <div class="project-authors"><strong>Tung A</strong>, <strong>Nguyen V</strong> et al.</div>
 
         <div class="abstract-label">Abstract</div>
 
         <div class="abstract-section">
           <div class="abstract-heading">Background</div>
-          <div class="abstract-text">Wildfires can disrupt hospital operations through direct fire exposure, smoke intrusion, infrastructure strain, evacuation risk, and regional patient redistribution. Existing reviews have focused more broadly on wildfire-related emergency department impacts, emergency medical services response, or hospital evacuation across hazards, rather than specifically on how hospitals and acute-care systems preserved service continuity during wildfire-related disruption. This review synthesised peer-reviewed and selected gray-literature evidence on evacuation, transfer, surge response, and early recovery strategies used to maintain acute-care access during wildfire events.</div>
+          <div class="abstract-text">Temporary emergency department (ED) service disruptions in Alberta are publicly posted by Alberta Health Services (AHS), but their cumulative burden has not been systematically reconstructed. We aimed to quantify ED disruption burden in Alberta using archived public records.</div>
         </div>
 
         <div class="abstract-section">
           <div class="abstract-heading">Methods</div>
-          <div class="abstract-text">We conducted a systematic review of studies and operational reports describing wildfire- or bushfire-related disruption to hospitals and acute-care services. We searched MEDLINE, Embase, CINAHL, and Scopus using controlled vocabulary and text words related to wildfires, hospital and critical care settings, and evacuation, transfer, continuity, and recovery processes. We also undertook targeted gray-literature searching using structured Google web searches and searches of relevant hospital, health-system, emergency-preparedness, and government websites. Eligible records included hospital- or system-level reports of evacuation, transfer, service continuity, operational response, or early recovery during real wildfire events. Two reviewers independently screened records and extracted data on setting, disruption type, operational strategies, and reported outcomes. Given expected methodological heterogeneity, findings were synthesised narratively.</div>
-        </div>
-
-        <div class="collab-callout">
-          <div class="collab-callout-title">We are seeking collaborators for this project</div>
-          <p>We are looking for a clinician or researcher with expertise in disaster medicine, emergency preparedness, or hospital operations who can contribute to the interpretation of these findings. We are also seeking junior investigator applicants for this project — see the <a href="#junior-investigators" style="color: var(--blue); text-decoration: none; border-bottom: 1px solid transparent; transition: border-color 0.2s;">Junior Investigator Program</a> below. Reach out at <a href="mailto:info@sorc.ca">info@sorc.ca</a>.</p>
-        </div>
-      </div>
-
-
-      <!-- AAV-TMA -->
-      <div class="project-card" id="aav-tma">
-        <div class="project-meta">
-          <span class="badge badge-sorc">SORC</span>
-          <span class="badge badge-submitted">Submitted</span>
-        </div>
-        <div class="project-title">Thrombotic Microangiopathy Following Systemic Adeno-Associated Virus Gene Therapy: A Systematic Review of Clinical Presentation and Management</div>
-        <div class="project-authors"><strong>Tung A</strong>, <strong>Wolfman D</strong>, <strong>Acharya S</strong>, Villarreal Andrade D, <strong>Melchiorre M</strong>, Kolski H, Sun HL.</div>
-
-        <div class="abstract-label">Abstract</div>
-
-        <div class="abstract-section">
-          <div class="abstract-heading">Objective</div>
-          <div class="abstract-text">To synthesize patient-level evidence on adeno-associated virus-associated thrombotic microangiopathy (AAV-TMA), describing presentation, timing, investigations, management, outcomes, and supporting an initial approach.</div>
-        </div>
-
-        <div class="abstract-section">
-          <div class="abstract-heading">Methods</div>
-          <div class="abstract-text">We conducted a systematic review (PROSPERO CRD420251150401) in accordance with the Cochrane Handbook for Systematic Reviews of Interventions and reported in accordance with the updated PRISMA 2020 statement. On 16 September 2025, searches were conducted in Medline, Embase, Global Health, Scopus, Web of Science, and CINAHL. We included reports of post-AAV patients with TMA-like presentations. Two reviewers independently screened records and extracted study- and patient-level data. Study quality was appraised using the Joanna Briggs Institute checklists.</div>
+          <div class="abstract-text">We conducted a retrospective archive-based descriptive study of AHS temporary service disruption postings from August 1, 2021 to March 31, 2026. ED-related records were identified from two public archive streams: dated snapshot pages of active service disruptions and the AHS news/notice archive. Source records were treated as events before within-source deduplication and as episodes after deduplication of repeated postings referring to the same underlying disruption. Closure intervals were reconstructed from public wording, clipped to the study window, and merged within site-year to estimate unioned ED disruption hours. Notice-derived episodes underwent cross-source reconciliation against the snapshot-derived corpus, with targeted manual review and fixed-interval recovery when supported by the source text.</div>
         </div>
 
         <div class="abstract-section">
           <div class="abstract-heading">Results</div>
-          <div class="abstract-text">We identified 656 records and included 12 records reporting 22 patients. Exposures were primarily onasemnogene abeparvovec (17/22) and fordadistrogene movaparvovec (3/22). Symptom onset clustered within the 5 to 10 days post-infusion window. Renal-predominant features were common (among cases with reporting: hypertension 15/17, oliguria/anuria 13/17, proteinuria 15/16, hematuria 9/9). Schistocytes were present in 16/16 cases, and thrombocytopenia was severe (median 17×10³/µL). ADAMTS13 activity was reported in 9/22, and none were severely deficient. Most patients received corticosteroids; PLEX was used in 6/17 cases and C5 inhibitors in 10/21 cases. ICU admission occurred in 8/10 cases, renal replacement therapy in 7/22, and mortality in 2/22.</div>
+          <div class="abstract-text">The archive-sourced analytic dataset contained 1,023 ED episodes after cross-source reconciliation, including 936 snapshot-archive episodes and 87 notice-archive episodes. Of these, 964 were accounted for with existing captured hours, 44 required manual recovery, and 15 were excluded for known reasons. Final estimated burden was 147,456.5 unioned ED disruption hours. Annual burden was 6,289.0 h in the partial 2021 period, 27,951.5 h in 2022, 38,504.3 h in 2023, 33,433.2 h in 2024, 32,547.5 h in 2025, and 8,731.0 h in the partial 2026 period. Across all years, the highest-burden sites were Consort, Hardisty, Boyle, Grimshaw, and Two Hills.</div>
         </div>
 
         <div class="abstract-section">
           <div class="abstract-heading">Conclusion</div>
-          <div class="abstract-text">Post-systemic AAV-TMA onset clustered in a narrow period with prominent renal involvement. These findings support phenotype- and ADAMTS13-informed triage, balancing thrombotic thrombocytopenic purpura (TTP) coverage with consideration of complement-directed therapy in severe presentations.</div>
+          <div class="abstract-text">Publicly documented ED service disruptions in Alberta represent a substantial and recurrent loss of emergency care access, with burden concentrated in a limited number of communities. From a public health and health-system perspective, these findings support routine province-wide surveillance of ED disruptions, more transparent reporting of service interruptions, and targeted workforce stabilization efforts in communities experiencing repeated closure burden.</div>
+        </div>
+
+        <div class="collab-callout">
+          <div class="collab-callout-title">We are seeking collaborators for this project</div>
+          <p>We are looking for two clinicians or researchers with emergency medicine or Alberta Health Services context who can contribute to the interpretation and clinical significance of these findings. If this aligns with your work, we would be glad to hear from you at <a href="mailto:info@sorc.ca">info@sorc.ca</a>.</p>
         </div>
       </div>
 
 
-      <!-- Battery Fires -->
-      <div class="project-card" id="battery-fires">
+      <!-- Rural Maternity -->
+      <div class="project-card" id="rural-maternity">
         <div class="project-meta">
           <span class="badge badge-sorc">SORC</span>
           <span class="badge badge-inprogress">In Progress</span>
+          <span class="badge badge-collab">Seeking Collaborators</span>
         </div>
-        <div class="project-title">Burn and Inhalation Injuries Associated With Lithium-Ion Battery Fires in Electric Mobility Devices: A Systematic Review</div>
-        <div class="project-authors"><strong>Tung A</strong>, <strong>Thornton J</strong>, <strong>Melchiorre M</strong>, <strong>Wolfman D</strong>, Wong JN, Rosenfield D, Rowe BH.</div>
+        <div class="project-title">Rural Maternity Service Instability in Alberta: An Archive-Based Analysis of Publicly Posted Hospital Service Disruptions</div>
+        <div class="project-authors"><strong>Tung A</strong>, <strong>Nguyen V</strong> et al.</div>
 
         <div class="abstract-label">Abstract</div>
 
         <div class="abstract-section">
           <div class="abstract-heading">Background</div>
-          <div class="abstract-text">Lithium-ion battery fires involving electric mobility devices have been reported; however, their frequency and clinical characteristics have not been well summarized. Burn and inhalation injuries associated with these events, along with their incident characteristics, acute management, and outcomes, were captured in this review.</div>
+          <div class="abstract-text">Access to local maternity care in rural and regional communities may be disrupted by temporary loss of obstetrical services, cesarean section capability, anesthesia coverage, or delivery support. In Alberta, many of these disruptions are publicly posted by Alberta Health Services, but their frequency, geographic distribution, and patterns have not been systematically described. We aimed to characterize publicly posted maternity service capability disruptions in Alberta using archived public records.</div>
         </div>
 
         <div class="abstract-section">
           <div class="abstract-heading">Methods</div>
-          <div class="abstract-text">A systematic review was conducted in accordance with the Cochrane Handbook and PRISMA 2020 and registered prospectively in PROSPERO (CRD420261341238). MEDLINE, Embase, Scopus, Web of Science Core Collection, and CINAHL were searched up to 2026. Backward and forward citation searching and targeted Google Scholar and Google web searches were also performed. Human studies reporting extractable original data on injuries associated with lithium-ion battery fires or explosions involving electric mobility devices were eligible.</div>
+          <div class="abstract-text">We performed a retrospective descriptive study of archived Alberta Health Services temporary service disruption postings. Records were drawn from dated snapshot pages of active disruptions and the Alberta Health Services notice archive. Eligible records included postings explicitly affecting local maternity capability, including obstetrical service disruptions, loss of cesarean section or epidural capability, and mixed-service disruptions involving obstetrics when delivery care or maternity backup was explicitly affected. Records were standardized by site and categorized by disruption type. Analyses were descriptive and focused on temporal, geographic, and service-pattern characteristics of publicly posted maternity-related disruptions.</div>
         </div>
 
-        <div class="abstract-section">
-          <div class="abstract-heading">Results</div>
-          <div class="abstract-text">Eleven records comprising 334 patients or casualties from seven countries were included. Most were case reports, case series, or observational reports in adults from burn centres. The most severe cases usually followed indoor micromobility fires, often during charging. Across the most directly comparable hospital-based reports, inhalation injury ranged from 33% to 88%, operative management from 40% to 78%, and mortality from 0% to 11%. Reported burn severity was substantial, with mean total body surface area values ranging from 14.5% to 27.5% in the major cohorts. In contrast, one pediatric short-circuit series described uniformly minor hand burns managed non-operatively without mortality.</div>
-        </div>
-
-        <div class="abstract-section">
-          <div class="abstract-heading">Conclusions</div>
-          <div class="abstract-text">Lithium-ion battery fires involving electric mobility devices occur predominantly in adults following an indoor battery fire, often during charging. Fires result in combined burn and inhalation injuries, frequent surgeries, prolonged hospitalizations, and mortality. Prevention efforts should focus on certified devices and chargers and on reducing indoor overnight charging.</div>
+        <div class="collab-callout">
+          <div class="collab-callout-title">We are seeking collaborators for this project</div>
+          <p>We are looking for clinicians or researchers with expertise in rural maternity care, obstetrics, or health services in Alberta who can contribute to the interpretation and clinical significance of these findings. If this aligns with your work, we would be glad to hear from you at <a href="mailto:info@sorc.ca">info@sorc.ca</a>.</p>
         </div>
       </div>
-
 
     </div>
 
