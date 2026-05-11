@@ -508,8 +508,8 @@
     <div class="section-label">Publications &amp; Works</div>
 
     <div class="filter-bar">
-      <button class="filter-btn active" data-filter="all">All</button>
-      <button class="filter-btn" data-filter="sorc">SORC</button>
+      <button class="filter-btn" data-filter="all">All</button>
+      <button class="filter-btn active" data-filter="sorc">SORC</button>
       <button class="filter-btn" data-filter="member">Select Member Works</button>
       <button class="filter-btn" data-filter="published">Published</button>
       <button class="filter-btn" data-filter="inprogress">In Progress</button>
@@ -530,7 +530,7 @@
             </a>
           </div>
           <div class="pub-authors"><strong>Tung A</strong></div>
-          <div class="pub-journal">Systematic Outcomes Research Collaborative. Beta v0.1. May 10, 2026.</div>
+          <div class="pub-journal">Systematic Outcomes Research Collaborative. Beta v0.1. 2026 May 10.</div>
         </div>
         <div class="pub-year">2026</div>
       </div>
@@ -772,27 +772,31 @@
     const btns = document.querySelectorAll('.filter-btn');
     const items = document.querySelectorAll('.pub-item');
 
+    function applyFilter(f) {
+      items.forEach(item => {
+        const affil  = item.dataset.affil;
+        const status = item.dataset.status;
+        const show =
+          f === 'all'        ? true :
+          f === 'sorc'       ? affil  === 'sorc' :
+          f === 'member'     ? affil  === 'member' :
+          f === 'published'  ? status === 'published' :
+          f === 'inprogress' ? (status === 'inprogress' || status === 'submitted') :
+          false;
+        item.style.display = show ? 'grid' : 'none';
+      });
+    }
+
     btns.forEach(btn => {
       btn.addEventListener('click', () => {
         btns.forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-
-        const f = btn.dataset.filter;
-        items.forEach(item => {
-          const affil  = item.dataset.affil;
-          const status = item.dataset.status;
-          const show =
-            f === 'all'        ? true :
-            f === 'sorc'       ? affil  === 'sorc' :
-            f === 'member'     ? affil  === 'member' :
-            f === 'published'  ? status === 'published' :
-            f === 'inprogress' ? (status === 'inprogress' || status === 'submitted') :
-            false;
-
-          item.style.display = show ? 'grid' : 'none';
-        });
+        applyFilter(btn.dataset.filter);
       });
     });
+
+    // Default to SORC filter on load
+    applyFilter('sorc');
   </script>
 
 
