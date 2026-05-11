@@ -361,8 +361,8 @@
       .subtitle { font-size: 0.72rem; margin-top: 0.1rem; }
       .total-stat { font-size: 0.78rem; }
       #map {
-        height: 52vh;
-        min-height: 300px;
+        height: 42vh;
+        min-height: 260px;
         align-self: auto;
         position: relative;
         top: auto;
@@ -965,40 +965,7 @@ renderHome();
 
 // Dynamic height reporting for mobile iframe embedding
 (function() {
-  if (window.parent === window) return;
-
-  const isMobile = () => window.matchMedia('(max-width: 768px)').matches;
-
-  function getContentHeight() {
-    const header  = document.querySelector('header');
-    const mapEl   = document.getElementById('map');
-    const sidebar = document.getElementById('sidebar');
-    const footer  = document.querySelector('footer');
-    let h = 0;
-    if (header)  h += header.offsetHeight;
-    if (mapEl)   h += mapEl.offsetHeight;
-    if (sidebar) h += sidebar.scrollHeight;
-    if (footer)  h += footer.offsetHeight;
-    return Math.ceil(h) + 24;
-  }
-
-  function reportHeight() {
-    if (!isMobile()) return; // desktop uses fixed CSS height — map+sidebar are side by side
-    window.parent.postMessage({ type: 'sorc-resize', height: getContentHeight() }, '*');
-  }
-
-  // Fire immediately, then again after fonts/map tiles settle
-  reportHeight();
-  setTimeout(reportHeight, 300);
-  setTimeout(reportHeight, 800);
-
-  // Watch sidebar for site-click content changes
-  const sidebar = document.getElementById('sidebar');
-  if (sidebar) {
-    new MutationObserver(reportHeight).observe(sidebar, { childList: true, subtree: true });
-    new ResizeObserver(reportHeight).observe(sidebar);
-  }
-  window.addEventListener('resize', reportHeight);
+})();
 })();
 
 
