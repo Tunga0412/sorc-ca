@@ -552,7 +552,6 @@ document.addEventListener('click', e => {
 </script>
 
 <script>
-// Receive dynamic height from embedded sorctracks_tool.html and resize iframe
 window.addEventListener('message', function(e) {
   if (e.data && e.data.type === 'sorc-resize') {
     var iframe = document.querySelector('.map-embed');

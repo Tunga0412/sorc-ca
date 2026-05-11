@@ -347,7 +347,7 @@
     .back-btn:hover { color: var(--navy); }
 
     @media (max-width: 768px) {
-      html, body { overflow-x: hidden; overflow-y: visible; }
+      html, body { overflow: hidden; }
       body {
         grid-template-columns: 1fr;
         grid-template-rows: auto auto auto auto;
@@ -965,7 +965,9 @@ renderHome();
 
 // Dynamic height reporting for mobile iframe embedding
 (function() {
-  if (window.parent === window) return; // not in an iframe
+  if (window.parent === window) return;
+
+  const isMobile = () => window.matchMedia('(max-width: 768px)').matches;
 
   function getContentHeight() {
     const header  = document.querySelector('header');
@@ -973,19 +975,24 @@ renderHome();
     const sidebar = document.getElementById('sidebar');
     const footer  = document.querySelector('footer');
     let h = 0;
-    if (header)  h += header.getBoundingClientRect().height;
-    if (mapEl)   h += mapEl.getBoundingClientRect().height;
+    if (header)  h += header.offsetHeight;
+    if (mapEl)   h += mapEl.offsetHeight;
     if (sidebar) h += sidebar.scrollHeight;
-    if (footer)  h += footer.getBoundingClientRect().height;
-    return Math.ceil(h) + 24; // small buffer for borders/gaps
+    if (footer)  h += footer.offsetHeight;
+    return Math.ceil(h) + 24;
   }
 
   function reportHeight() {
+    if (!isMobile()) return; // desktop uses fixed CSS height — map+sidebar are side by side
     window.parent.postMessage({ type: 'sorc-resize', height: getContentHeight() }, '*');
   }
 
-  // Report on load, then watch sidebar for changes (site clicks expand it)
+  // Fire immediately, then again after fonts/map tiles settle
   reportHeight();
+  setTimeout(reportHeight, 300);
+  setTimeout(reportHeight, 800);
+
+  // Watch sidebar for site-click content changes
   const sidebar = document.getElementById('sidebar');
   if (sidebar) {
     new MutationObserver(reportHeight).observe(sidebar, { childList: true, subtree: true });
