@@ -6,6 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Systematic Outcomes Research Collaborative</title>
     <link rel="icon" type="image/png" href="SORC_LOGO.png">
+  <link rel="shortcut icon" href="SORC_LOGO.png">
+  <link rel="apple-touch-icon" href="SORC_LOGO.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Lato:wght@300;400&display=swap" rel="stylesheet">
   <style>
@@ -256,6 +258,7 @@
     .badge-published  { background: #1a3a2a; color: #a8d5b5; }
     .badge-submitted  { background: #2a2a1a; color: #d5d0a8; }
     .badge-accepted   { background: #1a2a3a; color: #a8c5d5; }
+    .badge-tool       { background: #1a2535; color: #a8c8e8; }
     .badge-inprogress { background: #2a1a2a; color: #d5a8d0; }
     .badge-collab     { background: var(--blue); color: white; }
 
@@ -400,6 +403,50 @@
       87%      { opacity: 0; }
       100%     { opacity: 0; }
     }
+  
+    .has-dropdown { position: relative; }
+    .dropdown-toggle::after {
+      content: '\25BE';
+      font-size: 0.7em;
+      margin-left: 0.3em;
+      vertical-align: middle;
+      opacity: 0.7;
+    }
+    .dropdown-menu {
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(248,249,252,0.98);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--rule);
+      border-radius: 2px;
+      padding: 0.4rem 0;
+      min-width: 180px;
+      display: none;
+      list-style: none;
+      margin: 0;
+      box-shadow: 0 4px 14px rgba(15,35,71,0.08);
+    }
+    .dropdown-menu li { display: block; }
+    .dropdown-menu a {
+      display: block;
+      padding: 0.55rem 1.25rem;
+      font-size: 0.74rem;
+      letter-spacing: 0.1em;
+      white-space: nowrap;
+    }
+    .dropdown-menu a:hover { background: rgba(59,130,196,0.08); }
+    .has-dropdown:hover .dropdown-menu,
+    .has-dropdown.open .dropdown-menu { display: block; }
+    @media (max-width: 600px) {
+      .dropdown-menu {
+        min-width: 150px;
+        padding: 0.25rem 0;
+      }
+      .dropdown-menu a { padding: 0.5rem 1rem; font-size: 0.7rem; }
+    }
+
   </style>
 </head>
 <body>
@@ -409,7 +456,14 @@
     <a href="index.html" class="nav-logo">SORC</a>
     <ul class="nav-links">
       <li><a href="index.html" class="active">Research</a></li>
-      <li><a href="projects.html">Projects</a></li>
+      <li class="has-dropdown">
+        <a href="projects.html" class="dropdown-toggle">Projects</a>
+        <ul class="dropdown-menu">
+          <li><a href="projects.html">Ongoing Projects</a></li>
+          <li><a href="sorctracks.html">SORCTracks</a></li>
+          <li><a href="workwithus.html">Work With Us</a></li>
+        </ul>
+      </li>
       <li><a href="about.html">About</a></li>
     </ul>
   </nav>
@@ -464,6 +518,23 @@
     <div class="pub-list" id="pub-list">
 
       <!-- ── SORC Published ─────────────────────────────────────── -->
+      <div class="pub-item" data-affil="sorc" data-status="published">
+        <div>
+          <div class="pub-meta">
+            <span class="badge badge-sorc">SORC</span>
+            <span class="badge badge-tool">Tool Launched</span>
+          </div>
+          <div class="pub-title">
+            <a href="sorctracks.html">
+              SORCTracks: A Visualization of Temporary Health Service Disruptions Across Alberta
+            </a>
+          </div>
+          <div class="pub-authors"><strong>Tung A</strong></div>
+          <div class="pub-journal">Systematic Outcomes Research Collaborative. Beta v0.1. May 10, 2026.</div>
+        </div>
+        <div class="pub-year">2026</div>
+      </div>
+
       <div class="pub-item" data-affil="sorc" data-status="published">
         <div>
           <div class="pub-meta">
@@ -525,7 +596,7 @@
             <span class="badge badge-collab">Seeking Collaborators</span>
           </div>
           <div class="pub-title">
-            <a href="projects.html#ed-disruptions">
+            <a href="sorctracks.html#ed-disruptions">
               Temporary Emergency Department Service Disruptions in Alberta: A Retrospective Archive-Based Analysis of Burden, Distribution, and Stated Causes, 2021–2026
             </a>
           </div>
@@ -543,7 +614,7 @@
             <span class="badge badge-collab">Seeking Collaborators</span>
           </div>
           <div class="pub-title">
-            <a href="projects.html#rural-maternity">
+            <a href="sorctracks.html#rural-maternity">
               Rural Maternity Service Instability in Alberta: An Archive-Based Analysis of Publicly Posted Hospital Service Disruptions
             </a>
           </div>
@@ -724,5 +795,21 @@
     });
   </script>
 
+
+<script>
+document.querySelectorAll('.has-dropdown > .dropdown-toggle').forEach(toggle => {
+  toggle.addEventListener('click', e => {
+    if (window.matchMedia('(max-width: 768px)').matches) {
+      e.preventDefault();
+      toggle.parentElement.classList.toggle('open');
+    }
+  });
+});
+document.addEventListener('click', e => {
+  if (!e.target.closest('.has-dropdown')) {
+    document.querySelectorAll('.has-dropdown.open').forEach(el => el.classList.remove('open'));
+  }
+});
+</script>
 </body>
 </html>
