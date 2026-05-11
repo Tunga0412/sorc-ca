@@ -347,7 +347,7 @@
     .back-btn:hover { color: var(--navy); }
 
     @media (max-width: 768px) {
-      html, body { overflow: hidden; }
+      html, body { overflow-x: hidden; overflow-y: visible; }
       body {
         grid-template-columns: 1fr;
         grid-template-rows: auto auto auto auto;
@@ -963,10 +963,19 @@ updateMarkers();
 updateLegend();
 renderHome();
 
-// Collapse legend by default on mobile
-if (window.matchMedia('(max-width: 640px)').matches && legendDiv) {
-  legendDiv.classList.add('collapsed');
+// Auto-resize: report content height to parent iframe
+function reportHeight() {
+  if (window.parent !== window) {
+    window.parent.postMessage(
+      { type: 'sorc-resize', height: document.body.scrollHeight },
+      '*'
+    );
+  }
 }
+reportHeight();
+const _ro = new ResizeObserver(reportHeight);
+_ro.observe(document.body);
+
 
 function refreshMapScale() {
   updateMarkers();
