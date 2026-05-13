@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="description" content="The SORC Junior Investigator Program offers research positions to early-stage trainees on active projects, providing substantive experience from study design through publication.">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Junior Investigator Program</title>
+  <link rel="icon" type="image/png" href="SORC_LOGO.png">
+  <link rel="shortcut icon" href="SORC_LOGO.png">
+  <link rel="apple-touch-icon" href="SORC_LOGO.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Lato:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy:  #0F2347;
+      --navy2: #162E5A;
+      --blue:  #3B82C4;
+      --bg:    #F8F9FC;
+      --text:  #0F2347;
+      --mid:   #1B3A6B;
+      --muted: #5A6A85;
+      --rule:  #D0D8E8;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      line-height: 1.7;
+    }
+
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      background: rgba(248,249,252,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--rule);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 3rem;
+      height: 56px;
+    }
+
+    .nav-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 700;
+      font-size: 1.35rem;
+      color: var(--navy);
+      letter-spacing: -0.02em;
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2.5rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-family: 'Lato', sans-serif;
+      font-weight: 400;
+      font-size: 0.8rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--mid);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover  { color: var(--blue); }
+    @media (max-width: 600px) {
+      nav { padding: 0 1.25rem; }
+      .nav-links { gap: 1.25rem; }
+      .nav-logo { font-size: 1.15rem; }
+      .nav-links a { font-size: 0.72rem; letter-spacing: 0.06em; }
+    }
+    .nav-links a.active { color: var(--blue); }
+
+    .page-header {
+      padding: 120px 3rem 64px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-size: 0.7rem;
+      font-weight: 400;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--blue);
+      margin-bottom: 1.25rem;
+    }
+
+    .page-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 400;
+      color: var(--navy);
+      line-height: 1.2;
+    }
+
+    .hero-rule {
+      width: 60px;
+      height: 2px;
+      background: var(--blue);
+      margin: 1.75rem 0;
+      opacity: 0.6;
+    }
+
+    .section {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 3rem 72px;
+    }
+
+    .detail-label {
+      font-size: 0.68rem;
+      font-weight: 400;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--blue);
+      margin-bottom: 0.3rem;
+    }
+
+    /* ── Program card ────────────────────────────────────────────── */
+    .program-card {
+      background: white;
+      border: 1px solid var(--rule);
+      padding: 2.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .program-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 3px;
+      background: linear-gradient(90deg, var(--navy), var(--blue));
+    }
+
+    .program-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.6rem;
+      font-weight: 600;
+      color: var(--navy);
+      margin-bottom: 1.25rem;
+    }
+
+    .program-body {
+      font-size: 0.9rem;
+      color: var(--mid);
+      line-height: 1.85;
+      max-width: 680px;
+    }
+
+    .program-body p { margin-bottom: 1rem; }
+    .program-body p:last-child { margin-bottom: 0; }
+
+    .program-body a {
+      color: var(--blue);
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.2s;
+    }
+
+    .program-body a:hover { border-bottom-color: var(--blue); }
+
+    footer {
+      border-top: 1px solid var(--rule);
+      padding: 2rem 3rem;
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-left {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    .footer-right {
+      font-size: 0.75rem;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+    }
+
+    @media (max-width: 800px) {
+      nav, .page-header, .section { padding-left: 1.5rem; padding-right: 1.5rem; }
+      footer { flex-direction: column; gap: 0.5rem; padding: 1.5rem; }
+    }
+
+    .has-dropdown { position: relative; }
+    .dropdown-toggle::after {
+      content: '\25BE';
+      font-size: 0.7em;
+      margin-left: 0.3em;
+      vertical-align: middle;
+      opacity: 0.7;
+    }
+    .dropdown-menu {
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(248,249,252,0.98);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--rule);
+      border-radius: 2px;
+      padding: 0.4rem 0;
+      min-width: 220px;
+      display: none;
+      list-style: none;
+      margin: 0;
+      box-shadow: 0 4px 14px rgba(15,35,71,0.08);
+    }
+    .dropdown-menu li { display: block; }
+    .dropdown-menu a {
+      display: block;
+      padding: 0.55rem 1.25rem;
+      font-size: 0.74rem;
+      letter-spacing: 0.1em;
+      white-space: nowrap;
+    }
+    .dropdown-menu a:hover { background: rgba(59,130,196,0.08); }
+    .has-dropdown:hover .dropdown-menu,
+    .has-dropdown.open .dropdown-menu { display: block; }
+    @media (max-width: 600px) {
+      .dropdown-menu { min-width: 200px; padding: 0.25rem 0; }
+      .dropdown-menu a { padding: 0.5rem 1rem; font-size: 0.7rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="index.html" class="nav-logo">SORC</a>
+    <ul class="nav-links">
+      <li><a href="index.html">Research</a></li>
+      <li class="has-dropdown">
+        <a href="projects.html" class="dropdown-toggle active">Projects</a>
+        <ul class="dropdown-menu">
+          <li><a href="projects.html">Ongoing Projects</a></li>
+          <li><a href="sorctracks.html">SORCTracks</a></li>
+          <li><a href="jip.html">Junior Investigator Program</a></li>
+        </ul>
+      </li>
+      <li><a href="about.html">About</a></li>
+    </ul>
+  </nav>
+
+  <div class="page-header">
+    <div class="section-label">SORC</div>
+    <h1 class="page-title">Junior Investigator Program</h1>
+    <div class="hero-rule"></div>
+  </div>
+
+  <div class="section">
+
+    <div class="program-card" id="junior-investigators">
+      <div class="program-title">Junior Investigator Program</div>
+      <div class="program-body">
+        <p>SORC offers junior investigator positions on an as-needed basis, tied to specific projects. When a project is open to junior investigators, it will be listed below with a description of the work and what is expected.</p>
+        <p>Junior investigator positions are designed for trainees at the start of their research journey. Applicants should be completing their first undergraduate degree and have little to no prior research experience. No publications or lab background are required. SORC exists in part to provide a first substantive research experience to those who would not otherwise have one. Selected junior investigators contribute to real projects from inception through to submission, with authorship commensurate with contribution and governed by our <a href="standards.html">authorship and collaboration standards</a>.</p>
+        <p>There are no costs to applicants at any stage. To express interest in a current or future opening, send a CV and brief letter of interest to <a href="mailto:info@sorc.ca">info@sorc.ca</a>.</p>
+      </div>
+
+      <div style="margin-top: 1.75rem; padding-top: 1.75rem; border-top: 1px solid var(--rule);">
+        <div class="detail-label">Open positions</div>
+        <div style="margin-top: 1rem; padding: 1rem 1.25rem; border: 1px solid var(--rule); background: var(--bg);">
+          <div style="font-family: 'Cormorant Garamond', serif; font-size: 1rem; font-weight: 600; color: var(--navy); margin-bottom: 0.3rem;">
+            <a href="projects.html#wildfire-hospitals" style="color: var(--navy); text-decoration: none; border-bottom: 1px solid transparent; transition: border-color 0.2s;">Maintaining Acute Care Access During Wildfire-Related Hospital Disruptions: A Systematic Review</a>
+          </div>
+          <div style="font-size: 0.82rem; color: var(--muted);">2&ndash;3 junior investigators &middot; Screening, data extraction, risk of bias, manuscript drafting</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>
+    <div class="footer-left">© 2026 Systematic Outcomes Research Collaborative</div>
+    <div class="footer-right"><a href="standards.html" style="color: var(--muted); text-decoration: none; margin-right: 1.5rem;">Standards</a>sorc.ca — Evidence, systematically.</div>
+  </footer>
+
+  <script>
+    document.querySelectorAll('.has-dropdown > .dropdown-toggle').forEach(toggle => {
+      toggle.addEventListener('click', e => {
+        if (window.matchMedia('(max-width: 768px)').matches) {
+          e.preventDefault();
+          toggle.parentElement.classList.toggle('open');
+        }
+      });
+    });
+    document.addEventListener('click', e => {
+      if (!e.target.closest('.has-dropdown')) {
+        document.querySelectorAll('.has-dropdown.open').forEach(el => el.classList.remove('open'));
+      }
+    });
+  </script>
+
+</body>
+</html>
