@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="description" content="SORCTracks is a public-data visualization tool tracking temporary health service disruptions across Alberta, developed by SORC from publicly archived Alberta Health Services postings.">
+  <meta name="description" content="SORCTracks is a public-data visualization tool that reconstructs publicly archived Alberta Health Services temporary service disruption postings into an interactive map for research, public information, and health-system discussion.">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SORCTracks</title>
-    <link rel="icon" type="image/png" href="SORC_LOGO.png">
+  <link rel="icon" type="image/png" href="SORC_LOGO.png">
   <link rel="shortcut icon" href="SORC_LOGO.png">
   <link rel="apple-touch-icon" href="SORC_LOGO.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -113,6 +113,13 @@
       opacity: 0.6;
     }
 
+    .page-intro {
+      font-size: 0.95rem;
+      color: var(--mid);
+      max-width: 680px;
+      line-height: 1.85;
+    }
+
     .section {
       max-width: 1100px;
       margin: 0 auto;
@@ -133,7 +140,80 @@
       font-size: 1.4rem;
       font-weight: 400;
       color: var(--navy);
-      margin-bottom: 2rem;
+      margin-bottom: 1.5rem;
+    }
+
+    /* ── Changelog table ─────────────────────────────────────────── */
+    .changelog-table {
+      width: 100%;
+      max-width: 680px;
+      border-collapse: collapse;
+      margin-top: 0.5rem;
+    }
+
+    .changelog-table th {
+      font-family: 'Lato', sans-serif;
+      font-weight: 400;
+      font-size: 0.68rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--blue);
+      text-align: left;
+      padding: 0.5rem 1.5rem 0.5rem 0;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .changelog-table td {
+      font-size: 0.82rem;
+      color: var(--mid);
+      padding: 0.65rem 1.5rem 0.65rem 0;
+      border-bottom: 1px solid var(--rule);
+      vertical-align: top;
+    }
+
+    .changelog-table tr:last-child td { border-bottom: none; }
+
+    /* ── Caution box ─────────────────────────────────────────────── */
+    .caution-box {
+      margin-bottom: 1.75rem;
+      padding: 1.35rem 1.6rem;
+      border-left: 3px solid var(--navy);
+      background: #EEF1F7;
+    }
+
+    .caution-box-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--navy);
+      letter-spacing: 0.01em;
+      margin-bottom: 0.85rem;
+    }
+
+    .caution-box ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.55rem;
+    }
+
+    .caution-box li {
+      font-size: 0.875rem;
+      color: var(--mid);
+      line-height: 1.75;
+      padding-left: 1.1rem;
+      position: relative;
+    }
+
+    .caution-box li::before {
+      content: '\00B7';
+      position: absolute;
+      left: 0;
+      color: var(--blue);
+      font-size: 1.1rem;
+      line-height: 1.55;
     }
 
     /* ── Project cards ───────────────────────────────────────────── */
@@ -141,7 +221,7 @@
       display: flex;
       flex-direction: column;
       gap: 0;
-      margin-bottom: 72px;
+      margin-bottom: 2.5rem;
     }
 
     .project-card {
@@ -199,9 +279,7 @@
       margin-bottom: 0.5rem;
     }
 
-    .abstract-section {
-      margin-bottom: 0.75rem;
-    }
+    .abstract-section { margin-bottom: 0.75rem; }
 
     .abstract-heading {
       font-size: 0.8rem;
@@ -238,6 +316,8 @@
       line-height: 1.8;
     }
 
+    .collab-callout p + p { margin-top: 0.5rem; }
+
     .collab-callout a {
       color: var(--blue);
       text-decoration: none;
@@ -254,76 +334,31 @@
       margin-bottom: 2.5rem;
     }
 
-    /* ── Program card ────────────────────────────────────────────── */
-    .program-card {
-      background: white;
+    /* ── Map embed ───────────────────────────────────────────────── */
+    .map-embed-wrap {
       border: 1px solid var(--rule);
-      padding: 2.5rem;
-      position: relative;
-      overflow: hidden;
+      background: white;
+      margin-bottom: 2.5rem;
     }
 
-    .program-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 3px;
-      background: linear-gradient(90deg, var(--navy), var(--blue));
+    .map-embed {
+      width: 100%;
+      height: 920px;
+      border: 0;
+      display: block;
     }
 
-    .program-year {
-      font-size: 0.7rem;
-      font-weight: 400;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
+    @media (max-width: 900px) { .map-embed { height: 700px; } }
+    @media (max-width: 600px) { .map-embed { height: 1650px; } }
+
+    .inline-link {
       color: var(--blue);
-      margin-bottom: 0.5rem;
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.2s;
     }
 
-    .program-title {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.6rem;
-      font-weight: 600;
-      color: var(--navy);
-      margin-bottom: 1.25rem;
-    }
-
-    .program-body {
-      font-size: 0.9rem;
-      color: var(--mid);
-      line-height: 1.85;
-      max-width: 680px;
-    }
-
-    .program-body p { margin-bottom: 1rem; }
-    .program-body p:last-child { margin-bottom: 0; }
-
-    .program-details {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1.5rem;
-      margin-top: 2rem;
-      padding-top: 1.75rem;
-      border-top: 1px solid var(--rule);
-    }
-
-    .detail-item {}
-
-    .detail-label {
-      font-size: 0.68rem;
-      font-weight: 400;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--blue);
-      margin-bottom: 0.3rem;
-    }
-
-    .detail-value {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1rem;
-      font-weight: 600;
-      color: var(--navy);
-    }
+    .inline-link:hover { border-bottom-color: var(--blue); }
 
     footer {
       border-top: 1px solid var(--rule);
@@ -349,10 +384,9 @@
 
     @media (max-width: 800px) {
       nav, .page-header, .section { padding-left: 1.5rem; padding-right: 1.5rem; }
-      .program-details { grid-template-columns: 1fr; gap: 1rem; }
       footer { flex-direction: column; gap: 0.5rem; padding: 1.5rem; }
     }
-  
+
     .has-dropdown { position: relative; }
     .dropdown-toggle::after {
       content: '\25BE';
@@ -389,29 +423,9 @@
     .has-dropdown:hover .dropdown-menu,
     .has-dropdown.open .dropdown-menu { display: block; }
     @media (max-width: 600px) {
-      .dropdown-menu {
-        min-width: 150px;
-        padding: 0.25rem 0;
-      }
+      .dropdown-menu { min-width: 150px; padding: 0.25rem 0; }
       .dropdown-menu a { padding: 0.5rem 1rem; font-size: 0.7rem; }
     }
-
-    .map-embed-wrap {
-      border: 1px solid var(--rule);
-      background: white;
-      margin-bottom: 4rem;
-    }
-
-    .map-embed {
-      width: 100%;
-      height: 920px;
-      border: 0;
-      display: block;
-    }
-
-    @media (max-width: 900px) { .map-embed { height: 700px; } }
-    @media (max-width: 600px) { .map-embed { height: 1650px; } }
-
   </style>
 </head>
 <body>
@@ -437,35 +451,78 @@
     <h1 class="page-title">SORCTracks: A Visualization of Temporary Health Service Disruptions Across Alberta</h1>
     <div class="hero-rule"></div>
     <p class="page-intro">SORC is primarily led by students in the University of Alberta MD Program and has a strong interest in Alberta's ongoing health service access challenges. This interest has led SORC to develop projects that make fragmented public health system data more accessible, interpretable, and useful for communities, clinicians, researchers, and policymakers.</p>
-    <p class="page-intro" style="margin-top: 1rem;">SORCTracks is a public-data visualization tool developed to track temporary health service disruptions across Alberta. The platform transforms publicly archived Alberta Health Services postings into an interactive, searchable map that allows users to explore where, when, and how often service disruptions have occurred.</p>
+    <p class="page-intro" style="margin-top: 1rem;">SORCTracks is an independent public-data visualization tool that reconstructs publicly archived Alberta Health Services temporary service disruption postings into an interactive, searchable map. Users can explore where, when, and how often temporary service disruptions have been publicly posted across Alberta.</p>
     <p class="page-intro" style="margin-top: 1rem;">The tool currently includes a completed Emergency Department layer and a searchable reference layer of Alberta Health Services locations. Additional service layers, including maternity and obstetric services, acute care and inpatient services, surgery and operating rooms, endoscopy, urgent and ambulatory care, orthopedics, long-term care, home care, rehabilitation, detox, ophthalmology, and cardiology, will be added as those data are analyzed.</p>
     <p class="page-intro" style="margin-top: 1rem;">SORCTracks is not a real-time operational dashboard. It is a reconstructed research and public-information resource based on archived public postings. Data will be updated quarterly as additional archived notices are reviewed and incorporated.</p>
-    <p style="font-size: 0.78rem; color: var(--muted); margin-top: 1rem; letter-spacing: 0.04em;">Version: Beta v0.1 · Released May 10, 2026</p>
+
+    <div style="margin-top: 2rem;">
+      <div class="section-label" style="margin-bottom: 0.6rem;">Version History</div>
+      <table class="changelog-table">
+        <thead>
+          <tr>
+            <th>Version</th>
+            <th>Released</th>
+            <th>Data through</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Beta v0.2</td>
+            <td>May 12, 2026</td>
+            <td>May 12, 2026</td>
+            <td>Data updated through May 12, 2026; corrected underestimate of 2026 disruption hours for Barrhead Healthcare Centre</td>
+          </tr>
+          <tr>
+            <td>Beta v0.1</td>
+            <td>May 10, 2026</td>
+            <td>Mar 31, 2026</td>
+            <td>Initial public release; Emergency Department layer</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 
   <div class="section">
     <div class="subsection-label" style="margin-top: 1rem;">Tool</div>
     <div class="subsection-title">Alberta Service Disruption Map</div>
+
+    <div class="caution-box">
+      <div class="caution-box-title">Interpretive Cautions</div>
+      <ul>
+        <li>This is a public-record reconstruction, not an operational gold standard. Some disruptions may not have been publicly posted, archived consistently, or timed defensibly from available source material.</li>
+        <li>SORCTracks is not real-time. It reflects archived public postings through the data-through date listed above. It is not an Alberta Health Services product and is not affiliated with AHS.</li>
+        <li>Reason summaries describe what was stated in public notices, not independently verified operational causes.</li>
+        <li>Estimated hours reflect publicly reconstructable disruption intervals. Unioned hours represent unique site-level disruption time after overlapping intervals are merged, and should not be treated as a precise operational measure.</li>
+        <li>This tool supports research and public understanding. It is not intended for clinical or operational decision-making.</li>
+      </ul>
+    </div>
+
     <div class="map-embed-wrap">
       <iframe src="sorctracks_tool.html" class="map-embed" title="Alberta Service Disruption Map"></iframe>
     </div>
 
-    <hr class="divider" style="margin-top: 1rem;">
+    <hr class="divider">
     <div class="subsection-label">Citation</div>
     <div class="subsection-title">How to Cite</div>
 
-    <div style="display: flex; flex-direction: column; gap: 1.25rem; margin-bottom: 3.5rem; max-width: 760px;">
+    <div style="display: flex; flex-direction: column; gap: 1.25rem; margin-bottom: 1.75rem; max-width: 760px;">
       <div style="padding: 1.25rem 1.5rem; border: 1px solid var(--rule); background: white;">
         <div style="font-size: 0.68rem; color: var(--blue); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 0.6rem;">APA 7th Edition</div>
-        <p style="font-size: 0.875rem; color: var(--mid); line-height: 1.8;">Tung, A. (2026). <em>SORCTracks: A visualization of temporary health service disruptions across Alberta</em> (Version Beta v0.1) [Data visualization tool]. Systematic Outcomes Research Collaborative. https://sorc.ca/sorctracks.html</p>
+        <p style="font-size: 0.875rem; color: var(--mid); line-height: 1.8;">Tung, A. (2026). <em>SORCTracks: A visualization of temporary health service disruptions across Alberta</em> (Version Beta v0.2) [Data visualization tool]. Systematic Outcomes Research Collaborative. https://sorc.ca/sorctracks.html</p>
       </div>
       <div style="padding: 1.25rem 1.5rem; border: 1px solid var(--rule); background: white;">
         <div style="font-size: 0.68rem; color: var(--blue); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 0.6rem;">Vancouver</div>
-        <p style="font-size: 0.875rem; color: var(--mid); line-height: 1.8;">Tung A. SORCTracks: A visualization of temporary health service disruptions across Alberta [Internet]. Version Beta v0.1. Edmonton: Systematic Outcomes Research Collaborative; 2026 May 10 [cited YYYY Mon DD]. Available from: https://sorc.ca/sorctracks.html</p>
+        <p style="font-size: 0.875rem; color: var(--mid); line-height: 1.8;">Tung A. SORCTracks: A visualization of temporary health service disruptions across Alberta [Internet]. Version Beta v0.2. Edmonton: Systematic Outcomes Research Collaborative; 2026 May 12 [cited YYYY Mon DD]. Available from: https://sorc.ca/sorctracks.html</p>
       </div>
     </div>
 
-    <hr class="divider" style="margin-top: 1rem;">
+    <p style="font-size: 0.875rem; color: var(--mid); line-height: 1.8; max-width: 680px;">For a complete description of data sources, definitions, and analytical methods, see the <a href="methods.html" class="inline-link">SORCTracks Methods</a> page.</p>
+
+    <p style="font-size: 0.875rem; color: var(--mid); line-height: 1.8; max-width: 680px; margin-top: 0.75rem;">If you identify a possible error in site classification, dates, or disruption interpretation, contact <a href="mailto:info@sorc.ca" class="inline-link">info@sorc.ca</a> with the facility name, date, and relevant public source if available.</p>
+
+    <hr class="divider" style="margin-top: 2rem;">
     <div class="subsection-label">Studies</div>
     <div class="subsection-title">Archive-based studies underpinning SORCTracks</div>
 
@@ -478,7 +535,7 @@
           <span class="badge badge-inprogress">In Progress</span>
           <span class="badge badge-collab">Seeking Collaborators</span>
         </div>
-        <div class="project-title">Temporary Emergency Department Service Disruptions in Alberta: A Retrospective Archive-Based Analysis of Burden, Distribution, and Stated Causes, 2021–2026</div>
+        <div class="project-title">Temporary Emergency Department Service Disruptions in Alberta: A Retrospective Archive-Based Analysis of Burden, Distribution, and Stated Causes, 2021&ndash;2026</div>
         <div class="project-authors"><strong>Tung A</strong>, <strong>Nguyen V</strong> et al.</div>
 
         <div class="abstract-label">Abstract</div>
@@ -505,10 +562,10 @@
 
         <div class="collab-callout">
           <div class="collab-callout-title">We are seeking collaborators for this project</div>
-          <p>We are looking for two clinicians or researchers with emergency medicine or Alberta Health Services context who can contribute to the interpretation and clinical significance of these findings. If this aligns with your work, we would be glad to hear from you at <a href="mailto:info@sorc.ca">info@sorc.ca</a>.</p>
+          <p>We are looking for two clinicians or researchers with emergency medicine or Alberta Health Services context who can contribute to the interpretation and clinical significance of these findings.</p>
+          <p>Collaborators would review findings for clinical plausibility, help contextualize the burden estimates relative to known access challenges, advise on the framing and conclusions of the manuscript, and potentially contribute to methods review. Authorship would be offered for contributions meeting ICMJE criteria. To express interest, contact us at <a href="mailto:info@sorc.ca">info@sorc.ca</a>.</p>
         </div>
       </div>
-
 
       <!-- Rural Maternity -->
       <div class="project-card" id="rural-maternity">
@@ -534,36 +591,39 @@
 
         <div class="collab-callout">
           <div class="collab-callout-title">We are seeking collaborators for this project</div>
-          <p>We are looking for clinicians or researchers with expertise in rural maternity care, obstetrics, or health services in Alberta who can contribute to the interpretation and clinical significance of these findings. If this aligns with your work, we would be glad to hear from you at <a href="mailto:info@sorc.ca">info@sorc.ca</a>.</p>
+          <p>We are looking for clinicians or researchers with expertise in rural maternity care, obstetrics, or Alberta health services who can contribute to the interpretation and clinical significance of these findings.</p>
+          <p>Collaborators would review findings for clinical plausibility, help contextualize disruption patterns relative to rural obstetrical access challenges, advise on service-layer classification, and contribute to manuscript framing. Authorship would be offered for contributions meeting ICMJE criteria. To express interest, contact us at <a href="mailto:info@sorc.ca">info@sorc.ca</a>.</p>
         </div>
       </div>
 
     </div>
 
+    <p style="font-size: 0.875rem; color: var(--mid); line-height: 1.8; max-width: 680px;">For media or research inquiries about SORCTracks, contact <a href="mailto:info@sorc.ca" class="inline-link">info@sorc.ca</a>. SORCTracks is an independent public-data visualization tool and is not affiliated with Alberta Health Services.</p>
+
   </div>
 
   <footer>
     <div class="footer-left">© 2026 Systematic Outcomes Research Collaborative</div>
-    <div class="footer-right"><a href="standards.html" style="color: var(--muted); text-decoration: none; margin-right: 1.5rem;">Standards</a>sorc.ca — Evidence, systematically.</div>
+    <div class="footer-right">
+      <a href="methods.html" style="color: var(--muted); text-decoration: none; margin-right: 1.5rem;">Methods</a><a href="standards.html" style="color: var(--muted); text-decoration: none; margin-right: 1.5rem;">Standards</a>sorc.ca — Evidence, systematically.
+    </div>
   </footer>
 
-
-<script>
-// Mobile-friendly dropdown: tap to toggle
-document.querySelectorAll('.has-dropdown > .dropdown-toggle').forEach(toggle => {
-  toggle.addEventListener('click', e => {
-    if (window.matchMedia('(max-width: 768px)').matches) {
-      e.preventDefault();
-      toggle.parentElement.classList.toggle('open');
-    }
-  });
-});
-document.addEventListener('click', e => {
-  if (!e.target.closest('.has-dropdown')) {
-    document.querySelectorAll('.has-dropdown.open').forEach(el => el.classList.remove('open'));
-  }
-});
-</script>
+  <script>
+    document.querySelectorAll('.has-dropdown > .dropdown-toggle').forEach(toggle => {
+      toggle.addEventListener('click', e => {
+        if (window.matchMedia('(max-width: 768px)').matches) {
+          e.preventDefault();
+          toggle.parentElement.classList.toggle('open');
+        }
+      });
+    });
+    document.addEventListener('click', e => {
+      if (!e.target.closest('.has-dropdown')) {
+        document.querySelectorAll('.has-dropdown.open').forEach(el => el.classList.remove('open'));
+      }
+    });
+  </script>
 
 </body>
 </html>
