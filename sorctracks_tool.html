@@ -2,7 +2,15 @@
 
 
 
+
+
+
+
 <html lang="en">
+
+
+
+
 
 
 
@@ -10,7 +18,15 @@
 
 
 
+
+
+
+
   <meta charset="UTF-8">
+
+
+
+
 
 
 
@@ -18,7 +34,15 @@
 
 
 
+
+
+
+
   <title>Service Disruption Visualization</title>
+
+
+
+
 
 
 
@@ -26,7 +50,15 @@
 
 
 
+
+
+
+
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+
+
+
 
 
 
@@ -34,7 +66,15 @@
 
 
 
+
+
+
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
+
+
+
+
 
 
 
@@ -42,7 +82,15 @@
 
 
 
+
+
+
+
   <style>
+
+
+
+
 
 
 
@@ -50,7 +98,15 @@
 
 
 
+
+
+
+
       --navy: #0F2347;
+
+
+
+
 
 
 
@@ -58,7 +114,15 @@
 
 
 
+
+
+
+
       --blue: #3B82C4;
+
+
+
+
 
 
 
@@ -66,7 +130,15 @@
 
 
 
+
+
+
+
       --text: #0F2347;
+
+
+
+
 
 
 
@@ -74,7 +146,15 @@
 
 
 
+
+
+
+
       --muted: #5A6A85;
+
+
+
+
 
 
 
@@ -82,7 +162,15 @@
 
 
 
+
+
+
+
     }
+
+
+
+
 
 
 
@@ -90,7 +178,15 @@
 
 
 
+
+
+
+
     html, body { min-height: 100%; overflow-x: hidden; overflow-y: auto; }
+
+
+
+
 
 
 
@@ -98,7 +194,15 @@
 
 
 
+
+
+
+
       background: var(--bg);
+
+
+
+
 
 
 
@@ -106,7 +210,15 @@
 
 
 
+
+
+
+
       font-family: 'Lato', sans-serif;
+
+
+
+
 
 
 
@@ -114,7 +226,15 @@
 
 
 
+
+
+
+
       line-height: 1.6;
+
+
+
+
 
 
 
@@ -122,7 +242,15 @@
 
 
 
+
+
+
+
       grid-template-columns: 1fr 360px;
+
+
+
+
 
 
 
@@ -130,7 +258,15 @@
 
 
 
+
+
+
+
       grid-template-areas: "header header" "map sidebar" "footer footer";
+
+
+
+
 
 
 
@@ -138,11 +274,23 @@
 
 
 
+
+
+
+
       height: auto;
 
 
 
+
+
+
+
     }
+
+
+
+
 
 
 
@@ -150,7 +298,15 @@
 
 
 
+
+
+
+
       grid-area: header;
+
+
+
+
 
 
 
@@ -158,7 +314,15 @@
 
 
 
+
+
+
+
       border-bottom: 1px solid var(--rule);
+
+
+
+
 
 
 
@@ -166,7 +330,15 @@
 
 
 
+
+
+
+
       display: flex;
+
+
+
+
 
 
 
@@ -174,7 +346,15 @@
 
 
 
+
+
+
+
       justify-content: space-between;
+
+
+
+
 
 
 
@@ -182,11 +362,23 @@
 
 
 
+
+
+
+
       flex-wrap: wrap;
 
 
 
+
+
+
+
     }
+
+
+
+
 
 
 
@@ -194,7 +386,15 @@
 
 
 
+
+
+
+
       font-family: 'Cormorant Garamond', serif;
+
+
+
+
 
 
 
@@ -202,11 +402,23 @@
 
 
 
+
+
+
+
       color: var(--navy);
 
 
 
+
+
+
+
       font-weight: 600;
+
+
+
+
 
 
 
@@ -214,7 +426,15 @@
 
 
 
+
+
+
+
     }
+
+
+
+
 
 
 
@@ -222,7 +442,15 @@
 
 
 
+
+
+
+
       font-size: 0.78rem;
+
+
+
+
 
 
 
@@ -230,7 +458,15 @@
 
 
 
+
+
+
+
       letter-spacing: 0.04em;
+
+
+
+
 
 
 
@@ -238,7 +474,15 @@
 
 
 
+
+
+
+
     }
+
+
+
+
 
 
 
@@ -246,7 +490,15 @@
 
 
 
+
+
+
+
       font-size: 0.85rem;
+
+
+
+
 
 
 
@@ -254,11 +506,23 @@
 
 
 
+
+
+
+
       white-space: nowrap;
 
 
 
+
+
+
+
     }
+
+
+
+
 
 
 
@@ -266,7 +530,15 @@
 
 
 
+
+
+
+
       font-family: 'Cormorant Garamond', serif;
+
+
+
+
 
 
 
@@ -274,7 +546,15 @@
 
 
 
+
+
+
+
       font-size: 1.05rem;
+
+
+
+
 
 
 
@@ -282,11 +562,23 @@
 
 
 
+
+
+
+
       margin: 0 0.3rem 0 0.6rem;
 
 
 
+
+
+
+
     }
+
+
+
+
 
 
 
@@ -298,7 +590,19 @@
 
 
 
+
+
+
+
+
+
+
+
     .leaflet-container .leaflet-interactive:focus {
+
+
+
+
 
 
 
@@ -306,7 +610,15 @@
 
 
 
+
+
+
+
     }
+
+
+
+
 
 
 
@@ -314,7 +626,15 @@
 
 
 
+
+
+
+
       grid-area: map;
+
+
+
+
 
 
 
@@ -322,7 +642,15 @@
 
 
 
+
+
+
+
       height: 100%;
+
+
+
+
 
 
 
@@ -330,7 +658,15 @@
 
 
 
+
+
+
+
       align-self: stretch;
+
+
+
+
 
 
 
@@ -338,7 +674,15 @@
 
 
 
+
+
+
+
       top: 0;
+
+
+
+
 
 
 
@@ -346,7 +690,15 @@
 
 
 
+
+
+
+
     }
+
+
+
+
 
 
 
@@ -354,11 +706,23 @@
 
 
 
+
+
+
+
       grid-area: sidebar;
 
 
 
+
+
+
+
       background: white;
+
+
+
+
 
 
 
@@ -366,7 +730,15 @@
 
 
 
+
+
+
+
       padding: 1rem 1.25rem;
+
+
+
+
 
 
 
@@ -374,7 +746,15 @@
 
 
 
+
+
+
+
       min-height: 0;
+
+
+
+
 
 
 
@@ -382,7 +762,15 @@
 
 
 
+
+
+
+
     }
+
+
+
+
 
 
 
@@ -390,7 +778,15 @@
 
 
 
+
+
+
+
       font-size: 0.68rem;
+
+
+
+
 
 
 
@@ -398,11 +794,23 @@
 
 
 
+
+
+
+
       letter-spacing: 0.15em;
 
 
 
+
+
+
+
       text-transform: uppercase;
+
+
+
+
 
 
 
@@ -410,7 +818,15 @@
 
 
 
+
+
+
+
     }
+
+
+
+
 
 
 
@@ -418,7 +834,15 @@
 
 
 
+
+
+
+
       font-family: 'Cormorant Garamond', serif;
+
+
+
+
 
 
 
@@ -426,11 +850,23 @@
 
 
 
+
+
+
+
       color: var(--navy);
 
 
 
+
+
+
+
       font-weight: 600;
+
+
+
+
 
 
 
@@ -438,11 +874,23 @@
 
 
 
+
+
+
+
       margin-bottom: 0.65rem;
 
 
 
+
+
+
+
     }
+
+
+
+
 
 
 
@@ -450,7 +898,15 @@
 
 
 
+
+
+
+
       display: grid;
+
+
+
+
 
 
 
@@ -458,7 +914,15 @@
 
 
 
+
+
+
+
       gap: 0.55rem 0.85rem;
+
+
+
+
 
 
 
@@ -466,7 +930,15 @@
 
 
 
+
+
+
+
       padding-bottom: 0.75rem;
+
+
+
+
 
 
 
@@ -474,7 +946,15 @@
 
 
 
+
+
+
+
     }
+
+
+
+
 
 
 
@@ -482,11 +962,23 @@
 
 
 
+
+
+
+
       font-size: 0.64rem;
 
 
 
+
+
+
+
       color: var(--muted);
+
+
+
+
 
 
 
@@ -494,7 +986,15 @@
 
 
 
+
+
+
+
       text-transform: uppercase;
+
+
+
+
 
 
 
@@ -502,7 +1002,15 @@
 
 
 
+
+
+
+
     }
+
+
+
+
 
 
 
@@ -510,7 +1018,15 @@
 
 
 
+
+
+
+
       font-family: 'Cormorant Garamond', serif;
+
+
+
+
 
 
 
@@ -518,7 +1034,15 @@
 
 
 
+
+
+
+
       color: var(--navy);
+
+
+
+
 
 
 
@@ -526,7 +1050,15 @@
 
 
 
+
+
+
+
     }
+
+
+
+
 
 
 
@@ -534,7 +1066,15 @@
 
 
 
+
+
+
+
       height: 150px;
+
+
+
+
 
 
 
@@ -542,11 +1082,23 @@
 
 
 
+
+
+
+
       position: relative;
 
 
 
+
+
+
+
     }
+
+
+
+
 
 
 
@@ -554,7 +1106,15 @@
 
 
 
+
+
+
+
       font-size: 0.69rem;
+
+
+
+
 
 
 
@@ -562,7 +1122,15 @@
 
 
 
+
+
+
+
       line-height: 1.35;
+
+
+
+
 
 
 
@@ -570,7 +1138,15 @@
 
 
 
+
+
+
+
     }
+
+
+
+
 
 
 
@@ -578,7 +1154,15 @@
 
 
 
+
+
+
+
       color: var(--muted);
+
+
+
+
 
 
 
@@ -586,7 +1170,15 @@
 
 
 
+
+
+
+
       padding: 2rem 0;
+
+
+
+
 
 
 
@@ -594,11 +1186,23 @@
 
 
 
+
+
+
+
       font-style: italic;
 
 
 
+
+
+
+
     }
+
+
+
+
 
 
 
@@ -606,7 +1210,15 @@
 
 
 
+
+
+
+
       grid-area: footer;
+
+
+
+
 
 
 
@@ -614,7 +1226,15 @@
 
 
 
+
+
+
+
       border-top: 1px solid var(--rule);
+
+
+
+
 
 
 
@@ -622,7 +1242,15 @@
 
 
 
+
+
+
+
       font-size: 0.72rem;
+
+
+
+
 
 
 
@@ -630,11 +1258,23 @@
 
 
 
+
+
+
+
       color: var(--muted);
 
 
 
+
+
+
+
       display: flex;
+
+
+
+
 
 
 
@@ -642,7 +1282,15 @@
 
 
 
+
+
+
+
       align-items: flex-start;
+
+
+
+
 
 
 
@@ -650,11 +1298,23 @@
 
 
 
+
+
+
+
       gap: 0.5rem 1.5rem;
 
 
 
+
+
+
+
     }
+
+
+
+
 
 
 
@@ -662,7 +1322,15 @@
 
 
 
+
+
+
+
     .legend {
+
+
+
+
 
 
 
@@ -670,7 +1338,15 @@
 
 
 
+
+
+
+
       padding: 0.65rem 0.85rem;
+
+
+
+
 
 
 
@@ -678,7 +1354,15 @@
 
 
 
+
+
+
+
       border-radius: 2px;
+
+
+
+
 
 
 
@@ -686,7 +1370,15 @@
 
 
 
+
+
+
+
       color: var(--mid);
+
+
+
+
 
 
 
@@ -694,7 +1386,15 @@
 
 
 
+
+
+
+
     }
+
+
+
+
 
 
 
@@ -702,7 +1402,15 @@
 
 
 
+
+
+
+
       font-size: 0.65rem;
+
+
+
+
 
 
 
@@ -710,7 +1418,15 @@
 
 
 
+
+
+
+
       letter-spacing: 0.12em;
+
+
+
+
 
 
 
@@ -718,11 +1434,23 @@
 
 
 
+
+
+
+
       margin-bottom: 0.4rem;
 
 
 
+
+
+
+
     }
+
+
+
+
 
 
 
@@ -730,7 +1458,15 @@
 
 
 
+
+
+
+
       display: flex;
+
+
+
+
 
 
 
@@ -738,7 +1474,15 @@
 
 
 
+
+
+
+
       gap: 0.6rem;
+
+
+
+
 
 
 
@@ -746,7 +1490,15 @@
 
 
 
+
+
+
+
     }
+
+
+
+
 
 
 
@@ -754,7 +1506,15 @@
 
 
 
+
+
+
+
       display: inline-block;
+
+
+
+
 
 
 
@@ -762,7 +1522,15 @@
 
 
 
+
+
+
+
       background: #3B82C4;
+
+
+
+
 
 
 
@@ -770,7 +1538,15 @@
 
 
 
+
+
+
+
       border: 1px solid #0F2347;
+
+
+
+
 
 
 
@@ -778,7 +1554,15 @@
 
 
 
+
+
+
+
     }
+
+
+
+
 
 
 
@@ -786,7 +1570,15 @@
 
 
 
+
+
+
+
       color: var(--muted);
+
+
+
+
 
 
 
@@ -794,7 +1586,15 @@
 
 
 
+
+
+
+
       line-height: 1.35;
+
+
+
+
 
 
 
@@ -802,11 +1602,27 @@
 
 
 
+
+
+
+
       max-width: 190px;
 
 
 
+
+
+
+
     }
+
+
+
+
+
+
+
+
 
 
 
@@ -818,7 +1634,15 @@
 
 
 
+
+
+
+
       font-family: 'Cormorant Garamond', serif;
+
+
+
+
 
 
 
@@ -826,7 +1650,15 @@
 
 
 
+
+
+
+
       color: #0F2347;
+
+
+
+
 
 
 
@@ -834,7 +1666,15 @@
 
 
 
+
+
+
+
       font-size: 1rem;
+
+
+
+
 
 
 
@@ -842,7 +1682,15 @@
 
 
 
+
+
+
+
     }
+
+
+
+
 
 
 
@@ -850,7 +1698,15 @@
 
 
 
+
+
+
+
       font-size: 0.78rem;
+
+
+
+
 
 
 
@@ -858,7 +1714,19 @@
 
 
 
+
+
+
+
     }
+
+
+
+
+
+
+
+
 
 
 
@@ -870,7 +1738,15 @@
 
 
 
+
+
+
+
       display: flex;
+
+
+
+
 
 
 
@@ -878,11 +1754,23 @@
 
 
 
+
+
+
+
       gap: 0.35rem;
 
 
 
+
+
+
+
       font-size: 0.72rem;
+
+
+
+
 
 
 
@@ -890,11 +1778,23 @@
 
 
 
+
+
+
+
       white-space: nowrap;
 
 
 
+
+
+
+
     }
+
+
+
+
 
 
 
@@ -902,7 +1802,15 @@
 
 
 
+
+
+
+
       font-size: 0.65rem;
+
+
+
+
 
 
 
@@ -910,7 +1818,15 @@
 
 
 
+
+
+
+
       letter-spacing: 0.12em;
+
+
+
+
 
 
 
@@ -918,7 +1834,15 @@
 
 
 
+
+
+
+
     }
+
+
+
+
 
 
 
@@ -926,7 +1850,15 @@
 
 
 
+
+
+
+
       font-family: 'Lato', sans-serif;
+
+
+
+
 
 
 
@@ -934,7 +1866,15 @@
 
 
 
+
+
+
+
       background: white;
+
+
+
+
 
 
 
@@ -942,7 +1882,15 @@
 
 
 
+
+
+
+
       border-radius: 2px;
+
+
+
+
 
 
 
@@ -950,11 +1898,27 @@
 
 
 
+
+
+
+
       font-size: 0.72rem;
 
 
 
+
+
+
+
     }
+
+
+
+
+
+
+
+
 
 
 
@@ -966,7 +1930,15 @@
 
 
 
+
+
+
+
       display: flex;
+
+
+
+
 
 
 
@@ -974,7 +1946,15 @@
 
 
 
+
+
+
+
       gap: 0.75rem;
+
+
+
+
 
 
 
@@ -982,7 +1962,19 @@
 
 
 
+
+
+
+
     }
+
+
+
+
+
+
+
+
 
 
 
@@ -994,7 +1986,15 @@
 
 
 
+
+
+
+
       display: flex;
+
+
+
+
 
 
 
@@ -1002,11 +2002,23 @@
 
 
 
+
+
+
+
       gap: 0.35rem;
 
 
 
+
+
+
+
       cursor: pointer;
+
+
+
+
 
 
 
@@ -1014,7 +2026,15 @@
 
 
 
+
+
+
+
       text-transform: none;
+
+
+
+
 
 
 
@@ -1022,11 +2042,23 @@
 
 
 
+
+
+
+
       font-size: 0.72rem;
 
 
 
+
+
+
+
     }
+
+
+
+
 
 
 
@@ -1034,11 +2066,23 @@
 
 
 
+
+
+
+
     .period-note {
 
 
 
+
+
+
+
       color: var(--muted);
+
+
+
+
 
 
 
@@ -1046,7 +2090,15 @@
 
 
 
+
+
+
+
       margin: -0.25rem 0 0.65rem;
+
+
+
+
 
 
 
@@ -1054,7 +2106,15 @@
 
 
 
+
+
+
+
     }
+
+
+
+
 
 
 
@@ -1062,7 +2122,15 @@
 
 
 
+
+
+
+
       margin: 0.15rem 0 0.65rem;
+
+
+
+
 
 
 
@@ -1070,11 +2138,23 @@
 
 
 
+
+
+
+
       border-bottom: 1px solid var(--rule);
 
 
 
+
+
+
+
     }
+
+
+
+
 
 
 
@@ -1082,11 +2162,23 @@
 
 
 
+
+
+
+
       width: 100%;
 
 
 
+
+
+
+
       font-family: 'Lato', sans-serif;
+
+
+
+
 
 
 
@@ -1094,7 +2186,15 @@
 
 
 
+
+
+
+
       background: white;
+
+
+
+
 
 
 
@@ -1102,7 +2202,15 @@
 
 
 
+
+
+
+
       border-radius: 2px;
+
+
+
+
 
 
 
@@ -1110,7 +2218,15 @@
 
 
 
+
+
+
+
       font-size: 0.8rem;
+
+
+
+
 
 
 
@@ -1118,7 +2234,15 @@
 
 
 
+
+
+
+
     }
+
+
+
+
 
 
 
@@ -1126,7 +2250,15 @@
 
 
 
+
+
+
+
       border-color: var(--blue);
+
+
+
+
 
 
 
@@ -1134,7 +2266,15 @@
 
 
 
+
+
+
+
     }
+
+
+
+
 
 
 
@@ -1142,11 +2282,23 @@
 
 
 
+
+
+
+
       color: var(--muted);
 
 
 
+
+
+
+
       font-size: 0.72rem;
+
+
+
+
 
 
 
@@ -1154,11 +2306,23 @@
 
 
 
+
+
+
+
       margin-top: 0.35rem;
 
 
 
+
+
+
+
     }
+
+
+
+
 
 
 
@@ -1166,7 +2330,15 @@
 
 
 
+
+
+
+
       color: var(--muted);
+
+
+
+
 
 
 
@@ -1174,11 +2346,23 @@
 
 
 
+
+
+
+
       margin-top: 0.25rem;
 
 
 
+
+
+
+
     }
+
+
+
+
 
 
 
@@ -1186,7 +2370,15 @@
 
 
 
+
+
+
+
       margin-top: 0.45rem;
+
+
+
+
 
 
 
@@ -1194,7 +2386,15 @@
 
 
 
+
+
+
+
     }
+
+
+
+
 
 
 
@@ -1202,7 +2402,15 @@
 
 
 
+
+
+
+
       display: flex;
+
+
+
+
 
 
 
@@ -1210,7 +2418,15 @@
 
 
 
+
+
+
+
       gap: 1rem;
+
+
+
+
 
 
 
@@ -1218,11 +2434,23 @@
 
 
 
+
+
+
+
       border-bottom: 1px solid rgba(208,216,232,0.65);
 
 
 
+
+
+
+
       cursor: pointer;
+
+
+
+
 
 
 
@@ -1230,11 +2458,23 @@
 
 
 
+
+
+
+
       font-size: 0.77rem;
 
 
 
+
+
+
+
     }
+
+
+
+
 
 
 
@@ -1242,7 +2482,15 @@
 
 
 
+
+
+
+
     .rank-name { text-transform: capitalize; }
+
+
+
+
 
 
 
@@ -1250,7 +2498,15 @@
 
 
 
+
+
+
+
     .back-btn {
+
+
+
+
 
 
 
@@ -1258,7 +2514,15 @@
 
 
 
+
+
+
+
       margin-top: 0.1rem;
+
+
+
+
 
 
 
@@ -1266,7 +2530,15 @@
 
 
 
+
+
+
+
       font-family: 'Lato', sans-serif;
+
+
+
+
 
 
 
@@ -1274,7 +2546,15 @@
 
 
 
+
+
+
+
       color: var(--blue);
+
+
+
+
 
 
 
@@ -1282,7 +2562,15 @@
 
 
 
+
+
+
+
       border: 0;
+
+
+
+
 
 
 
@@ -1290,11 +2578,23 @@
 
 
 
+
+
+
+
       cursor: pointer;
 
 
 
+
+
+
+
     }
+
+
+
+
 
 
 
@@ -1306,7 +2606,19 @@
 
 
 
+
+
+
+
+
+
+
+
     @media (max-width: 768px) {
+
+
+
+
 
 
 
@@ -1314,7 +2626,15 @@
 
 
 
+
+
+
+
       body {
+
+
+
+
 
 
 
@@ -1322,7 +2642,15 @@
 
 
 
+
+
+
+
         grid-template-rows: auto auto auto auto;
+
+
+
+
 
 
 
@@ -1330,7 +2658,15 @@
 
 
 
+
+
+
+
       }
+
+
+
+
 
 
 
@@ -1338,7 +2674,15 @@
 
 
 
+
+
+
+
       .subtitle { font-size: 0.72rem; }
+
+
+
+
 
 
 
@@ -1346,7 +2690,15 @@
 
 
 
+
+
+
+
       #map {
+
+
+
+
 
 
 
@@ -1354,7 +2706,15 @@
 
 
 
+
+
+
+
         min-height: 240px;
+
+
+
+
 
 
 
@@ -1362,7 +2722,15 @@
 
 
 
+
+
+
+
         position: relative;
+
+
+
+
 
 
 
@@ -1370,7 +2738,15 @@
 
 
 
+
+
+
+
       }
+
+
+
+
 
 
 
@@ -1378,7 +2754,15 @@
 
 
 
+
+
+
+
       .control-pair { flex-wrap: wrap; gap: 0.4rem 0.6rem; }
+
+
+
+
 
 
 
@@ -1386,7 +2770,15 @@
 
 
 
+
+
+
+
     }
+
+
+
+
 
 
 
@@ -1394,7 +2786,15 @@
 
 
 
+
+
+
+
   <!-- v19: visible standalone map title removed for embedding in a larger webpage -->
+
+
+
+
 
 
 
@@ -1402,7 +2802,15 @@
 
 
 
+
+
+
+
 <body>
+
+
+
+
 
 
 
@@ -1410,7 +2818,15 @@
 
 
 
+
+
+
+
     <div>
+
+
+
+
 
 
 
@@ -1418,13 +2834,25 @@
 
 
 
+
+
+
+
     </div>
+
+
+
+
 
 
 
     <div class="total-stat" id="summaryStats" aria-live="polite">
-      <strong>151,691</strong>closure hours<strong>1,068</strong>episodes<strong>50</strong>sites affected
+      <strong>152,240</strong>closure hours<strong>1,068</strong>episodes<strong>50</strong>sites affected
     </div>
+
+
+
+
 
 
 
@@ -1432,7 +2860,15 @@
 
 
 
+
+
+
+
       <div class="view-control">
+
+
+
+
 
 
 
@@ -1440,7 +2876,15 @@
 
 
 
+
+
+
+
         <select id="yearSelect" aria-label="Select map year">
+
+
+
+
 
 
 
@@ -1455,7 +2899,15 @@
 
 
 
+
+
+
+
       </div>
+
+
+
+
 
 
 
@@ -1463,7 +2915,15 @@
 
 
 
+
+
+
+
         <label for="serviceSelect">Service</label>
+
+
+
+
 
 
 
@@ -1471,7 +2931,15 @@
 
 
 
+
+
+
+
           <option value="all">All analyzed services</option>
+
+
+
+
 
 
 
@@ -1479,7 +2947,15 @@
 
 
 
+
+
+
+
         </select>
+
+
+
+
 
 
 
@@ -1487,7 +2963,15 @@
 
 
 
+
+
+
+
     </div>
+
+
+
+
 
 
 
@@ -1495,7 +2979,15 @@
 
 
 
+
+
+
+
       <label for="showNoDataSites"><input id="showNoDataSites" type="checkbox" checked /> Show sites with no posted disruption data</label>
+
+
+
+
 
 
 
@@ -1503,7 +2995,19 @@
 
 
 
+
+
+
+
   </header>
+
+
+
+
+
+
+
+
 
 
 
@@ -1519,11 +3023,27 @@
 
 
 
+
+
+
+
+
+
+
+
   <div class="sidebar" id="sidebar">
 
 
 
+
+
+
+
     <div class="empty-state"></div>
+
+
+
+
 
 
 
@@ -1535,7 +3055,19 @@
 
 
 
+
+
+
+
+
+
+
+
   <footer>
+
+
+
+
 
 
 
@@ -1543,7 +3075,15 @@
 
 
 
+
+
+
+
     <div><a href="https://sorc.ca">sorc.ca</a></div>
+
+
+
+
 
 
 
@@ -1555,15 +3095,39 @@
 
 
 
+
+
+
+
+
+
+
+
 <script>
 
 
 
-const DATA = {"sites":[{"name":"coronation","display_name":"Coronation","facility_name":"Coronation Hospital and Care Centre","lat":52.0833,"lng":-111.45,"aliases":["coronation","Coronation","Coronation Hospital and Care Centre"],"total_hours":6017.0,"years_active":4,"episode_count":67,"monthly":{"2023-04":24.0,"2023-05":24.0,"2023-06":24.0,"2023-07":108.0,"2023-08":172.0,"2023-09":168.0,"2023-10":276.0,"2023-11":256.0,"2023-12":308.0,"2024-01":204.0,"2024-02":244.0,"2024-03":216.0,"2024-04":208.0,"2024-05":262.0,"2024-06":208.0,"2024-09":8.0,"2024-10":12.0,"2024-11":12.0,"2024-12":12.0,"2025-01":108.0,"2025-02":108.0,"2025-03":128.0,"2025-04":104.0,"2025-05":132.0,"2025-06":52.0,"2025-07":144.0,"2025-08":112.0,"2025-09":352.0,"2025-10":349.0,"2025-11":234.0,"2025-12":320.0,"2026-01":197.0,"2026-02":409.0,"2026-03":322.0,"2026-04":200.0},"has_disruption_data":true,"episodes_by_year":{"2021":0,"2022":0,"2023":16,"2024":22,"2025":19,"2026":10}},{"name":"hinton","display_name":"Hinton","facility_name":"Hinton Healthcare Centre","lat":53.4117,"lng":-117.5675,"aliases":["hinton","Hinton","Hinton Healthcare Centre"],"total_hours":4487.0,"years_active":3,"episode_count":81,"monthly":{"2024-01":92.0,"2024-06":25.0,"2024-07":356.0,"2024-08":21.0,"2024-09":60.0,"2024-10":100.0,"2024-11":7.0,"2024-12":136.0,"2025-01":301.0,"2025-02":198.0,"2025-03":236.0,"2025-04":236.0,"2025-05":182.0,"2025-06":232.0,"2025-07":372.0,"2025-08":115.0,"2025-09":331.0,"2025-10":245.0,"2025-11":142.0,"2025-12":407.0,"2026-01":319.0,"2026-02":183.0,"2026-03":161.0,"2026-05":30.0},"has_disruption_data":true,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":16,"2025":49,"2026":16}},{"name":"smoky lake","display_name":"Smoky Lake","facility_name":"George McDougall - Smoky Lake Healthcare Centre","lat":54.1117,"lng":-112.4717,"aliases":["smoky lake","Smoky Lake","George McDougall - Smoky Lake Healthcare Centre"],"total_hours":4794.0,"years_active":6,"episode_count":65,"monthly":{"2021-11":90.0,"2021-12":8.0,"2022-08":72.0,"2023-10":144.0,"2023-12":259.0,"2024-01":239.0,"2024-02":91.0,"2024-03":203.0,"2024-04":213.0,"2024-05":282.0,"2024-06":314.0,"2024-07":314.0,"2024-08":317.0,"2024-09":222.0,"2024-10":88.0,"2024-11":60.0,"2024-12":16.0,"2025-01":64.0,"2025-02":64.0,"2025-03":64.0,"2025-04":32.0,"2025-05":80.0,"2025-06":48.0,"2025-07":72.0,"2025-08":191.0,"2025-09":136.0,"2025-10":80.0,"2025-11":64.0,"2025-12":184.0,"2026-01":56.0,"2026-02":520.0,"2026-03":127.0,"2026-04":56.0,"2026-05":24.0},"has_disruption_data":true,"episodes_by_year":{"2021":2,"2022":1,"2023":4,"2024":35,"2025":15,"2026":8}},{"name":"lac la biche","display_name":"Lac La Biche","facility_name":"William J. Cadzow - Lac La Biche Healthcare Centre","lat":54.7686,"lng":-111.9656,"aliases":["lac la biche","Lac La Biche","William J. Cadzow - Lac La Biche Healthcare Centre"],"total_hours":3925.0,"years_active":4,"episode_count":78,"monthly":{"2022-06":30.0,"2022-08":45.0,"2022-09":84.0,"2023-03":102.0,"2023-04":120.0,"2023-05":123.0,"2023-06":84.0,"2023-07":120.0,"2023-08":208.0,"2023-09":32.0,"2023-10":33.0,"2023-11":280.0,"2023-12":132.0,"2024-01":24.0,"2024-02":200.0,"2024-03":236.0,"2024-04":105.0,"2024-05":106.0,"2024-06":48.0,"2024-07":32.0,"2024-08":112.0,"2024-09":80.0,"2024-10":48.0,"2024-11":153.0,"2024-12":225.0,"2025-01":254.0,"2025-02":213.0,"2025-03":232.0,"2025-04":88.0,"2025-05":16.0,"2025-06":11.0,"2025-07":96.0,"2025-08":253.0},"has_disruption_data":true,"episodes_by_year":{"2021":0,"2022":4,"2023":27,"2024":25,"2025":22,"2026":0}},{"name":"fairview","display_name":"Fairview","facility_name":"Fairview Health Complex","lat":56.0747,"lng":-118.3858,"aliases":["fairview","Fairview","Fairview Health Complex"],"total_hours":3443.0,"years_active":5,"episode_count":48,"monthly":{"2021-10":72.0,"2021-11":24.0,"2022-01":48.0,"2022-10":12.0,"2023-10":24.0,"2023-11":41.0,"2023-12":91.0,"2024-01":108.0,"2024-02":132.0,"2024-03":185.0,"2024-04":336.0,"2024-05":271.0,"2024-06":456.0,"2024-07":305.0,"2024-08":306.0,"2024-09":329.0,"2024-10":312.0,"2024-11":295.0,"2024-12":48.0,"2026-03":24.0,"2026-04":24.0},"has_disruption_data":true,"episodes_by_year":{"2021":4,"2022":3,"2023":5,"2024":34,"2025":0,"2026":2}},{"name":"swan hills","display_name":"Swan Hills","facility_name":"Swan Hills Healthcare Centre","lat":54.7136,"lng":-115.3856,"aliases":["swan hills","Swan Hills","Swan Hills Healthcare Centre"],"total_hours":6009.0,"years_active":4,"episode_count":44,"monthly":{"2022-01":24.0,"2022-02":408.0,"2022-05":8.0,"2022-06":257.0,"2022-07":372.0,"2022-08":372.0,"2022-09":7.0,"2022-11":18.0,"2022-12":149.0,"2023-01":199.0,"2023-05":240.0,"2023-06":101.0,"2023-07":444.0,"2023-08":343.0,"2023-11":5.0,"2023-12":108.0,"2024-01":103.0,"2024-04":503.0,"2024-05":72.0,"2024-06":137.0,"2024-07":91.0,"2024-08":240.0,"2024-09":31.0,"2024-10":48.0,"2024-12":16.0,"2025-01":408.0,"2025-02":336.0,"2025-03":408.0,"2025-04":8.0,"2025-05":120.0,"2025-07":373.0,"2025-08":48.0,"2025-11":12.0},"has_disruption_data":true,"episodes_by_year":{"2021":0,"2022":7,"2023":8,"2024":14,"2025":15,"2026":0}},{"name":"milk river","display_name":"Milk River","facility_name":"Milk River Health Centre","lat":49.1494,"lng":-112.0833,"aliases":["milk river","Milk River","Milk River Health Centre"],"total_hours":3380.0,"years_active":6,"episode_count":49,"monthly":{"2021-10":96.0,"2022-01":96.0,"2022-02":48.0,"2022-05":24.0,"2022-09":72.0,"2022-10":79.0,"2022-11":95.0,"2022-12":216.0,"2023-01":152.0,"2023-02":576.0,"2023-03":60.0,"2023-04":56.0,"2023-05":249.0,"2023-06":369.0,"2023-07":505.0,"2023-08":32.0,"2023-10":33.0,"2023-11":49.0,"2024-01":180.0,"2024-03":50.0,"2024-09":32.0,"2024-12":72.0,"2025-02":15.0,"2025-03":16.0,"2025-08":12.5,"2025-09":4.0,"2025-10":8.0,"2025-11":6.0,"2025-12":127.5,"2026-01":12.25,"2026-02":5.75,"2026-03":17.0,"2026-04":15.0},"has_disruption_data":true,"episodes_by_year":{"2021":1,"2022":7,"2023":19,"2024":8,"2025":9,"2026":5}},{"name":"elk point","display_name":"Elk Point","facility_name":"Elk Point Healthcare Centre","lat":53.8978,"lng":-110.9067,"aliases":["elk point","Elk Point","Elk Point Healthcare Centre"],"total_hours":3609.0,"years_active":5,"episode_count":44,"monthly":{"2021-08":208.0,"2021-09":216.0,"2021-10":200.0,"2021-11":208.0,"2021-12":224.0,"2022-01":192.0,"2022-02":96.0,"2022-08":132.0,"2022-09":48.0,"2022-10":14.0,"2023-01":209.0,"2023-02":336.0,"2023-03":7.0,"2024-05":129.0,"2024-06":144.0,"2024-07":64.0,"2024-08":161.0,"2024-09":99.0,"2024-10":125.0,"2024-11":100.0,"2024-12":155.0,"2025-01":135.0,"2025-02":98.0,"2025-03":109.0,"2025-04":92.0,"2025-05":108.0},"has_disruption_data":true,"episodes_by_year":{"2021":7,"2022":9,"2023":4,"2024":16,"2025":8,"2026":0}},{"name":"beaverlodge","display_name":"Beaverlodge","facility_name":"Beaverlodge Municipal Hospital","lat":55.2153,"lng":-119.4358,"aliases":["beaverlodge","Beaverlodge","Beaverlodge Municipal Hospital"],"total_hours":840.0,"years_active":6,"episode_count":32,"monthly":{"2021-08":24.0,"2021-11":12.0,"2022-02":24.0,"2022-08":48.0,"2022-12":36.0,"2023-01":32.0,"2023-06":5.0,"2023-07":8.0,"2023-08":36.0,"2023-10":48.0,"2023-11":49.0,"2023-12":62.0,"2024-03":40.0,"2024-04":8.0,"2024-06":48.0,"2024-08":24.0,"2025-02":24.0,"2025-04":24.0,"2025-07":48.0,"2025-08":9.0,"2025-10":24.0,"2025-11":36.0,"2025-12":113.0,"2026-01":12.0,"2026-02":24.0,"2026-03":22.0},"has_disruption_data":true,"episodes_by_year":{"2021":2,"2022":3,"2023":7,"2024":4,"2025":13,"2026":3}},{"name":"redwater","display_name":"Redwater","facility_name":"Redwater Health Centre","lat":53.9525,"lng":-113.1167,"aliases":["redwater","Redwater","Redwater Health Centre"],"total_hours":603.0,"years_active":2,"episode_count":14,"monthly":{"2025-01":32.0,"2025-03":24.0,"2025-04":48.0,"2025-05":96.0,"2025-06":144.0,"2025-08":24.0,"2025-09":35.0,"2025-10":128.0,"2025-11":24.0,"2026-01":48.0},"has_disruption_data":true,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":13,"2026":1}},{"name":"bow island","display_name":"Bow Island","facility_name":"Bow Island Health Centre","lat":49.8703,"lng":-111.37,"aliases":["bow island","Bow Island","Bow Island Health Centre"],"total_hours":5353.0,"years_active":2,"episode_count":16,"monthly":{"2025-03":216.0,"2025-04":257.0,"2025-05":456.0,"2025-06":432.0,"2025-07":456.0,"2025-08":456.0,"2025-09":255.0,"2025-10":440.0,"2025-11":388.0,"2025-12":360.0,"2026-01":403.0,"2026-02":340.0,"2026-03":384.0,"2026-04":340.0,"2026-05":170.0},"has_disruption_data":true,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":13,"2026":3}},{"name":"barrhead","display_name":"Barrhead","facility_name":"Barrhead Healthcare Centre","lat":54.1294,"lng":-114.4022,"aliases":["barrhead","Barrhead","Barrhead Healthcare Centre"],"total_hours":2752.0,"years_active":4,"episode_count":32,"monthly":{"2021-09":24.0,"2021-11":24.0,"2021-12":168.0,"2022-02":24.0,"2022-03":133.0,"2022-06":41.0,"2022-07":103.0,"2022-08":36.0,"2022-09":12.0,"2025-02":42.0,"2025-03":17.0,"2025-04":88.0,"2025-08":58.0,"2025-09":58.0,"2025-10":14.0,"2025-11":14.0,"2026-02":144.0,"2026-03":744.0,"2026-04":720.0,"2026-05":288.0},"has_disruption_data":true,"episodes_by_year":{"2021":4,"2022":12,"2023":0,"2024":0,"2025":15,"2026":1}},{"name":"edson","display_name":"Edson","facility_name":"Edson Healthcare Centre","lat":53.5836,"lng":-116.4356,"aliases":["edson","Edson","Edson Healthcare Centre"],"total_hours":813.0,"years_active":4,"episode_count":17,"monthly":{"2023-06":312.0,"2024-05":24.0,"2024-11":17.0,"2025-01":54.0,"2025-02":45.0,"2025-03":90.0,"2025-07":95.0,"2025-09":51.0,"2025-10":34.0,"2026-01":67.0,"2026-02":24.0},"has_disruption_data":true,"episodes_by_year":{"2021":0,"2022":0,"2023":1,"2024":2,"2025":10,"2026":4}},{"name":"boyle","display_name":"Boyle","facility_name":"Boyle Healthcare Centre","lat":54.5847,"lng":-112.8089,"aliases":["boyle","Boyle","Boyle Healthcare Centre"],"total_hours":17328.5,"years_active":6,"episode_count":96,"monthly":{"2021-08":48.0,"2022-03":13.0,"2022-04":105.0,"2022-05":16.0,"2022-06":23.0,"2022-07":363.0,"2022-08":456.0,"2022-09":384.0,"2022-10":372.0,"2022-11":360.0,"2022-12":372.0,"2023-01":372.0,"2023-02":336.0,"2023-03":372.0,"2023-04":360.0,"2023-05":372.0,"2023-06":360.0,"2023-07":372.0,"2023-08":372.0,"2023-09":360.0,"2023-10":372.0,"2023-11":360.0,"2023-12":372.0,"2024-01":372.0,"2024-02":348.0,"2024-03":372.0,"2024-04":360.0,"2024-05":376.0,"2024-06":360.0,"2024-07":372.0,"2024-08":385.0,"2024-09":393.0,"2024-10":372.0,"2024-11":364.0,"2024-12":376.5,"2025-01":372.0,"2025-02":336.0,"2025-03":372.0,"2025-04":360.0,"2025-05":372.0,"2025-06":372.0,"2025-07":372.0,"2025-08":372.0,"2025-09":360.0,"2025-10":379.0,"2025-11":360.0,"2025-12":372.0,"2026-01":372.0,"2026-02":336.0,"2026-03":372.0,"2026-04":363.0,"2026-05":144.0},"has_disruption_data":true,"episodes_by_year":{"2021":1,"2022":27,"2023":20,"2024":30,"2025":14,"2026":4}},{"name":"drumheller","display_name":"Drumheller","facility_name":"Drumheller Health Centre","lat":51.4636,"lng":-112.7203,"aliases":["drumheller","Drumheller","Drumheller Health Centre"],"total_hours":408.0,"years_active":1,"episode_count":3,"monthly":{"2025-08":288.0,"2025-12":120.0},"has_disruption_data":true,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":3,"2026":0}},{"name":"stettler","display_name":"Stettler","facility_name":"Stettler Hospital and Care Centre","lat":52.3208,"lng":-112.7128,"aliases":["stettler","Stettler","Stettler Hospital and Care Centre"],"total_hours":462.0,"years_active":4,"episode_count":19,"monthly":{"2022-05":32.0,"2022-06":24.0,"2022-08":15.0,"2022-09":2.0,"2023-04":5.0,"2023-12":24.0,"2024-06":54.0,"2024-07":39.0,"2024-10":48.0,"2024-12":37.0,"2025-01":167.0,"2025-02":15.0},"has_disruption_data":true,"episodes_by_year":{"2021":0,"2022":5,"2023":2,"2024":8,"2025":4,"2026":0}},{"name":"cold lake","display_name":"Cold Lake","facility_name":"Cold Lake Healthcare Centre","lat":54.4644,"lng":-110.1828,"aliases":["cold lake","Cold Lake","Cold Lake Healthcare Centre"],"total_hours":1014.0,"years_active":5,"episode_count":31,"monthly":{"2021-11":24.0,"2021-12":8.0,"2022-02":72.0,"2022-03":72.0,"2022-04":48.0,"2022-05":288.0,"2022-06":72.0,"2022-07":89.0,"2022-08":7.0,"2022-10":64.0,"2022-11":128.0,"2022-12":64.0,"2023-01":8.0,"2024-07":48.0,"2024-08":16.0,"2026-02":6.0},"has_disruption_data":true,"episodes_by_year":{"2021":2,"2022":23,"2023":1,"2024":4,"2025":0,"2026":1}},{"name":"rocky mountain house","display_name":"Rocky Mountain House","facility_name":"Rocky Mountain House Health Centre","lat":52.3742,"lng":-114.9181,"aliases":["rocky mountain house","Rocky Mountain House","Rocky Mountain House Health Centre"],"total_hours":490.9833,"years_active":5,"episode_count":21,"monthly":{"2022-10":8.0,"2023-01":13.0,"2023-07":48.0,"2023-08":39.0,"2023-09":71.0,"2023-10":7.0,"2024-05":26.0,"2024-06":55.9833,"2024-07":13.0,"2024-08":29.0,"2025-01":46.0,"2025-02":13.0,"2025-04":57.0,"2025-07":13.0,"2026-01":26.0,"2026-04":26.0},"has_disruption_data":true,"episodes_by_year":{"2021":0,"2022":1,"2023":6,"2024":6,"2025":6,"2026":2}},{"name":"hardisty","display_name":"Hardisty","facility_name":"Hardisty Health Centre","lat":52.6736,"lng":-111.3083,"aliases":["hardisty","Hardisty","Hardisty Health Centre"],"total_hours":20788.0,"years_active":6,"episode_count":51,"monthly":{"2021-08":744.0,"2021-09":720.0,"2021-10":744.0,"2021-11":720.0,"2021-12":744.0,"2022-01":744.0,"2022-02":672.0,"2022-03":744.0,"2022-04":720.0,"2022-05":744.0,"2022-06":720.0,"2022-07":744.0,"2022-08":744.0,"2022-09":720.0,"2022-10":744.0,"2022-11":720.0,"2022-12":744.0,"2023-01":744.0,"2023-02":672.0,"2023-03":744.0,"2023-04":720.0,"2023-05":744.0,"2023-06":720.0,"2023-07":744.0,"2023-08":744.0,"2023-09":408.0,"2023-11":50.0,"2023-12":20.0,"2024-08":110.0,"2024-12":30.0,"2025-06":168.0,"2025-07":10.0,"2025-12":360.0,"2026-01":329.0,"2026-02":288.0,"2026-03":319.0,"2026-04":288.0,"2026-05":144.0},"has_disruption_data":true,"episodes_by_year":{"2021":20,"2022":17,"2023":7,"2024":2,"2025":4,"2026":1}},{"name":"grimshaw","display_name":"Grimshaw","facility_name":"Grimshaw / Berwyn and District Community Health Centre","lat":56.1844,"lng":-117.6075,"aliases":["grimshaw","Grimshaw","Grimshaw / Berwyn and District Community Health Centre"],"total_hours":16962.0,"years_active":5,"episode_count":52,"monthly":{"2022-07":12.0,"2022-08":220.0,"2022-09":384.0,"2022-10":372.0,"2022-11":360.0,"2022-12":372.0,"2023-01":372.0,"2023-02":336.0,"2023-03":372.0,"2023-04":360.0,"2023-05":372.0,"2023-06":360.0,"2023-07":372.0,"2023-08":372.0,"2023-09":360.0,"2023-10":372.0,"2023-11":360.0,"2023-12":372.0,"2024-01":372.0,"2024-02":348.0,"2024-03":372.0,"2024-04":364.0,"2024-05":434.0,"2024-06":420.0,"2024-07":434.0,"2024-08":434.0,"2024-09":420.0,"2024-10":434.0,"2024-11":420.0,"2024-12":434.0,"2025-01":372.0,"2025-02":336.0,"2025-03":372.0,"2025-04":360.0,"2025-05":372.0,"2025-06":360.0,"2025-07":372.0,"2025-08":372.0,"2025-09":360.0,"2025-10":372.0,"2025-11":360.0,"2025-12":372.0,"2026-01":384.0,"2026-02":336.0,"2026-03":372.0,"2026-04":360.0,"2026-05":144.0},"has_disruption_data":true,"episodes_by_year":{"2021":0,"2022":19,"2023":13,"2024":10,"2025":7,"2026":3}},{"name":"fort macleod","display_name":"Fort Macleod","facility_name":"Fort Macleod Health Centre","lat":49.7236,"lng":-113.4061,"aliases":["fort macleod","Fort Macleod","Fort Macleod Health Centre"],"total_hours":464.25,"years_active":5,"episode_count":30,"monthly":{"2021-09":24.0,"2023-09":33.0,"2023-10":9.0,"2023-12":11.75,"2024-04":4.0,"2024-05":32.0,"2024-06":48.0,"2024-07":36.0,"2024-08":17.0,"2024-09":16.0,"2024-10":9.0,"2025-01":24.0,"2025-02":3.0,"2025-03":7.0,"2025-04":17.0,"2025-05":27.5,"2025-06":12.0,"2025-07":36.0,"2025-08":5.0,"2025-09":24.0,"2025-11":24.0,"2025-12":2.0,"2026-01":31.0,"2026-04":12.0},"has_disruption_data":true,"episodes_by_year":{"2021":1,"2022":0,"2023":4,"2024":9,"2025":13,"2026":3}},{"name":"bassano","display_name":"Bassano","facility_name":"Bassano Health Centre","lat":50.7831,"lng":-112.4694,"aliases":["bassano","Bassano","Bassano Health Centre"],"total_hours":2817.0,"years_active":3,"episode_count":11,"monthly":{"2022-05":24.0,"2022-06":262.0,"2022-07":248.0,"2022-08":277.0,"2022-09":263.0,"2022-10":247.0,"2022-11":270.0,"2022-12":263.0,"2023-01":262.0,"2023-02":240.0,"2023-03":278.0,"2023-11":15.0,"2024-01":87.0,"2024-06":81.0},"has_disruption_data":true,"episodes_by_year":{"2021":0,"2022":7,"2023":2,"2024":2,"2025":0,"2026":0}},{"name":"drayton valley","display_name":"Drayton Valley","facility_name":"Drayton Valley Hospital and Care Centre","lat":53.2222,"lng":-114.9783,"aliases":["drayton valley","Drayton Valley","Drayton Valley Hospital and Care Centre"],"total_hours":263.5,"years_active":5,"episode_count":16,"monthly":{"2022-09":10.0,"2023-07":9.5,"2024-04":16.0,"2024-05":32.0,"2024-06":64.5,"2024-07":27.0,"2024-08":34.5,"2024-11":14.0,"2025-01":12.0,"2026-01":36.0,"2026-02":8.0},"has_disruption_data":true,"episodes_by_year":{"2021":0,"2022":1,"2023":1,"2024":10,"2025":1,"2026":3}},{"name":"athabasca","display_name":"Athabasca","facility_name":"Athabasca Healthcare Centre","lat":54.7197,"lng":-113.2867,"aliases":["athabasca","Athabasca","Athabasca Healthcare Centre"],"total_hours":312.0,"years_active":3,"episode_count":8,"monthly":{"2022-04":48.0,"2025-01":36.0,"2025-08":48.0,"2025-11":36.0,"2025-12":12.0,"2026-01":36.0,"2026-03":24.0,"2026-04":72.0},"has_disruption_data":true,"episodes_by_year":{"2021":0,"2022":1,"2023":0,"2024":0,"2025":4,"2026":3}},{"name":"oyen","display_name":"Oyen","facility_name":"Big Country Hospital","lat":51.3531,"lng":-110.4736,"aliases":["oyen","Oyen","Big Country Hospital"],"total_hours":1171.0,"years_active":2,"episode_count":5,"monthly":{"2023-01":201.0,"2023-02":336.0,"2023-03":372.0,"2023-04":151.0,"2025-04":111.0},"has_disruption_data":true,"episodes_by_year":{"2021":0,"2022":0,"2023":4,"2024":0,"2025":1,"2026":0}},{"name":"spirit river","display_name":"Spirit River","facility_name":"Central Peace Health Complex","lat":55.7811,"lng":-118.8261,"aliases":["spirit river","Spirit River","Central Peace Health Complex"],"total_hours":238.0,"years_active":3,"episode_count":8,"monthly":{"2022-04":48.0,"2022-06":46.0,"2022-07":72.0,"2022-12":24.0,"2024-12":24.0,"2025-08":24.0},"has_disruption_data":true,"episodes_by_year":{"2021":0,"2022":6,"2023":0,"2024":1,"2025":1,"2026":0}},{"name":"wabasca","display_name":"Wabasca","facility_name":"Wabasca / Desmarais Health Care Centre","lat":55.9594,"lng":-113.8364,"aliases":["wabasca","Wabasca","Wabasca / Desmarais Health Care Centre"],"total_hours":2083.5,"years_active":6,"episode_count":22,"monthly":{"2021-08":48.0,"2021-12":48.0,"2022-01":216.0,"2022-02":96.0,"2022-03":192.0,"2022-04":48.0,"2022-05":168.0,"2022-06":276.0,"2022-07":372.0,"2022-08":372.0,"2022-09":115.5,"2023-03":24.0,"2024-03":48.0,"2025-02":24.0,"2025-07":12.0,"2026-04":24.0},"has_disruption_data":true,"episodes_by_year":{"2021":4,"2022":13,"2023":1,"2024":1,"2025":2,"2026":1}},{"name":"valleyview","display_name":"Valleyview","facility_name":"Valleyview Health Centre","lat":55.0633,"lng":-117.2825,"aliases":["valleyview","Valleyview","Valleyview Health Centre"],"total_hours":600.0,"years_active":2,"episode_count":3,"monthly":{"2023-05":384.0,"2023-06":120.0,"2023-12":72.0,"2024-01":24.0},"has_disruption_data":true,"episodes_by_year":{"2021":0,"2022":0,"2023":2,"2024":1,"2025":0,"2026":0}},{"name":"two hills","display_name":"Two Hills","facility_name":"Two Hills Health Centre","lat":53.7128,"lng":-111.7506,"aliases":["two hills","Two Hills","Two Hills Health Centre"],"total_hours":9508.0,"years_active":5,"episode_count":37,"monthly":{"2022-05":96.0,"2022-06":148.0,"2022-07":380.0,"2022-08":292.0,"2022-09":224.0,"2023-12":184.0,"2024-01":464.0,"2024-02":168.0,"2024-03":272.0,"2024-04":226.0,"2024-05":242.0,"2024-06":208.0,"2024-07":239.0,"2024-08":229.0,"2024-09":213.0,"2024-10":247.0,"2024-11":216.0,"2024-12":226.0,"2025-01":422.0,"2025-02":444.0,"2025-03":504.0,"2025-04":468.0,"2025-05":495.0,"2025-06":480.0,"2025-07":480.0,"2025-08":507.0,"2025-09":342.0,"2025-10":224.0,"2025-11":192.0,"2025-12":220.0,"2026-01":212.0,"2026-02":220.0,"2026-03":24.0},"has_disruption_data":true,"episodes_by_year":{"2021":0,"2022":6,"2023":3,"2024":15,"2025":10,"2026":3}},{"name":"lacombe","display_name":"Lacombe","facility_name":"Lacombe Hospital and Care Centre","lat":52.4683,"lng":-113.7367,"aliases":["lacombe","Lacombe","Lacombe Hospital and Care Centre"],"total_hours":67.9833,"years_active":4,"episode_count":5,"monthly":{"2022-02":9.0,"2023-11":9.0,"2025-03":7.9833,"2025-06":16.0,"2026-01":26.0},"has_disruption_data":true,"episodes_by_year":{"2021":0,"2022":1,"2023":1,"2024":0,"2025":2,"2026":1}},{"name":"pincher creek","display_name":"Pincher Creek","facility_name":"Pincher Creek Health Centre","lat":49.4842,"lng":-113.9508,"aliases":["pincher creek","Pincher Creek","Pincher Creek Health Centre"],"total_hours":60.0,"years_active":1,"episode_count":2,"monthly":{"2023-07":48.0,"2023-11":12.0},"has_disruption_data":true,"episodes_by_year":{"2021":0,"2022":0,"2023":2,"2024":0,"2025":0,"2026":0}},{"name":"sundre","display_name":"Sundre","facility_name":"Myron Thompson Health Centre","lat":51.7972,"lng":-114.6403,"aliases":["sundre","Sundre","Myron Thompson Health Centre"],"total_hours":68.0,"years_active":1,"episode_count":1,"monthly":{"2023-12":68.0},"has_disruption_data":true,"episodes_by_year":{"2021":0,"2022":0,"2023":1,"2024":0,"2025":0,"2026":0}},{"name":"vermilion","display_name":"Vermilion","facility_name":"Vermilion Health Centre","lat":53.3567,"lng":-110.8581,"aliases":["vermilion","Vermilion","Vermilion Health Centre"],"total_hours":45.0,"years_active":1,"episode_count":2,"monthly":{"2023-07":10.0,"2023-09":35.0},"has_disruption_data":true,"episodes_by_year":{"2021":0,"2022":0,"2023":2,"2024":0,"2025":0,"2026":0}},{"name":"st paul","display_name":"St. Paul","facility_name":"St. Therese - St. Paul Healthcare Centre","lat":53.9928,"lng":-111.2861,"aliases":["st paul","St. Paul","St. Therese - St. Paul Healthcare Centre"],"total_hours":47.0,"years_active":1,"episode_count":2,"monthly":{"2025-12":47.0},"has_disruption_data":true,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":2,"2026":0}},{"name":"westlock","display_name":"Westlock","facility_name":"Westlock Healthcare Centre","lat":54.1539,"lng":-113.8497,"aliases":["westlock","Westlock","Westlock Healthcare Centre"],"total_hours":53.75,"years_active":2,"episode_count":4,"monthly":{"2024-10":15.0,"2024-12":6.75,"2025-01":8.0,"2025-08":24.0},"has_disruption_data":true,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":2,"2025":2,"2026":0}},{"name":"consort","display_name":"Consort","facility_name":"Consort Hospital and Care Centre","lat":52.0167,"lng":-110.7833,"aliases":["consort","Consort","Consort Hospital and Care Centre"],"total_hours":23525.0,"years_active":6,"episode_count":68,"monthly":{"2021-08":96.0,"2021-09":3.0,"2021-11":96.0,"2021-12":72.0,"2022-01":288.0,"2022-02":24.0,"2022-04":240.0,"2022-05":264.0,"2022-06":24.0,"2022-08":360.0,"2022-09":720.0,"2022-10":744.0,"2022-11":720.0,"2022-12":744.0,"2023-01":744.0,"2023-02":672.0,"2023-03":744.0,"2023-04":720.0,"2023-05":744.0,"2023-06":720.0,"2023-07":744.0,"2023-08":744.0,"2023-09":720.0,"2023-10":744.0,"2023-11":720.0,"2023-12":744.0,"2024-01":744.0,"2024-02":696.0,"2024-03":744.0,"2024-04":720.0,"2024-05":744.0,"2024-06":720.0,"2024-07":744.0,"2024-08":744.0,"2024-09":720.0,"2024-10":744.0,"2024-11":409.0,"2024-12":156.0,"2025-01":159.0,"2025-02":140.0,"2025-03":148.0,"2025-04":156.0,"2025-05":151.0,"2025-06":148.0,"2025-07":164.0,"2025-08":143.0,"2025-09":156.0,"2025-10":159.0,"2025-11":140.0,"2025-12":164.0,"2026-01":151.0,"2026-02":140.0,"2026-03":156.0,"2026-04":156.0,"2026-05":54.0},"has_disruption_data":true,"episodes_by_year":{"2021":4,"2022":28,"2023":18,"2024":11,"2025":6,"2026":1}},{"name":"peace river","display_name":"Peace River","facility_name":"Marshall Eliuk Peace River Community Health Centre","lat":56.2358,"lng":-117.2906,"aliases":["peace river","Peace River","Marshall Eliuk Peace River Community Health Centre"],"total_hours":16.5,"years_active":1,"episode_count":1,"monthly":{"2025-06":9.0,"2025-07":7.5},"has_disruption_data":true,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":1,"2026":0}},{"name":"high prairie","display_name":"High Prairie","facility_name":"High Prairie Health Complex","lat":55.4347,"lng":-116.4886,"aliases":["high prairie","High Prairie","High Prairie Health Complex"],"total_hours":20.0,"years_active":1,"episode_count":2,"monthly":{"2025-03":8.0,"2025-08":12.0},"has_disruption_data":true,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":2,"2026":0}},{"name":"manning","display_name":"Manning","facility_name":"Manning Community Health Centre","lat":56.9183,"lng":-117.6258,"aliases":["manning","Manning","Manning Community Health Centre"],"total_hours":8.0,"years_active":1,"episode_count":1,"monthly":{"2022-12":8.0},"has_disruption_data":true,"episodes_by_year":{"2021":0,"2022":1,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"tofield","display_name":"Tofield","facility_name":"Tofield Health Centre","lat":53.3661,"lng":-112.6669,"aliases":["tofield","Tofield","Tofield Health Centre"],"total_hours":3132.0,"years_active":2,"episode_count":20,"monthly":{"2022-12":364.0,"2023-01":372.0,"2023-02":336.0,"2023-03":372.0,"2023-04":360.0,"2023-05":372.0,"2023-06":360.0,"2023-07":309.0,"2023-08":248.0,"2023-09":39.0},"has_disruption_data":true,"episodes_by_year":{"2021":0,"2022":10,"2023":10,"2024":0,"2025":0,"2026":0}},{"name":"daysland","display_name":"Daysland","facility_name":"Daysland Health Centre","lat":52.8736,"lng":-112.2497,"aliases":["daysland","Daysland","Daysland Health Centre"],"total_hours":1171.0,"years_active":3,"episode_count":24,"monthly":{"2021-10":96.0,"2022-02":130.0,"2022-10":146.0,"2022-11":162.0,"2022-12":160.0,"2023-01":155.0,"2023-02":144.0,"2023-03":169.0,"2023-04":9.0},"has_disruption_data":true,"episodes_by_year":{"2021":2,"2022":17,"2023":5,"2024":0,"2025":0,"2026":0}},{"name":"jasper","display_name":"Jasper","facility_name":"Seton - Jasper Healthcare Centre","lat":52.8737,"lng":-118.0814,"aliases":["jasper","Jasper","Seton - Jasper Healthcare Centre"],"total_hours":561.0,"years_active":1,"episode_count":1,"monthly":{"2024-07":216.0,"2024-08":345.0},"has_disruption_data":true,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":1,"2025":0,"2026":0}},{"name":"fox creek","display_name":"Fox Creek","facility_name":"Fox Creek Healthcare Centre","lat":54.4044,"lng":-116.7886,"aliases":["fox creek","Fox Creek","Fox Creek Healthcare Centre"],"total_hours":480.0,"years_active":1,"episode_count":1,"monthly":{"2023-05":480.0},"has_disruption_data":true,"episodes_by_year":{"2021":0,"2022":0,"2023":1,"2024":0,"2025":0,"2026":0}},{"name":"fort vermilion","display_name":"Fort Vermilion","facility_name":"St. Theresa General Hospital","lat":58.3833,"lng":-116.0333,"aliases":["fort vermilion","fort vermillion","Fort Vermilion","St. Theresa General Hospital"],"total_hours":416.0,"years_active":1,"episode_count":3,"monthly":{"2021-12":144.0,"2025-05":72.0,"2025-06":200.0},"has_disruption_data":true,"episodes_by_year":{"2021":1,"2022":0,"2023":0,"2024":0,"2025":2,"2026":0}},{"name":"grande cache","display_name":"Grande Cache","facility_name":"Grande Cache Community Health Complex","lat":53.8856,"lng":-119.1419,"aliases":["grande cache","Grande Cache","Grande Cache Community Health Complex"],"total_hours":72.0,"years_active":1,"episode_count":1,"monthly":{"2025-11":72.0},"has_disruption_data":true,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":1,"2026":0}},{"name":"mclennan","display_name":"McLennan / Sacred Heart","facility_name":"Sacred Heart Community Health Centre","lat":55.7019,"lng":-116.8869,"aliases":["mclennan","sacred heart","McLennan / Sacred Heart","Sacred Heart Community Health Centre","McLennan"],"total_hours":624.0,"years_active":2,"episode_count":18,"monthly":{"2021-08":24.0,"2021-09":96.0,"2021-11":24.0,"2021-12":168.0,"2022-01":192.0,"2022-02":24.0,"2022-03":72.0,"2022-12":24.0},"has_disruption_data":true,"episodes_by_year":{"2021":9,"2022":9,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"viking","display_name":"Viking","facility_name":"Viking Health Centre","lat":53.0975,"lng":-111.7747,"aliases":["viking","Viking","Viking Health Centre"],"total_hours":34.0,"years_active":1,"episode_count":1,"monthly":{"2023-10":34.0},"has_disruption_data":true,"episodes_by_year":{"2021":0,"2022":0,"2023":1,"2024":0,"2025":0,"2026":0}},{"name":"ponoka","display_name":"Ponoka","facility_name":"Ponoka Hospital and Care Centre","lat":52.6814,"lng":-113.5739,"aliases":["ponoka","ponoka hospital and","Ponoka","Ponoka Hospital and Care Centre"],"total_hours":335.0,"years_active":5,"episode_count":19,"monthly":{"2022-02":15.0,"2022-03":24.0,"2022-09":20.0,"2023-02":15.0,"2023-03":10.5,"2023-06":6.5,"2023-07":18.0,"2023-08":66.0,"2023-09":40.0,"2023-10":32.0,"2023-11":14.0,"2024-06":22.0,"2025-04":10.0,"2025-06":10.0,"2025-12":17.0,"2026-03":15.0},"has_disruption_data":true,"episodes_by_year":{"2021":0,"2022":3,"2023":11,"2024":1,"2025":3,"2026":1}},{"name":"wainwright","display_name":"Wainwright","facility_name":"Wainwright Health Centre","lat":52.8378,"lng":-110.8489,"aliases":["wainwright","Wainwright","Wainwright Health Centre"],"total_hours":12.0,"years_active":1,"episode_count":1,"monthly":{"2023-12":12.0},"has_disruption_data":true,"episodes_by_year":{"2021":0,"2022":0,"2023":1,"2024":0,"2025":0,"2026":0}},{"name":"mayerthorpe","display_name":"Mayerthorpe","facility_name":"Mayerthorpe Healthcare Centre","lat":53.9514,"lng":-115.1428,"aliases":["mayerthorpe","Mayerthorpe","Mayerthorpe Healthcare Centre"],"total_hours":7.5,"years_active":1,"episode_count":1,"monthly":{"2025-07":7.5},"has_disruption_data":true,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":1,"2026":0}},{"name":"ahs zero alberta childrens hospital","display_name":"Alberta Children's Hospital","facility_name":"Alberta Children's Hospital","community":"Calgary","lat":51.0744,"lng":-114.1486,"aliases":["Alberta Children's Hospital","ACH","Calgary"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero bonnyville healthcare centre","display_name":"Bonnyville Healthcare Centre","facility_name":"Bonnyville Healthcare Centre","community":"Bonnyville","lat":54.2679,"lng":-110.735,"aliases":["Bonnyville","Bonnyville Healthcare Centre"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero brooks health centre","display_name":"Brooks Health Centre","facility_name":"Brooks Health Centre","community":"Brooks","lat":50.5658,"lng":-111.8986,"aliases":["Brooks","Brooks Health Centre"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero canmore general hospital","display_name":"Canmore General Hospital","facility_name":"Canmore General Hospital","community":"Canmore","lat":51.0933,"lng":-115.3605,"aliases":["Canmore","Canmore General Hospital"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero cardston health centre","display_name":"Cardston Health Centre","facility_name":"Cardston Health Centre","community":"Cardston","lat":49.1995,"lng":-113.306,"aliases":["Cardston","Cardston Health Centre"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero chinook regional hospital","display_name":"Chinook Regional Hospital","facility_name":"Chinook Regional Hospital","community":"Lethbridge","lat":49.6879,"lng":-112.837,"aliases":["Lethbridge","Chinook Regional Hospital","CRH"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero claresholm general hospital","display_name":"Claresholm General Hospital","facility_name":"Claresholm General Hospital","community":"Claresholm","lat":50.0247,"lng":-113.579,"aliases":["Claresholm","Claresholm General Hospital"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero crowsnest pass health centre","display_name":"Crowsnest Pass Health Centre","facility_name":"Crowsnest Pass Health Centre","community":"Blairmore","lat":49.608,"lng":-114.449,"aliases":["Crowsnest Pass","Blairmore","Crowsnest Pass Health Centre"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero devon general hospital","display_name":"Devon General Hospital","facility_name":"Devon General Hospital","community":"Devon","lat":53.363,"lng":-113.728,"aliases":["Devon","Devon General Hospital"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero didsbury district health services","display_name":"Didsbury District Health Services","facility_name":"Didsbury District Health Services","community":"Didsbury","lat":51.662,"lng":-114.135,"aliases":["Didsbury","Didsbury District Health Services"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero foothills medical centre","display_name":"Foothills Medical Centre","facility_name":"Foothills Medical Centre","community":"Calgary","lat":51.0652,"lng":-114.133,"aliases":["Calgary","Foothills Medical Centre","FMC"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero fort saskatchewan community hospital","display_name":"Fort Saskatchewan Community Hospital","facility_name":"Fort Saskatchewan Community Hospital","community":"Fort Saskatchewan","lat":53.711,"lng":-113.198,"aliases":["Fort Saskatchewan","Fort Saskatchewan Community Hospital"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero grande prairie regional hospital","display_name":"Grande Prairie Regional Hospital","facility_name":"Grande Prairie Regional Hospital","community":"Grande Prairie","lat":55.174,"lng":-118.814,"aliases":["Grande Prairie","Grande Prairie Regional Hospital","GPRH"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero grey nuns community hospital","display_name":"Grey Nuns Community Hospital","facility_name":"Grey Nuns Community Hospital","community":"Edmonton","lat":53.461,"lng":-113.428,"aliases":["Edmonton","Grey Nuns","Grey Nuns Community Hospital"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero hanna health centre","display_name":"Hanna Health Centre","facility_name":"Hanna Health Centre","community":"Hanna","lat":51.641,"lng":-111.925,"aliases":["Hanna","Hanna Health Centre"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero high river general hospital","display_name":"High River General Hospital","facility_name":"High River General Hospital","community":"High River","lat":50.579,"lng":-113.869,"aliases":["High River","High River General Hospital"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero innisfail health centre","display_name":"Innisfail Health Centre","facility_name":"Innisfail Health Centre","community":"Innisfail","lat":52.027,"lng":-113.95,"aliases":["Innisfail","Innisfail Health Centre"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero killam health care centre","display_name":"Killam Health Care Centre","facility_name":"Killam Health Care Centre","community":"Killam","lat":52.79,"lng":-111.852,"aliases":["Killam","Killam Health Care Centre"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero lamont health care centre","display_name":"Lamont Health Care Centre","facility_name":"Lamont Health Care Centre","community":"Lamont","lat":53.76,"lng":-112.782,"aliases":["Lamont","Lamont Health Care Centre"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero leduc community hospital","display_name":"Leduc Community Hospital","facility_name":"Leduc Community Hospital","community":"Leduc","lat":53.263,"lng":-113.553,"aliases":["Leduc","Leduc Community Hospital"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero lloydminster hospital","display_name":"Lloydminster Hospital","facility_name":"Lloydminster Hospital (Saskatchewan)","community":"Lloydminster","lat":53.277,"lng":-110.009,"aliases":["Lloydminster","Lloydminster Hospital","Lloydminster Hospital Saskatchewan","Lloydminster Hospital (Saskatchewan)"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero medicine hat regional hospital","display_name":"Medicine Hat Regional Hospital","facility_name":"Medicine Hat Regional Hospital","community":"Medicine Hat","lat":50.041,"lng":-110.688,"aliases":["Medicine Hat","Medicine Hat Regional Hospital","MHRH"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero mineral springs hospital","display_name":"Mineral Springs Hospital","facility_name":"Mineral Springs Hospital","community":"Banff","lat":51.18,"lng":-115.571,"aliases":["Banff","Mineral Springs Hospital"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero misericordia community hospital","display_name":"Misericordia Community Hospital","facility_name":"Misericordia Community Hospital","community":"Edmonton","lat":53.521,"lng":-113.608,"aliases":["Edmonton","Misericordia","Misericordia Community Hospital"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero northeast community health centre","display_name":"Northeast Community Health Centre","facility_name":"Northeast Community Health Centre","community":"Edmonton","lat":53.613,"lng":-113.424,"aliases":["Edmonton","Northeast Community Health Centre","NECHC"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero northern lights regional health centre","display_name":"Northern Lights Regional Health Centre","facility_name":"Northern Lights Regional Health Centre","community":"Fort McMurray","lat":56.725,"lng":-111.372,"aliases":["Fort McMurray","Northern Lights Regional Health Centre","NLRHC"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero northwest health centre","display_name":"Northwest Health Centre","facility_name":"Northwest Health Centre","community":"High Level","lat":58.516,"lng":-117.136,"aliases":["High Level","Northwest Health Centre"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero oilfields general hospital","display_name":"Oilfields General Hospital","facility_name":"Oilfields General Hospital","community":"Diamond Valley","lat":50.688,"lng":-114.233,"aliases":["Diamond Valley","Black Diamond","Oilfields General Hospital"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero olds hospital and care centre","display_name":"Olds Hospital and Care Centre","facility_name":"Olds Hospital and Care Centre","community":"Olds","lat":51.792,"lng":-114.104,"aliases":["Olds","Olds Hospital and Care Centre"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero our lady of the rosary hospital","display_name":"Our Lady of the Rosary Hospital","facility_name":"Our Lady of the Rosary Hospital","community":"Castor","lat":52.219,"lng":-111.906,"aliases":["Castor","Our Lady of the Rosary Hospital"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero peter lougheed centre","display_name":"Peter Lougheed Centre","facility_name":"Peter Lougheed Centre","community":"Calgary","lat":51.079,"lng":-113.984,"aliases":["Calgary","Peter Lougheed Centre","PLC"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero provost health centre","display_name":"Provost Health Centre","facility_name":"Provost Health Centre","community":"Provost","lat":52.354,"lng":-110.262,"aliases":["Provost","Provost Health Centre"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero raymond health centre","display_name":"Raymond Health Centre","facility_name":"Raymond Health Centre","community":"Raymond","lat":49.464,"lng":-112.652,"aliases":["Raymond","Raymond Health Centre"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero red deer regional hospital centre","display_name":"Red Deer Regional Hospital Centre","facility_name":"Red Deer Regional Hospital Centre","community":"Red Deer","lat":52.269,"lng":-113.807,"aliases":["Red Deer","Red Deer Regional Hospital Centre","RDRHC"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero rimbey hospital and care centre","display_name":"Rimbey Hospital and Care Centre","facility_name":"Rimbey Hospital and Care Centre","community":"Rimbey","lat":52.639,"lng":-114.236,"aliases":["Rimbey","Rimbey Hospital and Care Centre"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero rockyview general hospital","display_name":"Rockyview General Hospital","facility_name":"Rockyview General Hospital","community":"Calgary","lat":50.99,"lng":-114.097,"aliases":["Calgary","Rockyview General Hospital","RGH"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero royal alexandra hospital","display_name":"Royal Alexandra Hospital","facility_name":"Royal Alexandra Hospital","community":"Edmonton","lat":53.558,"lng":-113.497,"aliases":["Edmonton","Royal Alexandra Hospital","RAH"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero slave lake healthcare centre","display_name":"Slave Lake Healthcare Centre","facility_name":"Slave Lake Healthcare Centre","community":"Slave Lake","lat":55.284,"lng":-114.769,"aliases":["Slave Lake","Slave Lake Healthcare Centre"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero south health campus","display_name":"South Health Campus","facility_name":"South Health Campus","community":"Calgary","lat":50.883,"lng":-113.952,"aliases":["Calgary","South Health Campus","SHC"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero st josephs general hospital","display_name":"St. Joseph's General Hospital","facility_name":"St. Joseph's General Hospital","community":"Vegreville","lat":53.493,"lng":-112.051,"aliases":["Vegreville","St Joseph's General Hospital","St. Josephs General Hospital","St. Joseph's General Hospital"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero st marys hospital","display_name":"St. Mary's Hospital","facility_name":"St. Mary's Hospital","community":"Camrose","lat":53.019,"lng":-112.841,"aliases":["Camrose","St Mary's Hospital","St. Marys Hospital","St. Mary's Hospital"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero strathcona community hospital","display_name":"Strathcona Community Hospital","facility_name":"Strathcona Community Hospital","community":"Sherwood Park","lat":53.547,"lng":-113.296,"aliases":["Sherwood Park","Strathcona Community Hospital"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero strathmore district health services","display_name":"Strathmore District Health Services","facility_name":"Strathmore District Health Services","community":"Strathmore","lat":51.037,"lng":-113.386,"aliases":["Strathmore","Strathmore District Health Services"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero sturgeon community hospital","display_name":"Sturgeon Community Hospital","facility_name":"Sturgeon Community Hospital","community":"St. Albert","lat":53.653,"lng":-113.63,"aliases":["St Albert","St. Albert","Sturgeon Community Hospital"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero taber health centre","display_name":"Taber Health Centre","facility_name":"Taber Health Centre","community":"Taber","lat":49.787,"lng":-112.144,"aliases":["Taber","Taber Health Centre"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero three hills health centre","display_name":"Three Hills Health Centre","facility_name":"Three Hills Health Centre","community":"Three Hills","lat":51.704,"lng":-113.264,"aliases":["Three Hills","Three Hills Health Centre"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero university of alberta hospital","display_name":"University of Alberta Hospital","facility_name":"University of Alberta Hospital","community":"Edmonton","lat":53.521,"lng":-113.525,"aliases":["Edmonton","University of Alberta Hospital","UAH"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero vulcan community health centre","display_name":"Vulcan Community Health Centre","facility_name":"Vulcan Community Health Centre","community":"Vulcan","lat":50.401,"lng":-113.261,"aliases":["Vulcan","Vulcan Community Health Centre"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero westview health centre stony plain","display_name":"WestView Health Centre - Stony Plain","facility_name":"WestView Health Centre - Stony Plain","community":"Stony Plain","lat":53.541,"lng":-114.006,"aliases":["Stony Plain","WestView Health Centre","Westview Health Centre","WestView Health Centre - Stony Plain"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero wetaskiwin hospital and care centre","display_name":"Wetaskiwin Hospital and Care Centre","facility_name":"Wetaskiwin Hospital and Care Centre","community":"Wetaskiwin","lat":52.969,"lng":-113.376,"aliases":["Wetaskiwin","Wetaskiwin Hospital and Care Centre"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero whitecourt healthcare centre","display_name":"Whitecourt Healthcare Centre","facility_name":"Whitecourt Healthcare Centre","community":"Whitecourt","lat":54.145,"lng":-115.684,"aliases":["Whitecourt","Whitecourt Healthcare Centre"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}}]};
 
 
 
-const YEAR_SUMMARY = {"all":{"hours":151691.4666,"episodes":1068,"affected_sites":50,"reference_sites":101},"2021":{"hours":6289.0,"episodes":64,"affected_sites":15,"reference_sites":101},"2022":{"hours":27979.5,"episodes":241,"affected_sites":27,"reference_sites":101},"2023":{"hours":38680.25,"episodes":210,"affected_sites":33,"reference_sites":101},"2024":{"hours":33603.2333,"episodes":290,"affected_sites":27,"reference_sites":101},"2025":{"hours":32701.4833,"episodes":293,"affected_sites":35,"reference_sites":101},"2026":{"hours":12438.0,"episodes":80,"affected_sites":23,"reference_sites":101}};
+
+const DATA = {"sites":[{"name":"coronation","display_name":"Coronation","facility_name":"Coronation Hospital and Care Centre","lat":52.0833,"lng":-111.45,"aliases":["coronation","Coronation","Coronation Hospital and Care Centre"],"total_hours":6211.0,"years_active":4,"episode_count":78,"monthly":{"2023-01":128.0,"2023-04":24.0,"2023-05":24.0,"2023-06":24.0,"2023-07":125.0,"2023-08":200.0,"2023-09":168.0,"2023-10":276.0,"2023-11":256.0,"2023-12":308.0,"2024-01":204.0,"2024-02":244.0,"2024-03":216.0,"2024-04":208.0,"2024-05":262.0,"2024-06":208.0,"2024-08":12.0,"2024-09":8.0,"2024-10":12.0,"2024-11":12.0,"2024-12":12.0,"2025-01":108.0,"2025-02":108.0,"2025-03":128.0,"2025-04":104.0,"2025-05":132.0,"2025-06":52.0,"2025-07":144.0,"2025-08":112.0,"2025-09":352.0,"2025-10":349.0,"2025-11":234.0,"2025-12":320.0,"2026-01":206.0,"2026-02":409.0,"2026-03":322.0,"2026-04":200.0},"has_disruption_data":true,"episodes_by_year":{"2021":0,"2022":0,"2023":23,"2024":25,"2025":19,"2026":11}},{"name":"hinton","display_name":"Hinton","facility_name":"Hinton Healthcare Centre","lat":53.4117,"lng":-117.5675,"aliases":["hinton","Hinton","Hinton Healthcare Centre"],"total_hours":4487.0,"years_active":3,"episode_count":81,"monthly":{"2024-01":92.0,"2024-06":25.0,"2024-07":356.0,"2024-08":21.0,"2024-09":60.0,"2024-10":100.0,"2024-11":7.0,"2024-12":136.0,"2025-01":301.0,"2025-02":198.0,"2025-03":236.0,"2025-04":236.0,"2025-05":182.0,"2025-06":232.0,"2025-07":372.0,"2025-08":115.0,"2025-09":331.0,"2025-10":245.0,"2025-11":142.0,"2025-12":407.0,"2026-01":319.0,"2026-02":183.0,"2026-03":161.0,"2026-05":30.0},"has_disruption_data":true,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":16,"2025":49,"2026":16}},{"name":"smoky lake","display_name":"Smoky Lake","facility_name":"George McDougall - Smoky Lake Healthcare Centre","lat":54.1117,"lng":-112.4717,"aliases":["smoky lake","Smoky Lake","George McDougall - Smoky Lake Healthcare Centre"],"total_hours":4834.0,"years_active":6,"episode_count":65,"monthly":{"2021-11":90.0,"2021-12":8.0,"2022-08":72.0,"2023-10":144.0,"2023-12":169.0,"2024-01":239.0,"2024-02":221.0,"2024-03":203.0,"2024-04":213.0,"2024-05":282.0,"2024-06":314.0,"2024-07":314.0,"2024-08":317.0,"2024-09":222.0,"2024-10":88.0,"2024-11":60.0,"2024-12":16.0,"2025-01":64.0,"2025-02":64.0,"2025-03":64.0,"2025-04":32.0,"2025-05":80.0,"2025-06":48.0,"2025-07":72.0,"2025-08":191.0,"2025-09":136.0,"2025-10":80.0,"2025-11":64.0,"2025-12":184.0,"2026-01":56.0,"2026-02":520.0,"2026-03":127.0,"2026-04":56.0,"2026-05":24.0},"has_disruption_data":true,"episodes_by_year":{"2021":2,"2022":1,"2023":4,"2024":35,"2025":15,"2026":8}},{"name":"lac la biche","display_name":"Lac La Biche","facility_name":"William J. Cadzow - Lac La Biche Healthcare Centre","lat":54.7686,"lng":-111.9656,"aliases":["lac la biche","Lac La Biche","William J. Cadzow - Lac La Biche Healthcare Centre"],"total_hours":3925.0,"years_active":4,"episode_count":78,"monthly":{"2022-06":30.0,"2022-08":45.0,"2022-09":84.0,"2023-03":102.0,"2023-04":120.0,"2023-05":123.0,"2023-06":84.0,"2023-07":120.0,"2023-08":208.0,"2023-09":32.0,"2023-10":33.0,"2023-11":280.0,"2023-12":132.0,"2024-01":24.0,"2024-02":200.0,"2024-03":236.0,"2024-04":105.0,"2024-05":106.0,"2024-06":48.0,"2024-07":32.0,"2024-08":112.0,"2024-09":80.0,"2024-10":48.0,"2024-11":153.0,"2024-12":225.0,"2025-01":254.0,"2025-02":213.0,"2025-03":232.0,"2025-04":88.0,"2025-05":16.0,"2025-06":11.0,"2025-07":96.0,"2025-08":253.0},"has_disruption_data":true,"episodes_by_year":{"2021":0,"2022":4,"2023":27,"2024":25,"2025":22,"2026":0}},{"name":"fairview","display_name":"Fairview","facility_name":"Fairview Health Complex","lat":56.0747,"lng":-118.3858,"aliases":["fairview","Fairview","Fairview Health Complex"],"total_hours":3443.0,"years_active":5,"episode_count":48,"monthly":{"2021-10":72.0,"2021-11":24.0,"2022-01":48.0,"2022-10":12.0,"2023-10":24.0,"2023-11":41.0,"2023-12":91.0,"2024-01":108.0,"2024-02":132.0,"2024-03":185.0,"2024-04":336.0,"2024-05":271.0,"2024-06":456.0,"2024-07":305.0,"2024-08":306.0,"2024-09":329.0,"2024-10":312.0,"2024-11":295.0,"2024-12":48.0,"2026-03":24.0,"2026-04":24.0},"has_disruption_data":true,"episodes_by_year":{"2021":4,"2022":3,"2023":5,"2024":34,"2025":0,"2026":2}},{"name":"swan hills","display_name":"Swan Hills","facility_name":"Swan Hills Healthcare Centre","lat":54.7136,"lng":-115.3856,"aliases":["swan hills","Swan Hills","Swan Hills Healthcare Centre"],"total_hours":6009.0,"years_active":4,"episode_count":44,"monthly":{"2022-01":24.0,"2022-02":408.0,"2022-05":8.0,"2022-06":257.0,"2022-07":372.0,"2022-08":372.0,"2022-09":7.0,"2022-11":18.0,"2022-12":149.0,"2023-01":199.0,"2023-05":240.0,"2023-06":101.0,"2023-07":444.0,"2023-08":343.0,"2023-11":5.0,"2023-12":108.0,"2024-01":103.0,"2024-04":503.0,"2024-05":72.0,"2024-06":137.0,"2024-07":91.0,"2024-08":240.0,"2024-09":31.0,"2024-10":48.0,"2024-12":16.0,"2025-01":408.0,"2025-02":336.0,"2025-03":408.0,"2025-04":8.0,"2025-05":120.0,"2025-07":373.0,"2025-08":48.0,"2025-11":12.0},"has_disruption_data":true,"episodes_by_year":{"2021":0,"2022":7,"2023":8,"2024":14,"2025":15,"2026":0}},{"name":"milk river","display_name":"Milk River","facility_name":"Milk River Health Centre","lat":49.1494,"lng":-112.0833,"aliases":["milk river","Milk River","Milk River Health Centre"],"total_hours":3534.0,"years_active":6,"episode_count":49,"monthly":{"2021-10":96.0,"2022-01":96.0,"2022-02":48.0,"2022-05":24.0,"2022-09":72.0,"2022-10":199.0,"2022-11":117.0,"2022-12":216.0,"2023-01":152.0,"2023-02":576.0,"2023-03":60.0,"2023-04":56.0,"2023-05":249.0,"2023-06":369.0,"2023-07":505.0,"2023-08":32.0,"2023-10":33.0,"2023-11":49.0,"2024-01":180.0,"2024-03":50.0,"2024-09":32.0,"2024-12":72.0,"2025-02":15.0,"2025-03":16.0,"2025-08":12.5,"2025-09":4.0,"2025-10":8.0,"2025-11":6.0,"2025-12":127.5,"2026-01":12.25,"2026-02":5.75,"2026-03":29.0,"2026-04":15.0},"has_disruption_data":true,"episodes_by_year":{"2021":1,"2022":7,"2023":19,"2024":8,"2025":9,"2026":5}},{"name":"elk point","display_name":"Elk Point","facility_name":"Elk Point Healthcare Centre","lat":53.8978,"lng":-110.9067,"aliases":["elk point","Elk Point","Elk Point Healthcare Centre"],"total_hours":3609.0,"years_active":5,"episode_count":44,"monthly":{"2021-08":208.0,"2021-09":216.0,"2021-10":200.0,"2021-11":208.0,"2021-12":224.0,"2022-01":192.0,"2022-02":96.0,"2022-08":132.0,"2022-09":48.0,"2022-10":14.0,"2023-01":209.0,"2023-02":336.0,"2023-03":7.0,"2024-05":129.0,"2024-06":144.0,"2024-07":64.0,"2024-08":161.0,"2024-09":99.0,"2024-10":125.0,"2024-11":100.0,"2024-12":155.0,"2025-01":135.0,"2025-02":98.0,"2025-03":109.0,"2025-04":92.0,"2025-05":108.0},"has_disruption_data":true,"episodes_by_year":{"2021":7,"2022":9,"2023":4,"2024":16,"2025":8,"2026":0}},{"name":"beaverlodge","display_name":"Beaverlodge","facility_name":"Beaverlodge Municipal Hospital","lat":55.2153,"lng":-119.4358,"aliases":["beaverlodge","Beaverlodge","Beaverlodge Municipal Hospital"],"total_hours":874.0,"years_active":6,"episode_count":35,"monthly":{"2021-08":24.0,"2021-11":12.0,"2022-02":24.0,"2022-08":48.0,"2022-12":36.0,"2023-01":32.0,"2023-06":5.0,"2023-07":8.0,"2023-08":36.0,"2023-10":48.0,"2023-11":49.0,"2023-12":62.0,"2024-03":40.0,"2024-04":8.0,"2024-06":48.0,"2024-08":24.0,"2025-02":24.0,"2025-04":24.0,"2025-06":10.0,"2025-07":48.0,"2025-08":9.0,"2025-09":12.0,"2025-10":24.0,"2025-11":36.0,"2025-12":113.0,"2026-01":24.0,"2026-02":24.0,"2026-03":22.0},"has_disruption_data":true,"episodes_by_year":{"2021":2,"2022":3,"2023":7,"2024":4,"2025":15,"2026":4}},{"name":"redwater","display_name":"Redwater","facility_name":"Redwater Health Centre","lat":53.9525,"lng":-113.1167,"aliases":["redwater","Redwater","Redwater Health Centre"],"total_hours":627.0,"years_active":2,"episode_count":15,"monthly":{"2025-01":32.0,"2025-03":24.0,"2025-04":48.0,"2025-05":96.0,"2025-06":144.0,"2025-08":48.0,"2025-09":35.0,"2025-10":128.0,"2025-11":24.0,"2026-01":48.0},"has_disruption_data":true,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":14,"2026":1}},{"name":"bow island","display_name":"Bow Island","facility_name":"Bow Island Health Centre","lat":49.8703,"lng":-111.37,"aliases":["bow island","Bow Island","Bow Island Health Centre"],"total_hours":5353.0,"years_active":2,"episode_count":16,"monthly":{"2025-03":216.0,"2025-04":257.0,"2025-05":456.0,"2025-06":432.0,"2025-07":456.0,"2025-08":456.0,"2025-09":255.0,"2025-10":440.0,"2025-11":388.0,"2025-12":360.0,"2026-01":403.0,"2026-02":340.0,"2026-03":384.0,"2026-04":340.0,"2026-05":170.0},"has_disruption_data":true,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":13,"2026":3}},{"name":"barrhead","display_name":"Barrhead","facility_name":"Barrhead Healthcare Centre","lat":54.1294,"lng":-114.4022,"aliases":["barrhead","Barrhead","Barrhead Healthcare Centre"],"total_hours":2752.0,"years_active":4,"episode_count":32,"monthly":{"2021-09":24.0,"2021-11":24.0,"2021-12":168.0,"2022-02":24.0,"2022-03":133.0,"2022-06":41.0,"2022-07":103.0,"2022-08":36.0,"2022-09":12.0,"2025-02":42.0,"2025-03":17.0,"2025-04":88.0,"2025-08":58.0,"2025-09":58.0,"2025-10":14.0,"2025-11":14.0,"2026-02":144.0,"2026-03":744.0,"2026-04":720.0,"2026-05":288.0},"has_disruption_data":true,"episodes_by_year":{"2021":4,"2022":12,"2023":0,"2024":0,"2025":15,"2026":1}},{"name":"edson","display_name":"Edson","facility_name":"Edson Healthcare Centre","lat":53.5836,"lng":-116.4356,"aliases":["edson","Edson","Edson Healthcare Centre"],"total_hours":873.0,"years_active":4,"episode_count":21,"monthly":{"2023-06":312.0,"2024-05":24.0,"2024-11":17.0,"2025-01":54.0,"2025-02":45.0,"2025-03":90.0,"2025-07":95.0,"2025-08":34.0,"2025-09":77.0,"2025-10":34.0,"2026-01":67.0,"2026-02":24.0},"has_disruption_data":true,"episodes_by_year":{"2021":0,"2022":0,"2023":1,"2024":2,"2025":14,"2026":4}},{"name":"boyle","display_name":"Boyle","facility_name":"Boyle Healthcare Centre","lat":54.5847,"lng":-112.8089,"aliases":["boyle","Boyle","Boyle Healthcare Centre"],"total_hours":17328.5,"years_active":6,"episode_count":96,"monthly":{"2021-08":48.0,"2022-03":13.0,"2022-04":105.0,"2022-05":16.0,"2022-06":23.0,"2022-07":363.0,"2022-08":456.0,"2022-09":384.0,"2022-10":372.0,"2022-11":360.0,"2022-12":372.0,"2023-01":372.0,"2023-02":336.0,"2023-03":372.0,"2023-04":360.0,"2023-05":372.0,"2023-06":360.0,"2023-07":372.0,"2023-08":372.0,"2023-09":360.0,"2023-10":372.0,"2023-11":360.0,"2023-12":372.0,"2024-01":372.0,"2024-02":348.0,"2024-03":372.0,"2024-04":360.0,"2024-05":376.0,"2024-06":360.0,"2024-07":372.0,"2024-08":385.0,"2024-09":393.0,"2024-10":372.0,"2024-11":364.0,"2024-12":376.5,"2025-01":372.0,"2025-02":336.0,"2025-03":372.0,"2025-04":360.0,"2025-05":372.0,"2025-06":372.0,"2025-07":372.0,"2025-08":372.0,"2025-09":360.0,"2025-10":379.0,"2025-11":360.0,"2025-12":372.0,"2026-01":372.0,"2026-02":336.0,"2026-03":372.0,"2026-04":363.0,"2026-05":144.0},"has_disruption_data":true,"episodes_by_year":{"2021":1,"2022":27,"2023":20,"2024":30,"2025":14,"2026":4}},{"name":"drumheller","display_name":"Drumheller","facility_name":"Drumheller Health Centre","lat":51.4636,"lng":-112.7203,"aliases":["drumheller","Drumheller","Drumheller Health Centre"],"total_hours":408.0,"years_active":1,"episode_count":3,"monthly":{"2025-08":288.0,"2025-12":120.0},"has_disruption_data":true,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":3,"2026":0}},{"name":"stettler","display_name":"Stettler","facility_name":"Stettler Hospital and Care Centre","lat":52.3208,"lng":-112.7128,"aliases":["stettler","Stettler","Stettler Hospital and Care Centre"],"total_hours":462.0,"years_active":4,"episode_count":19,"monthly":{"2022-05":32.0,"2022-06":24.0,"2022-08":15.0,"2022-09":2.0,"2023-04":5.0,"2023-12":24.0,"2024-06":54.0,"2024-07":39.0,"2024-10":48.0,"2024-12":37.0,"2025-01":167.0,"2025-02":15.0},"has_disruption_data":true,"episodes_by_year":{"2021":0,"2022":5,"2023":2,"2024":8,"2025":4,"2026":0}},{"name":"cold lake","display_name":"Cold Lake","facility_name":"Cold Lake Healthcare Centre","lat":54.4644,"lng":-110.1828,"aliases":["cold lake","Cold Lake","Cold Lake Healthcare Centre"],"total_hours":1014.0,"years_active":5,"episode_count":31,"monthly":{"2021-11":24.0,"2021-12":8.0,"2022-02":72.0,"2022-03":72.0,"2022-04":48.0,"2022-05":288.0,"2022-06":72.0,"2022-07":89.0,"2022-08":7.0,"2022-10":64.0,"2022-11":128.0,"2022-12":64.0,"2023-01":8.0,"2024-07":48.0,"2024-08":16.0,"2026-02":6.0},"has_disruption_data":true,"episodes_by_year":{"2021":2,"2022":23,"2023":1,"2024":4,"2025":0,"2026":1}},{"name":"rocky mountain house","display_name":"Rocky Mountain House","facility_name":"Rocky Mountain House Health Centre","lat":52.3742,"lng":-114.9181,"aliases":["rocky mountain house","Rocky Mountain House","Rocky Mountain House Health Centre"],"total_hours":490.9833,"years_active":5,"episode_count":21,"monthly":{"2022-10":8.0,"2023-01":13.0,"2023-07":48.0,"2023-08":39.0,"2023-09":71.0,"2023-10":7.0,"2024-05":26.0,"2024-06":55.9833,"2024-07":13.0,"2024-08":29.0,"2025-01":46.0,"2025-02":13.0,"2025-04":57.0,"2025-07":13.0,"2026-01":26.0,"2026-04":26.0},"has_disruption_data":true,"episodes_by_year":{"2021":0,"2022":1,"2023":6,"2024":6,"2025":6,"2026":2}},{"name":"hardisty","display_name":"Hardisty","facility_name":"Hardisty Health Centre","lat":52.6736,"lng":-111.3083,"aliases":["hardisty","Hardisty","Hardisty Health Centre"],"total_hours":20748.0,"years_active":6,"episode_count":51,"monthly":{"2021-08":744.0,"2021-09":720.0,"2021-10":744.0,"2021-11":720.0,"2021-12":744.0,"2022-01":744.0,"2022-02":672.0,"2022-03":744.0,"2022-04":720.0,"2022-05":744.0,"2022-06":720.0,"2022-07":744.0,"2022-08":744.0,"2022-09":720.0,"2022-10":744.0,"2022-11":720.0,"2022-12":744.0,"2023-01":744.0,"2023-02":672.0,"2023-03":744.0,"2023-04":720.0,"2023-05":744.0,"2023-06":720.0,"2023-07":744.0,"2023-08":744.0,"2023-09":408.0,"2023-11":50.0,"2023-12":20.0,"2024-08":70.0,"2024-12":30.0,"2025-06":168.0,"2025-07":10.0,"2025-12":360.0,"2026-01":329.0,"2026-02":288.0,"2026-03":319.0,"2026-04":288.0,"2026-05":144.0},"has_disruption_data":true,"episodes_by_year":{"2021":20,"2022":17,"2023":7,"2024":2,"2025":4,"2026":1}},{"name":"grimshaw","display_name":"Grimshaw","facility_name":"Grimshaw / Berwyn and District Community Health Centre","lat":56.1844,"lng":-117.6075,"aliases":["grimshaw","Grimshaw","Grimshaw / Berwyn and District Community Health Centre"],"total_hours":16962.0,"years_active":5,"episode_count":52,"monthly":{"2022-07":12.0,"2022-08":220.0,"2022-09":384.0,"2022-10":372.0,"2022-11":360.0,"2022-12":372.0,"2023-01":372.0,"2023-02":336.0,"2023-03":372.0,"2023-04":360.0,"2023-05":372.0,"2023-06":360.0,"2023-07":372.0,"2023-08":372.0,"2023-09":360.0,"2023-10":372.0,"2023-11":360.0,"2023-12":372.0,"2024-01":372.0,"2024-02":348.0,"2024-03":372.0,"2024-04":364.0,"2024-05":434.0,"2024-06":420.0,"2024-07":434.0,"2024-08":434.0,"2024-09":420.0,"2024-10":434.0,"2024-11":420.0,"2024-12":434.0,"2025-01":372.0,"2025-02":336.0,"2025-03":372.0,"2025-04":360.0,"2025-05":372.0,"2025-06":360.0,"2025-07":372.0,"2025-08":372.0,"2025-09":360.0,"2025-10":372.0,"2025-11":360.0,"2025-12":372.0,"2026-01":384.0,"2026-02":336.0,"2026-03":372.0,"2026-04":360.0,"2026-05":144.0},"has_disruption_data":true,"episodes_by_year":{"2021":0,"2022":19,"2023":13,"2024":10,"2025":7,"2026":3}},{"name":"fort macleod","display_name":"Fort Macleod","facility_name":"Fort Macleod Health Centre","lat":49.7236,"lng":-113.4061,"aliases":["fort macleod","Fort Macleod","Fort Macleod Health Centre"],"total_hours":505.25,"years_active":5,"episode_count":34,"monthly":{"2021-09":24.0,"2023-09":33.0,"2023-10":9.0,"2023-12":11.75,"2024-04":4.0,"2024-05":32.0,"2024-06":48.0,"2024-07":36.0,"2024-08":17.0,"2024-09":16.0,"2024-10":9.0,"2025-01":29.0,"2025-02":3.0,"2025-03":12.0,"2025-04":17.0,"2025-05":27.5,"2025-06":12.0,"2025-07":36.0,"2025-08":5.0,"2025-09":24.0,"2025-10":12.0,"2025-11":24.0,"2025-12":21.0,"2026-01":31.0,"2026-04":12.0},"has_disruption_data":true,"episodes_by_year":{"2021":1,"2022":0,"2023":4,"2024":9,"2025":17,"2026":3}},{"name":"bassano","display_name":"Bassano","facility_name":"Bassano Health Centre","lat":50.7831,"lng":-112.4694,"aliases":["bassano","Bassano","Bassano Health Centre"],"total_hours":2832.0,"years_active":3,"episode_count":11,"monthly":{"2022-05":24.0,"2022-06":262.0,"2022-07":248.0,"2022-08":277.0,"2022-09":263.0,"2022-10":247.0,"2022-11":270.0,"2022-12":263.0,"2023-01":262.0,"2023-02":240.0,"2023-03":278.0,"2023-11":30.0,"2024-01":87.0,"2024-06":81.0},"has_disruption_data":true,"episodes_by_year":{"2021":0,"2022":7,"2023":2,"2024":2,"2025":0,"2026":0}},{"name":"drayton valley","display_name":"Drayton Valley","facility_name":"Drayton Valley Hospital and Care Centre","lat":53.2222,"lng":-114.9783,"aliases":["drayton valley","Drayton Valley","Drayton Valley Hospital and Care Centre"],"total_hours":263.5,"years_active":5,"episode_count":16,"monthly":{"2022-09":10.0,"2023-07":9.5,"2024-04":16.0,"2024-05":32.0,"2024-06":64.5,"2024-07":27.0,"2024-08":34.5,"2024-11":14.0,"2025-01":12.0,"2026-01":36.0,"2026-02":8.0},"has_disruption_data":true,"episodes_by_year":{"2021":0,"2022":1,"2023":1,"2024":10,"2025":1,"2026":3}},{"name":"athabasca","display_name":"Athabasca","facility_name":"Athabasca Healthcare Centre","lat":54.7197,"lng":-113.2867,"aliases":["athabasca","Athabasca","Athabasca Healthcare Centre"],"total_hours":312.0,"years_active":3,"episode_count":8,"monthly":{"2022-04":48.0,"2025-01":36.0,"2025-08":48.0,"2025-11":36.0,"2025-12":12.0,"2026-01":36.0,"2026-03":24.0,"2026-04":72.0},"has_disruption_data":true,"episodes_by_year":{"2021":0,"2022":1,"2023":0,"2024":0,"2025":4,"2026":3}},{"name":"oyen","display_name":"Oyen","facility_name":"Big Country Hospital","lat":51.3531,"lng":-110.4736,"aliases":["oyen","Oyen","Big Country Hospital"],"total_hours":1171.0,"years_active":2,"episode_count":5,"monthly":{"2023-01":201.0,"2023-02":336.0,"2023-03":372.0,"2023-04":151.0,"2025-04":111.0},"has_disruption_data":true,"episodes_by_year":{"2021":0,"2022":0,"2023":4,"2024":0,"2025":1,"2026":0}},{"name":"spirit river","display_name":"Spirit River","facility_name":"Central Peace Health Complex","lat":55.7811,"lng":-118.8261,"aliases":["spirit river","Spirit River","Central Peace Health Complex"],"total_hours":262.0,"years_active":4,"episode_count":9,"monthly":{"2022-04":48.0,"2022-06":46.0,"2022-07":72.0,"2022-12":24.0,"2024-12":24.0,"2025-08":24.0,"2026-03":24.0},"has_disruption_data":true,"episodes_by_year":{"2021":0,"2022":6,"2023":0,"2024":1,"2025":1,"2026":1}},{"name":"wabasca","display_name":"Wabasca","facility_name":"Wabasca / Desmarais Health Care Centre","lat":55.9594,"lng":-113.8364,"aliases":["wabasca","Wabasca","Wabasca / Desmarais Health Care Centre"],"total_hours":2083.5,"years_active":6,"episode_count":22,"monthly":{"2021-08":48.0,"2021-12":48.0,"2022-01":216.0,"2022-02":96.0,"2022-03":192.0,"2022-04":48.0,"2022-05":168.0,"2022-06":276.0,"2022-07":372.0,"2022-08":372.0,"2022-09":115.5,"2023-03":24.0,"2024-03":48.0,"2025-02":24.0,"2025-07":12.0,"2026-04":24.0},"has_disruption_data":true,"episodes_by_year":{"2021":4,"2022":13,"2023":1,"2024":1,"2025":2,"2026":1}},{"name":"valleyview","display_name":"Valleyview","facility_name":"Valleyview Health Centre","lat":55.0633,"lng":-117.2825,"aliases":["valleyview","Valleyview","Valleyview Health Centre"],"total_hours":600.0,"years_active":2,"episode_count":3,"monthly":{"2023-05":384.0,"2023-06":120.0,"2023-12":72.0,"2024-01":24.0},"has_disruption_data":true,"episodes_by_year":{"2021":0,"2022":0,"2023":2,"2024":1,"2025":0,"2026":0}},{"name":"two hills","display_name":"Two Hills","facility_name":"Two Hills Health Centre","lat":53.7128,"lng":-111.7506,"aliases":["two hills","Two Hills","Two Hills Health Centre"],"total_hours":9508.0,"years_active":5,"episode_count":37,"monthly":{"2022-05":96.0,"2022-06":148.0,"2022-07":380.0,"2022-08":292.0,"2022-09":224.0,"2023-12":184.0,"2024-01":464.0,"2024-02":168.0,"2024-03":272.0,"2024-04":226.0,"2024-05":242.0,"2024-06":208.0,"2024-07":239.0,"2024-08":229.0,"2024-09":213.0,"2024-10":247.0,"2024-11":216.0,"2024-12":226.0,"2025-01":422.0,"2025-02":444.0,"2025-03":504.0,"2025-04":468.0,"2025-05":495.0,"2025-06":480.0,"2025-07":480.0,"2025-08":507.0,"2025-09":342.0,"2025-10":224.0,"2025-11":192.0,"2025-12":220.0,"2026-01":212.0,"2026-02":220.0,"2026-03":24.0},"has_disruption_data":true,"episodes_by_year":{"2021":0,"2022":6,"2023":3,"2024":15,"2025":10,"2026":3}},{"name":"lacombe","display_name":"Lacombe","facility_name":"Lacombe Hospital and Care Centre","lat":52.4683,"lng":-113.7367,"aliases":["lacombe","Lacombe","Lacombe Hospital and Care Centre"],"total_hours":54.9833,"years_active":4,"episode_count":5,"monthly":{"2022-02":9.0,"2023-11":9.0,"2025-03":7.9833,"2025-06":16.0,"2026-01":13.0},"has_disruption_data":true,"episodes_by_year":{"2021":0,"2022":1,"2023":1,"2024":0,"2025":2,"2026":1}},{"name":"pincher creek","display_name":"Pincher Creek","facility_name":"Pincher Creek Health Centre","lat":49.4842,"lng":-113.9508,"aliases":["pincher creek","Pincher Creek","Pincher Creek Health Centre"],"total_hours":60.0,"years_active":1,"episode_count":2,"monthly":{"2023-07":48.0,"2023-11":12.0},"has_disruption_data":true,"episodes_by_year":{"2021":0,"2022":0,"2023":2,"2024":0,"2025":0,"2026":0}},{"name":"sundre","display_name":"Sundre","facility_name":"Myron Thompson Health Centre","lat":51.7972,"lng":-114.6403,"aliases":["sundre","Sundre","Myron Thompson Health Centre"],"total_hours":68.0,"years_active":1,"episode_count":1,"monthly":{"2023-12":68.0},"has_disruption_data":true,"episodes_by_year":{"2021":0,"2022":0,"2023":1,"2024":0,"2025":0,"2026":0}},{"name":"vermilion","display_name":"Vermilion","facility_name":"Vermilion Health Centre","lat":53.3567,"lng":-110.8581,"aliases":["vermilion","Vermilion","Vermilion Health Centre"],"total_hours":45.0,"years_active":1,"episode_count":2,"monthly":{"2023-07":10.0,"2023-09":35.0},"has_disruption_data":true,"episodes_by_year":{"2021":0,"2022":0,"2023":2,"2024":0,"2025":0,"2026":0}},{"name":"st paul","display_name":"St. Paul","facility_name":"St. Therese - St. Paul Healthcare Centre","lat":53.9928,"lng":-111.2861,"aliases":["st paul","St. Paul","St. Therese - St. Paul Healthcare Centre"],"total_hours":51.0,"years_active":2,"episode_count":3,"monthly":{"2025-12":47.0,"2026-01":4.0},"has_disruption_data":true,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":2,"2026":1}},{"name":"westlock","display_name":"Westlock","facility_name":"Westlock Healthcare Centre","lat":54.1539,"lng":-113.8497,"aliases":["westlock","Westlock","Westlock Healthcare Centre"],"total_hours":65.75,"years_active":3,"episode_count":5,"monthly":{"2024-10":15.0,"2024-12":6.75,"2025-01":8.0,"2025-08":24.0,"2026-02":12.0},"has_disruption_data":true,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":2,"2025":2,"2026":1}},{"name":"consort","display_name":"Consort","facility_name":"Consort Hospital and Care Centre","lat":52.0167,"lng":-110.7833,"aliases":["consort","Consort","Consort Hospital and Care Centre"],"total_hours":23529.0,"years_active":6,"episode_count":68,"monthly":{"2021-08":96.0,"2021-09":3.0,"2021-11":96.0,"2021-12":72.0,"2022-01":288.0,"2022-02":28.0,"2022-04":240.0,"2022-05":264.0,"2022-06":24.0,"2022-08":360.0,"2022-09":720.0,"2022-10":744.0,"2022-11":720.0,"2022-12":744.0,"2023-01":744.0,"2023-02":672.0,"2023-03":744.0,"2023-04":720.0,"2023-05":744.0,"2023-06":720.0,"2023-07":744.0,"2023-08":744.0,"2023-09":720.0,"2023-10":744.0,"2023-11":720.0,"2023-12":744.0,"2024-01":744.0,"2024-02":696.0,"2024-03":744.0,"2024-04":720.0,"2024-05":744.0,"2024-06":720.0,"2024-07":744.0,"2024-08":744.0,"2024-09":720.0,"2024-10":744.0,"2024-11":409.0,"2024-12":156.0,"2025-01":159.0,"2025-02":140.0,"2025-03":148.0,"2025-04":156.0,"2025-05":151.0,"2025-06":148.0,"2025-07":164.0,"2025-08":143.0,"2025-09":156.0,"2025-10":159.0,"2025-11":140.0,"2025-12":164.0,"2026-01":151.0,"2026-02":140.0,"2026-03":156.0,"2026-04":156.0,"2026-05":54.0},"has_disruption_data":true,"episodes_by_year":{"2021":4,"2022":28,"2023":18,"2024":11,"2025":6,"2026":1}},{"name":"peace river","display_name":"Peace River","facility_name":"Marshall Eliuk Peace River Community Health Centre","lat":56.2358,"lng":-117.2906,"aliases":["peace river","Peace River","Marshall Eliuk Peace River Community Health Centre"],"total_hours":16.5,"years_active":1,"episode_count":1,"monthly":{"2025-06":9.0,"2025-07":7.5},"has_disruption_data":true,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":1,"2026":0}},{"name":"high prairie","display_name":"High Prairie","facility_name":"High Prairie Health Complex","lat":55.4347,"lng":-116.4886,"aliases":["high prairie","High Prairie","High Prairie Health Complex"],"total_hours":20.0,"years_active":1,"episode_count":2,"monthly":{"2025-03":8.0,"2025-08":12.0},"has_disruption_data":true,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":2,"2026":0}},{"name":"manning","display_name":"Manning","facility_name":"Manning Community Health Centre","lat":56.9183,"lng":-117.6258,"aliases":["manning","Manning","Manning Community Health Centre"],"total_hours":8.0,"years_active":1,"episode_count":1,"monthly":{"2022-12":8.0},"has_disruption_data":true,"episodes_by_year":{"2021":0,"2022":1,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"tofield","display_name":"Tofield","facility_name":"Tofield Health Centre","lat":53.3661,"lng":-112.6669,"aliases":["tofield","Tofield","Tofield Health Centre"],"total_hours":3132.0,"years_active":2,"episode_count":20,"monthly":{"2022-12":364.0,"2023-01":372.0,"2023-02":336.0,"2023-03":372.0,"2023-04":360.0,"2023-05":372.0,"2023-06":360.0,"2023-07":309.0,"2023-08":248.0,"2023-09":39.0},"has_disruption_data":true,"episodes_by_year":{"2021":0,"2022":10,"2023":10,"2024":0,"2025":0,"2026":0}},{"name":"daysland","display_name":"Daysland","facility_name":"Daysland Health Centre","lat":52.8736,"lng":-112.2497,"aliases":["daysland","Daysland","Daysland Health Centre"],"total_hours":1171.0,"years_active":3,"episode_count":24,"monthly":{"2021-10":96.0,"2022-02":130.0,"2022-10":146.0,"2022-11":162.0,"2022-12":160.0,"2023-01":155.0,"2023-02":144.0,"2023-03":169.0,"2023-04":9.0},"has_disruption_data":true,"episodes_by_year":{"2021":2,"2022":17,"2023":5,"2024":0,"2025":0,"2026":0}},{"name":"jasper","display_name":"Jasper","facility_name":"Seton - Jasper Healthcare Centre","lat":52.8737,"lng":-118.0814,"aliases":["jasper","Jasper","Seton - Jasper Healthcare Centre"],"total_hours":561.0,"years_active":1,"episode_count":1,"monthly":{"2024-07":216.0,"2024-08":345.0},"has_disruption_data":true,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":1,"2025":0,"2026":0}},{"name":"fox creek","display_name":"Fox Creek","facility_name":"Fox Creek Healthcare Centre","lat":54.4044,"lng":-116.7886,"aliases":["fox creek","Fox Creek","Fox Creek Healthcare Centre"],"total_hours":480.0,"years_active":1,"episode_count":1,"monthly":{"2023-05":480.0},"has_disruption_data":true,"episodes_by_year":{"2021":0,"2022":0,"2023":1,"2024":0,"2025":0,"2026":0}},{"name":"fort vermilion","display_name":"Fort Vermilion","facility_name":"St. Theresa General Hospital","lat":58.3833,"lng":-116.0333,"aliases":["fort vermilion","fort vermillion","Fort Vermilion","St. Theresa General Hospital"],"total_hours":416.0,"years_active":1,"episode_count":3,"monthly":{"2021-12":144.0,"2025-05":72.0,"2025-06":200.0},"has_disruption_data":true,"episodes_by_year":{"2021":1,"2022":0,"2023":0,"2024":0,"2025":2,"2026":0}},{"name":"grande cache","display_name":"Grande Cache","facility_name":"Grande Cache Community Health Complex","lat":53.8856,"lng":-119.1419,"aliases":["grande cache","Grande Cache","Grande Cache Community Health Complex"],"total_hours":72.0,"years_active":1,"episode_count":1,"monthly":{"2025-11":72.0},"has_disruption_data":true,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":1,"2026":0}},{"name":"mclennan","display_name":"McLennan / Sacred Heart","facility_name":"Sacred Heart Community Health Centre","lat":55.7019,"lng":-116.8869,"aliases":["mclennan","sacred heart","McLennan / Sacred Heart","Sacred Heart Community Health Centre","McLennan"],"total_hours":629.0,"years_active":2,"episode_count":19,"monthly":{"2021-08":24.0,"2021-09":96.0,"2021-11":24.0,"2021-12":168.0,"2022-01":192.0,"2022-02":24.0,"2022-03":72.0,"2022-12":24.0,"2026-03":5.0},"has_disruption_data":true,"episodes_by_year":{"2021":9,"2022":9,"2023":0,"2024":0,"2025":0,"2026":1}},{"name":"viking","display_name":"Viking","facility_name":"Viking Health Centre","lat":53.0975,"lng":-111.7747,"aliases":["viking","Viking","Viking Health Centre"],"total_hours":34.0,"years_active":1,"episode_count":1,"monthly":{"2023-10":34.0},"has_disruption_data":true,"episodes_by_year":{"2021":0,"2022":0,"2023":1,"2024":0,"2025":0,"2026":0}},{"name":"ponoka","display_name":"Ponoka","facility_name":"Ponoka Hospital and Care Centre","lat":52.6814,"lng":-113.5739,"aliases":["ponoka","ponoka hospital and","Ponoka","Ponoka Hospital and Care Centre"],"total_hours":326.0,"years_active":5,"episode_count":19,"monthly":{"2022-02":15.0,"2022-03":24.0,"2022-09":20.0,"2023-02":15.0,"2023-03":10.5,"2023-06":6.5,"2023-07":18.0,"2023-08":57.0,"2023-09":40.0,"2023-10":32.0,"2023-11":14.0,"2024-06":22.0,"2025-04":10.0,"2025-06":10.0,"2025-12":17.0,"2026-03":15.0},"has_disruption_data":true,"episodes_by_year":{"2021":0,"2022":3,"2023":11,"2024":1,"2025":3,"2026":1}},{"name":"wainwright","display_name":"Wainwright","facility_name":"Wainwright Health Centre","lat":52.8378,"lng":-110.8489,"aliases":["wainwright","Wainwright","Wainwright Health Centre"],"total_hours":12.0,"years_active":1,"episode_count":1,"monthly":{"2023-12":12.0},"has_disruption_data":true,"episodes_by_year":{"2021":0,"2022":0,"2023":1,"2024":0,"2025":0,"2026":0}},{"name":"mayerthorpe","display_name":"Mayerthorpe","facility_name":"Mayerthorpe Healthcare Centre","lat":53.9514,"lng":-115.1428,"aliases":["mayerthorpe","Mayerthorpe","Mayerthorpe Healthcare Centre"],"total_hours":7.5,"years_active":1,"episode_count":1,"monthly":{"2025-07":7.5},"has_disruption_data":true,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":1,"2026":0}},{"name":"ahs zero alberta childrens hospital","display_name":"Alberta Children's Hospital","facility_name":"Alberta Children's Hospital","community":"Calgary","lat":51.0744,"lng":-114.1486,"aliases":["Alberta Children's Hospital","ACH","Calgary"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero bonnyville healthcare centre","display_name":"Bonnyville Healthcare Centre","facility_name":"Bonnyville Healthcare Centre","community":"Bonnyville","lat":54.2679,"lng":-110.735,"aliases":["Bonnyville","Bonnyville Healthcare Centre"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero brooks health centre","display_name":"Brooks Health Centre","facility_name":"Brooks Health Centre","community":"Brooks","lat":50.5658,"lng":-111.8986,"aliases":["Brooks","Brooks Health Centre"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero canmore general hospital","display_name":"Canmore General Hospital","facility_name":"Canmore General Hospital","community":"Canmore","lat":51.0933,"lng":-115.3605,"aliases":["Canmore","Canmore General Hospital"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero cardston health centre","display_name":"Cardston Health Centre","facility_name":"Cardston Health Centre","community":"Cardston","lat":49.1995,"lng":-113.306,"aliases":["Cardston","Cardston Health Centre"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero chinook regional hospital","display_name":"Chinook Regional Hospital","facility_name":"Chinook Regional Hospital","community":"Lethbridge","lat":49.6879,"lng":-112.837,"aliases":["Lethbridge","Chinook Regional Hospital","CRH"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero claresholm general hospital","display_name":"Claresholm General Hospital","facility_name":"Claresholm General Hospital","community":"Claresholm","lat":50.0247,"lng":-113.579,"aliases":["Claresholm","Claresholm General Hospital"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero crowsnest pass health centre","display_name":"Crowsnest Pass Health Centre","facility_name":"Crowsnest Pass Health Centre","community":"Blairmore","lat":49.608,"lng":-114.449,"aliases":["Crowsnest Pass","Blairmore","Crowsnest Pass Health Centre"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero devon general hospital","display_name":"Devon General Hospital","facility_name":"Devon General Hospital","community":"Devon","lat":53.363,"lng":-113.728,"aliases":["Devon","Devon General Hospital"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero didsbury district health services","display_name":"Didsbury District Health Services","facility_name":"Didsbury District Health Services","community":"Didsbury","lat":51.662,"lng":-114.135,"aliases":["Didsbury","Didsbury District Health Services"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero foothills medical centre","display_name":"Foothills Medical Centre","facility_name":"Foothills Medical Centre","community":"Calgary","lat":51.0652,"lng":-114.133,"aliases":["Calgary","Foothills Medical Centre","FMC"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero fort saskatchewan community hospital","display_name":"Fort Saskatchewan Community Hospital","facility_name":"Fort Saskatchewan Community Hospital","community":"Fort Saskatchewan","lat":53.711,"lng":-113.198,"aliases":["Fort Saskatchewan","Fort Saskatchewan Community Hospital"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero grande prairie regional hospital","display_name":"Grande Prairie Regional Hospital","facility_name":"Grande Prairie Regional Hospital","community":"Grande Prairie","lat":55.174,"lng":-118.814,"aliases":["Grande Prairie","Grande Prairie Regional Hospital","GPRH"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero grey nuns community hospital","display_name":"Grey Nuns Community Hospital","facility_name":"Grey Nuns Community Hospital","community":"Edmonton","lat":53.461,"lng":-113.428,"aliases":["Edmonton","Grey Nuns","Grey Nuns Community Hospital"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero hanna health centre","display_name":"Hanna Health Centre","facility_name":"Hanna Health Centre","community":"Hanna","lat":51.641,"lng":-111.925,"aliases":["Hanna","Hanna Health Centre"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero high river general hospital","display_name":"High River General Hospital","facility_name":"High River General Hospital","community":"High River","lat":50.579,"lng":-113.869,"aliases":["High River","High River General Hospital"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero innisfail health centre","display_name":"Innisfail Health Centre","facility_name":"Innisfail Health Centre","community":"Innisfail","lat":52.027,"lng":-113.95,"aliases":["Innisfail","Innisfail Health Centre"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero killam health care centre","display_name":"Killam Health Care Centre","facility_name":"Killam Health Care Centre","community":"Killam","lat":52.79,"lng":-111.852,"aliases":["Killam","Killam Health Care Centre"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero lamont health care centre","display_name":"Lamont Health Care Centre","facility_name":"Lamont Health Care Centre","community":"Lamont","lat":53.76,"lng":-112.782,"aliases":["Lamont","Lamont Health Care Centre"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero leduc community hospital","display_name":"Leduc Community Hospital","facility_name":"Leduc Community Hospital","community":"Leduc","lat":53.263,"lng":-113.553,"aliases":["Leduc","Leduc Community Hospital"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero lloydminster hospital","display_name":"Lloydminster Hospital","facility_name":"Lloydminster Hospital (Saskatchewan)","community":"Lloydminster","lat":53.277,"lng":-110.009,"aliases":["Lloydminster","Lloydminster Hospital","Lloydminster Hospital Saskatchewan","Lloydminster Hospital (Saskatchewan)"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero medicine hat regional hospital","display_name":"Medicine Hat Regional Hospital","facility_name":"Medicine Hat Regional Hospital","community":"Medicine Hat","lat":50.041,"lng":-110.688,"aliases":["Medicine Hat","Medicine Hat Regional Hospital","MHRH"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero mineral springs hospital","display_name":"Mineral Springs Hospital","facility_name":"Mineral Springs Hospital","community":"Banff","lat":51.18,"lng":-115.571,"aliases":["Banff","Mineral Springs Hospital"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero misericordia community hospital","display_name":"Misericordia Community Hospital","facility_name":"Misericordia Community Hospital","community":"Edmonton","lat":53.521,"lng":-113.608,"aliases":["Edmonton","Misericordia","Misericordia Community Hospital"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero northeast community health centre","display_name":"Northeast Community Health Centre","facility_name":"Northeast Community Health Centre","community":"Edmonton","lat":53.613,"lng":-113.424,"aliases":["Edmonton","Northeast Community Health Centre","NECHC"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero northern lights regional health centre","display_name":"Northern Lights Regional Health Centre","facility_name":"Northern Lights Regional Health Centre","community":"Fort McMurray","lat":56.725,"lng":-111.372,"aliases":["Fort McMurray","Northern Lights Regional Health Centre","NLRHC"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero northwest health centre","display_name":"Northwest Health Centre","facility_name":"Northwest Health Centre","community":"High Level","lat":58.516,"lng":-117.136,"aliases":["High Level","Northwest Health Centre"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero oilfields general hospital","display_name":"Oilfields General Hospital","facility_name":"Oilfields General Hospital","community":"Diamond Valley","lat":50.688,"lng":-114.233,"aliases":["Diamond Valley","Black Diamond","Oilfields General Hospital"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero olds hospital and care centre","display_name":"Olds Hospital and Care Centre","facility_name":"Olds Hospital and Care Centre","community":"Olds","lat":51.792,"lng":-114.104,"aliases":["Olds","Olds Hospital and Care Centre"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero our lady of the rosary hospital","display_name":"Our Lady of the Rosary Hospital","facility_name":"Our Lady of the Rosary Hospital","community":"Castor","lat":52.219,"lng":-111.906,"aliases":["Castor","Our Lady of the Rosary Hospital"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero peter lougheed centre","display_name":"Peter Lougheed Centre","facility_name":"Peter Lougheed Centre","community":"Calgary","lat":51.079,"lng":-113.984,"aliases":["Calgary","Peter Lougheed Centre","PLC"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero provost health centre","display_name":"Provost Health Centre","facility_name":"Provost Health Centre","community":"Provost","lat":52.354,"lng":-110.262,"aliases":["Provost","Provost Health Centre"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero raymond health centre","display_name":"Raymond Health Centre","facility_name":"Raymond Health Centre","community":"Raymond","lat":49.464,"lng":-112.652,"aliases":["Raymond","Raymond Health Centre"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero red deer regional hospital centre","display_name":"Red Deer Regional Hospital Centre","facility_name":"Red Deer Regional Hospital Centre","community":"Red Deer","lat":52.269,"lng":-113.807,"aliases":["Red Deer","Red Deer Regional Hospital Centre","RDRHC"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero rimbey hospital and care centre","display_name":"Rimbey Hospital and Care Centre","facility_name":"Rimbey Hospital and Care Centre","community":"Rimbey","lat":52.639,"lng":-114.236,"aliases":["Rimbey","Rimbey Hospital and Care Centre"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero rockyview general hospital","display_name":"Rockyview General Hospital","facility_name":"Rockyview General Hospital","community":"Calgary","lat":50.99,"lng":-114.097,"aliases":["Calgary","Rockyview General Hospital","RGH"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero royal alexandra hospital","display_name":"Royal Alexandra Hospital","facility_name":"Royal Alexandra Hospital","community":"Edmonton","lat":53.558,"lng":-113.497,"aliases":["Edmonton","Royal Alexandra Hospital","RAH"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero slave lake healthcare centre","display_name":"Slave Lake Healthcare Centre","facility_name":"Slave Lake Healthcare Centre","community":"Slave Lake","lat":55.284,"lng":-114.769,"aliases":["Slave Lake","Slave Lake Healthcare Centre"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero south health campus","display_name":"South Health Campus","facility_name":"South Health Campus","community":"Calgary","lat":50.883,"lng":-113.952,"aliases":["Calgary","South Health Campus","SHC"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero st josephs general hospital","display_name":"St. Joseph's General Hospital","facility_name":"St. Joseph's General Hospital","community":"Vegreville","lat":53.493,"lng":-112.051,"aliases":["Vegreville","St Joseph's General Hospital","St. Josephs General Hospital","St. Joseph's General Hospital"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero st marys hospital","display_name":"St. Mary's Hospital","facility_name":"St. Mary's Hospital","community":"Camrose","lat":53.019,"lng":-112.841,"aliases":["Camrose","St Mary's Hospital","St. Marys Hospital","St. Mary's Hospital"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero strathcona community hospital","display_name":"Strathcona Community Hospital","facility_name":"Strathcona Community Hospital","community":"Sherwood Park","lat":53.547,"lng":-113.296,"aliases":["Sherwood Park","Strathcona Community Hospital"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero strathmore district health services","display_name":"Strathmore District Health Services","facility_name":"Strathmore District Health Services","community":"Strathmore","lat":51.037,"lng":-113.386,"aliases":["Strathmore","Strathmore District Health Services"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero sturgeon community hospital","display_name":"Sturgeon Community Hospital","facility_name":"Sturgeon Community Hospital","community":"St. Albert","lat":53.653,"lng":-113.63,"aliases":["St Albert","St. Albert","Sturgeon Community Hospital"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero taber health centre","display_name":"Taber Health Centre","facility_name":"Taber Health Centre","community":"Taber","lat":49.787,"lng":-112.144,"aliases":["Taber","Taber Health Centre"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero three hills health centre","display_name":"Three Hills Health Centre","facility_name":"Three Hills Health Centre","community":"Three Hills","lat":51.704,"lng":-113.264,"aliases":["Three Hills","Three Hills Health Centre"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero university of alberta hospital","display_name":"University of Alberta Hospital","facility_name":"University of Alberta Hospital","community":"Edmonton","lat":53.521,"lng":-113.525,"aliases":["Edmonton","University of Alberta Hospital","UAH"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero vulcan community health centre","display_name":"Vulcan Community Health Centre","facility_name":"Vulcan Community Health Centre","community":"Vulcan","lat":50.401,"lng":-113.261,"aliases":["Vulcan","Vulcan Community Health Centre"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero westview health centre stony plain","display_name":"WestView Health Centre - Stony Plain","facility_name":"WestView Health Centre - Stony Plain","community":"Stony Plain","lat":53.541,"lng":-114.006,"aliases":["Stony Plain","WestView Health Centre","Westview Health Centre","WestView Health Centre - Stony Plain"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero wetaskiwin hospital and care centre","display_name":"Wetaskiwin Hospital and Care Centre","facility_name":"Wetaskiwin Hospital and Care Centre","community":"Wetaskiwin","lat":52.969,"lng":-113.376,"aliases":["Wetaskiwin","Wetaskiwin Hospital and Care Centre"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}},{"name":"ahs zero whitecourt healthcare centre","display_name":"Whitecourt Healthcare Centre","facility_name":"Whitecourt Healthcare Centre","community":"Whitecourt","lat":54.145,"lng":-115.684,"aliases":["Whitecourt","Whitecourt Healthcare Centre"],"total_hours":0,"years_active":0,"episode_count":0,"monthly":{},"has_disruption_data":false,"episodes_by_year":{"2021":0,"2022":0,"2023":0,"2024":0,"2025":0,"2026":0}}]};
+
+
+
+
+
+
+
+const YEAR_SUMMARY = {"all":{"hours":152240.4666,"episodes":1068,"affected_sites":50,"reference_sites":101},"2021":{"hours":6289.0,"episodes":64,"affected_sites":15,"reference_sites":101},"2022":{"hours":28125.5,"episodes":241,"affected_sites":27,"reference_sites":101},"2023":{"hours":38769.25,"episodes":217,"affected_sites":33,"reference_sites":101},"2024":{"hours":33705.2333,"episodes":293,"affected_sites":27,"reference_sites":101},"2025":{"hours":32848.4833,"episodes":304,"affected_sites":35,"reference_sites":101},"2026":{"hours":12503.0,"episodes":86,"affected_sites":27,"reference_sites":101}};
+
+
+
+
+
+
+
+
 
 
 
@@ -1575,7 +3139,15 @@ const PROJECT_MONTHS = [];
 
 
 
+
+
+
+
 let _cy = 2021, _cm = 8;
+
+
+
+
 
 
 
@@ -1583,7 +3155,15 @@ while (_cy < 2026 || (_cy === 2026 && _cm <= 5)) {
 
 
 
+
+
+
+
   PROJECT_MONTHS.push(_cy + '-' + String(_cm).padStart(2, '0'));
+
+
+
+
 
 
 
@@ -1591,7 +3171,19 @@ while (_cy < 2026 || (_cy === 2026 && _cm <= 5)) {
 
 
 
+
+
+
+
 }
+
+
+
+
+
+
+
+
 
 
 
@@ -1603,7 +3195,15 @@ const DISPLAY_NAMES = {
 
 
 
+
+
+
+
   'fort vermillion': 'Fort Vermilion',
+
+
+
+
 
 
 
@@ -1611,7 +3211,15 @@ const DISPLAY_NAMES = {
 
 
 
+
+
+
+
   'ponoka hospital and': 'Ponoka',
+
+
+
+
 
 
 
@@ -1619,7 +3227,15 @@ const DISPLAY_NAMES = {
 
 
 
+
+
+
+
   'mclennan': 'McLennan',
+
+
+
+
 
 
 
@@ -1627,7 +3243,15 @@ const DISPLAY_NAMES = {
 
 
 
+
+
+
+
 };
+
+
+
+
 
 
 
@@ -1635,7 +3259,15 @@ const DISPLAY_COORDS = {
 
 
 
+
+
+
+
   // Sacred Heart entries refer to the McLennan/Sacred Heart facility context.
+
+
+
+
 
 
 
@@ -1643,7 +3275,19 @@ const DISPLAY_COORDS = {
 
 
 
+
+
+
+
 };
+
+
+
+
+
+
+
+
 
 
 
@@ -1655,7 +3299,15 @@ function titleCaseName(name) {
 
 
 
+
+
+
+
   return String(name).split(' ').map(w => {
+
+
+
+
 
 
 
@@ -1663,7 +3315,15 @@ function titleCaseName(name) {
 
 
 
+
+
+
+
     return w.charAt(0).toUpperCase() + w.slice(1);
+
+
+
+
 
 
 
@@ -1671,7 +3331,15 @@ function titleCaseName(name) {
 
 
 
+
+
+
+
 }
+
+
+
+
 
 
 
@@ -1679,11 +3347,23 @@ function displayName(site) {
 
 
 
+
+
+
+
   return site.display_name || DISPLAY_NAMES[site.name] || titleCaseName(site.name);
 
 
 
+
+
+
+
 }
+
+
+
+
 
 
 
@@ -1691,7 +3371,15 @@ function displayLatLng(site) {
 
 
 
+
+
+
+
   const override = DISPLAY_COORDS[site.name];
+
+
+
+
 
 
 
@@ -1699,7 +3387,15 @@ function displayLatLng(site) {
 
 
 
+
+
+
+
 }
+
+
+
+
 
 
 
@@ -1707,7 +3403,15 @@ function siteIdNote(site) {
 
 
 
+
+
+
+
   if (site.has_disruption_data === false) {
+
+
+
+
 
 
 
@@ -1715,7 +3419,15 @@ function siteIdNote(site) {
 
 
 
+
+
+
+
   }
+
+
+
+
 
 
 
@@ -1723,7 +3435,15 @@ function siteIdNote(site) {
 
 
 
+
+
+
+
     return 'AHS facility listing: ' + site.facility_name;
+
+
+
+
 
 
 
@@ -1731,11 +3451,23 @@ function siteIdNote(site) {
 
 
 
+
+
+
+
   return '';
 
 
 
+
+
+
+
 }
+
+
+
+
 
 
 
@@ -1743,7 +3475,15 @@ function fmtMonth(ym) {
 
 
 
+
+
+
+
   const [y, m] = ym.split('-');
+
+
+
+
 
 
 
@@ -1751,11 +3491,23 @@ function fmtMonth(ym) {
 
 
 
+
+
+
+
   return names[parseInt(m)-1] + ' ' + y;
 
 
 
+
+
+
+
 }
+
+
+
+
 
 
 
@@ -1763,7 +3515,15 @@ function fmtHours(h) {
 
 
 
+
+
+
+
   const rounded = Math.round(Number(h) || 0);
+
+
+
+
 
 
 
@@ -1771,7 +3531,15 @@ function fmtHours(h) {
 
 
 
+
+
+
+
 }
+
+
+
+
 
 
 
@@ -1779,7 +3547,15 @@ function escapeHtml(value) {
 
 
 
+
+
+
+
   return String(value).replace(/[&<>"']/g, ch => ({
+
+
+
+
 
 
 
@@ -1787,11 +3563,23 @@ function escapeHtml(value) {
 
 
 
+
+
+
+
   }[ch]));
 
 
 
+
+
+
+
 }
+
+
+
+
 
 
 
@@ -1799,11 +3587,23 @@ function normalizeSearch(value) {
 
 
 
+
+
+
+
   return String(value || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
 
 
 
+
+
+
+
 }
+
+
+
+
 
 
 
@@ -1811,7 +3611,15 @@ function siteSearchText(site) {
 
 
 
+
+
+
+
   const aliases = Array.isArray(site.aliases) ? site.aliases.join(' ') : '';
+
+
+
+
 
 
 
@@ -1819,7 +3627,15 @@ function siteSearchText(site) {
 
 
 
+
+
+
+
 }
+
+
+
+
 
 
 
@@ -1827,7 +3643,15 @@ function siteMatchesSearch(site, query) {
 
 
 
+
+
+
+
   const q = normalizeSearch(query);
+
+
+
+
 
 
 
@@ -1835,11 +3659,23 @@ function siteMatchesSearch(site, query) {
 
 
 
+
+
+
+
   return q.split(/\s+/).every(part => siteSearchText(site).includes(part));
 
 
 
+
+
+
+
 }
+
+
+
+
 
 
 
@@ -1847,7 +3683,15 @@ function siteSearchRank(site, query) {
 
 
 
+
+
+
+
   const q = normalizeSearch(query);
+
+
+
+
 
 
 
@@ -1855,7 +3699,15 @@ function siteSearchRank(site, query) {
 
 
 
+
+
+
+
   const nm = normalizeSearch(site.name);
+
+
+
+
 
 
 
@@ -1863,7 +3715,15 @@ function siteSearchRank(site, query) {
 
 
 
+
+
+
+
   if (!q) return 0;
+
+
+
+
 
 
 
@@ -1871,7 +3731,15 @@ function siteSearchRank(site, query) {
 
 
 
+
+
+
+
   if (dn.startsWith(q) || nm.startsWith(q) || aliases.some(a => a.startsWith(q))) return 1;
+
+
+
+
 
 
 
@@ -1879,7 +3747,15 @@ function siteSearchRank(site, query) {
 
 
 
+
+
+
+
 }
+
+
+
+
 
 
 
@@ -1887,11 +3763,23 @@ function periodLabel(year) {
 
 
 
+
+
+
+
   return year === 'all' ? 'All years' : year;
 
 
 
+
+
+
+
 }
+
+
+
+
 
 
 
@@ -1899,11 +3787,23 @@ function serviceLabel() {
 
 
 
+
+
+
+
   return selectedService === 'ed' ? 'Emergency Department' : 'All analyzed services';
 
 
 
+
+
+
+
 }
+
+
+
+
 
 
 
@@ -1911,7 +3811,15 @@ function serviceLayerNote() {
 
 
 
+
+
+
+
   return selectedService === 'all'
+
+
+
+
 
 
 
@@ -1919,11 +3827,23 @@ function serviceLayerNote() {
 
 
 
+
+
+
+
     : 'Emergency Department layer selected.';
 
 
 
+
+
+
+
 }
+
+
+
+
 
 
 
@@ -1931,7 +3851,15 @@ function projectMonthsForYear(year) {
 
 
 
+
+
+
+
   if (year === 'all') return PROJECT_MONTHS;
+
+
+
+
 
 
 
@@ -1939,7 +3867,15 @@ function projectMonthsForYear(year) {
 
 
 
+
+
+
+
 }
+
+
+
+
 
 
 
@@ -1947,7 +3883,15 @@ function siteHours(site, year) {
 
 
 
+
+
+
+
   if (year === 'all') return Number(site.total_hours) || 0;
+
+
+
+
 
 
 
@@ -1955,7 +3899,15 @@ function siteHours(site, year) {
 
 
 
+
+
+
+
     return month.startsWith(year + '-') ? sum + (Number(value) || 0) : sum;
+
+
+
+
 
 
 
@@ -1963,7 +3915,15 @@ function siteHours(site, year) {
 
 
 
+
+
+
+
 }
+
+
+
+
 
 
 
@@ -1971,7 +3931,15 @@ function siteEpisodes(site, year) {
 
 
 
+
+
+
+
   if (site.has_disruption_data === false) return 0;
+
+
+
+
 
 
 
@@ -1979,11 +3947,23 @@ function siteEpisodes(site, year) {
 
 
 
+
+
+
+
   return Number((site.episodes_by_year || {})[year]) || 0;
 
 
 
+
+
+
+
 }
+
+
+
+
 
 
 
@@ -1991,11 +3971,27 @@ function yearCount(site) {
 
 
 
+
+
+
+
   return new Set(Object.keys(site.monthly || {}).map(m => m.slice(0, 4))).size;
 
 
 
+
+
+
+
 }
+
+
+
+
+
+
+
+
 
 
 
@@ -2007,7 +4003,15 @@ const map = L.map('map', { zoomControl: true }).setView([54.0, -114.5], 6);
 
 
 
+
+
+
+
 L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+
+
+
+
 
 
 
@@ -2015,7 +4019,15 @@ L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
 
 
 
+
+
+
+
   maxZoom: 18
+
+
+
+
 
 
 
@@ -2027,7 +4039,19 @@ L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
 
 
 
+
+
+
+
+
+
+
+
 const minR = 5, maxR = 28;
+
+
+
+
 
 
 
@@ -2035,7 +4059,15 @@ function radiusFor(h, maxH) {
 
 
 
+
+
+
+
   if (!h || h <= 0 || !maxH || maxH <= 0) return 3;
+
+
+
+
 
 
 
@@ -2043,7 +4075,15 @@ function radiusFor(h, maxH) {
 
 
 
+
+
+
+
 }
+
+
+
+
 
 
 
@@ -2051,11 +4091,23 @@ function hasActiveSearch() {
 
 
 
+
+
+
+
   return normalizeSearch(searchQuery).length > 0;
 
 
 
+
+
+
+
 }
+
+
+
+
 
 
 
@@ -2063,11 +4115,23 @@ function showSiteInCurrentMode(site) {
 
 
 
+
+
+
+
   return showNoDataSites || site.has_disruption_data !== false;
 
 
 
+
+
+
+
 }
+
+
+
+
 
 
 
@@ -2075,7 +4139,15 @@ function currentSearchSites() {
 
 
 
+
+
+
+
   const base = DATA.sites.filter(showSiteInCurrentMode);
+
+
+
+
 
 
 
@@ -2083,11 +4155,23 @@ function currentSearchSites() {
 
 
 
+
+
+
+
   return base.filter(site => siteMatchesSearch(site, searchQuery));
 
 
 
+
+
+
+
 }
+
+
+
+
 
 
 
@@ -2095,7 +4179,15 @@ function currentVisibleSites() {
 
 
 
+
+
+
+
   const base = currentSearchSites();
+
+
+
+
 
 
 
@@ -2103,7 +4195,15 @@ function currentVisibleSites() {
 
 
 
+
+
+
+
   if (!map || !map.getBounds) return base;
+
+
+
+
 
 
 
@@ -2111,7 +4211,15 @@ function currentVisibleSites() {
 
 
 
+
+
+
+
   const visible = base.filter(site => {
+
+
+
+
 
 
 
@@ -2119,7 +4227,15 @@ function currentVisibleSites() {
 
 
 
+
+
+
+
     return bounds.contains(L.latLng(ll[0], ll[1]));
+
+
+
+
 
 
 
@@ -2127,7 +4243,15 @@ function currentVisibleSites() {
 
 
 
+
+
+
+
   return visible.length ? visible : base;
+
+
+
+
 
 
 
@@ -2135,7 +4259,15 @@ function currentVisibleSites() {
 
 
 
+
+
+
+
 function currentScaleMaxHours() {
+
+
+
+
 
 
 
@@ -2143,11 +4275,23 @@ function currentScaleMaxHours() {
 
 
 
+
+
+
+
     .map(site => siteHours(site, selectedYear))
 
 
 
+
+
+
+
     .filter(h => h > 0);
+
+
+
+
 
 
 
@@ -2159,7 +4303,19 @@ function currentScaleMaxHours() {
 
 
 
+
+
+
+
+
+
+
+
   const filteredHours = currentSearchSites()
+
+
+
+
 
 
 
@@ -2167,7 +4323,15 @@ function currentScaleMaxHours() {
 
 
 
+
+
+
+
     .filter(h => h > 0);
+
+
+
+
 
 
 
@@ -2179,7 +4343,19 @@ function currentScaleMaxHours() {
 
 
 
+
+
+
+
+
+
+
+
   const allHours = DATA.sites.filter(site => site.has_disruption_data !== false).map(site => siteHours(site, selectedYear)).filter(h => h > 0);
+
+
+
+
 
 
 
@@ -2187,7 +4363,15 @@ function currentScaleMaxHours() {
 
 
 
+
+
+
+
 }
+
+
+
+
 
 
 
@@ -2195,7 +4379,15 @@ function niceHours(value) {
 
 
 
+
+
+
+
   const h = Math.max(0, Number(value) || 0);
+
+
+
+
 
 
 
@@ -2203,7 +4395,15 @@ function niceHours(value) {
 
 
 
+
+
+
+
   if (h >= 5000) return Math.round(h / 500) * 500;
+
+
+
+
 
 
 
@@ -2211,7 +4411,15 @@ function niceHours(value) {
 
 
 
+
+
+
+
   if (h >= 250) return Math.round(h / 50) * 50;
+
+
+
+
 
 
 
@@ -2219,11 +4427,23 @@ function niceHours(value) {
 
 
 
+
+
+
+
   return Math.max(1, Math.round(h));
 
 
 
+
+
+
+
 }
+
+
+
+
 
 
 
@@ -2231,7 +4451,15 @@ function legendExamples(maxH) {
 
 
 
+
+
+
+
   if (!maxH || maxH <= 0) return [];
+
+
+
+
 
 
 
@@ -2239,11 +4467,27 @@ function legendExamples(maxH) {
 
 
 
+
+
+
+
   return raw.filter((v, idx, arr) => v > 0 && arr.indexOf(v) === idx).sort((a, b) => a - b);
 
 
 
+
+
+
+
 }
+
+
+
+
+
+
+
+
 
 
 
@@ -2255,7 +4499,15 @@ const sidebar = document.getElementById('sidebar');
 
 
 
+
+
+
+
 const yearSelect = document.getElementById('yearSelect');
+
+
+
+
 
 
 
@@ -2263,7 +4515,15 @@ const serviceSelect = document.getElementById('serviceSelect');
 
 
 
+
+
+
+
 const showNoDataToggle = document.getElementById('showNoDataSites');
+
+
+
+
 
 
 
@@ -2271,7 +4531,15 @@ let activeChart = null;
 
 
 
+
+
+
+
 let currentSite = null;
+
+
+
+
 
 
 
@@ -2279,7 +4547,15 @@ let selectedYear = 'all';
 
 
 
+
+
+
+
 let selectedService = 'all';
+
+
+
+
 
 
 
@@ -2287,7 +4563,15 @@ let searchQuery = '';
 
 
 
+
+
+
+
 let showNoDataSites = true;
+
+
+
+
 
 
 
@@ -2295,7 +4579,15 @@ const HOME_LIST_LIMIT = 10;
 
 
 
+
+
+
+
 const markerRows = [];
+
+
+
+
 
 
 
@@ -2307,7 +4599,19 @@ const summaryStats = document.getElementById('summaryStats');
 
 
 
+
+
+
+
+
+
+
+
 function updateSummaryStats() {
+
+
+
+
 
 
 
@@ -2315,7 +4619,15 @@ function updateSummaryStats() {
 
 
 
+
+
+
+
   const stats = YEAR_SUMMARY[selectedYear] || YEAR_SUMMARY.all;
+
+
+
+
 
 
 
@@ -2323,7 +4635,15 @@ function updateSummaryStats() {
 
 
 
+
+
+
+
     '<strong>' + fmtHours(stats.hours) + '</strong>closure hours' +
+
+
+
+
 
 
 
@@ -2331,7 +4651,15 @@ function updateSummaryStats() {
 
 
 
+
+
+
+
     '<strong>' + fmtHours(stats.affected_sites) + '</strong>sites affected';
+
+
+
+
 
 
 
@@ -2339,7 +4667,19 @@ function updateSummaryStats() {
 
 
 
+
+
+
+
 }
+
+
+
+
+
+
+
+
 
 
 
@@ -2351,11 +4691,27 @@ function statBlock(label, value) {
 
 
 
+
+
+
+
   return '<div class="stat-block"><div class="stat-label">' + label + '</div><div class="stat-value">' + value + '</div></div>';
 
 
 
+
+
+
+
 }
+
+
+
+
+
+
+
+
 
 
 
@@ -2367,7 +4723,15 @@ function avgHoursPerEpisode(site, year) {
 
 
 
+
+
+
+
   const eps = siteEpisodes(site, year);
+
+
+
+
 
 
 
@@ -2375,11 +4739,27 @@ function avgHoursPerEpisode(site, year) {
 
 
 
+
+
+
+
   return fmtHours(siteHours(site, year) / eps);
 
 
 
+
+
+
+
 }
+
+
+
+
+
+
+
+
 
 
 
@@ -2391,11 +4771,27 @@ function destroyChart() {
 
 
 
+
+
+
+
   if (activeChart) { activeChart.destroy(); activeChart = null; }
 
 
 
+
+
+
+
 }
+
+
+
+
+
+
+
+
 
 
 
@@ -2407,7 +4803,15 @@ function renderHome() {
 
 
 
+
+
+
+
   currentSite = null;
+
+
+
+
 
 
 
@@ -2415,7 +4819,15 @@ function renderHome() {
 
 
 
+
+
+
+
   const q = searchQuery;
+
+
+
+
 
 
 
@@ -2423,7 +4835,15 @@ function renderHome() {
 
 
 
+
+
+
+
   let rows = DATA.sites
+
+
+
+
 
 
 
@@ -2431,7 +4851,15 @@ function renderHome() {
 
 
 
+
+
+
+
     .filter(site => hasQuery ? siteMatchesSearch(site, q) : siteHours(site, selectedYear) > 0)
+
+
+
+
 
 
 
@@ -2439,7 +4867,15 @@ function renderHome() {
 
 
 
+
+
+
+
       site,
+
+
+
+
 
 
 
@@ -2447,7 +4883,15 @@ function renderHome() {
 
 
 
+
+
+
+
       total: Number(site.total_hours) || 0,
+
+
+
+
 
 
 
@@ -2455,7 +4899,15 @@ function renderHome() {
 
 
 
+
+
+
+
     }))
+
+
+
+
 
 
 
@@ -2463,7 +4915,15 @@ function renderHome() {
 
 
 
+
+
+
+
       if (hasQuery && a.rank !== b.rank) return a.rank - b.rank;
+
+
+
+
 
 
 
@@ -2471,7 +4931,15 @@ function renderHome() {
 
 
 
+
+
+
+
       if (b.total !== a.total) return b.total - a.total;
+
+
+
+
 
 
 
@@ -2479,7 +4947,19 @@ function renderHome() {
 
 
 
+
+
+
+
     });
+
+
+
+
+
+
+
+
 
 
 
@@ -2491,7 +4971,19 @@ function renderHome() {
 
 
 
+
+
+
+
   const visibleRows = rows.slice(0, HOME_LIST_LIMIT);
+
+
+
+
+
+
+
+
 
 
 
@@ -2503,7 +4995,15 @@ function renderHome() {
 
 
 
+
+
+
+
     ? 'Search Results &middot; ' + periodLabel(selectedYear)
+
+
+
+
 
 
 
@@ -2515,11 +5015,27 @@ function renderHome() {
 
 
 
+
+
+
+
+
+
+
+
   const note = hasQuery
 
 
 
+
+
+
+
     ? (totalMatches ? totalMatches + ' AHS location' + (totalMatches === 1 ? '' : 's') + ' found.' + (totalMatches > HOME_LIST_LIMIT ? ' Showing the first ' + HOME_LIST_LIMIT + '; keep typing to narrow the list.' : '') : (showNoDataSites ? 'No AHS location found. Try another spelling or a nearby community name.' : 'No visible site found. Sites with no posted disruption data are currently hidden.'))
+
+
+
+
 
 
 
@@ -2531,7 +5047,19 @@ function renderHome() {
 
 
 
+
+
+
+
+
+
+
+
   sidebar.innerHTML =
+
+
+
+
 
 
 
@@ -2539,7 +5067,15 @@ function renderHome() {
 
 
 
+
+
+
+
       '<div class="panel-label">Find a Community</div>' +
+
+
+
+
 
 
 
@@ -2547,7 +5083,15 @@ function renderHome() {
 
 
 
+
+
+
+
       '<div class="search-note">' + note + '</div>' +
+
+
+
+
 
 
 
@@ -2555,7 +5099,15 @@ function renderHome() {
 
 
 
+
+
+
+
     '<div class="panel-label">' + label + '</div>' +
+
+
+
+
 
 
 
@@ -2563,7 +5115,15 @@ function renderHome() {
 
 
 
+
+
+
+
       (visibleRows.length ? visibleRows.map((row, idx) => {
+
+
+
+
 
 
 
@@ -2571,7 +5131,15 @@ function renderHome() {
 
 
 
+
+
+
+
           ? 'No posted data'
+
+
+
+
 
 
 
@@ -2579,7 +5147,15 @@ function renderHome() {
 
 
 
+
+
+
+
         const allYearText = selectedYear === 'all' ? '' : ' <span class="rank-hours">(' + fmtHours(row.total) + ' h all-year)</span>';
+
+
+
+
 
 
 
@@ -2587,7 +5163,15 @@ function renderHome() {
 
 
 
+
+
+
+
         return '<div class="rank-row" data-site-name="' + escapeHtml(row.site.name) + '">' +
+
+
+
+
 
 
 
@@ -2595,7 +5179,15 @@ function renderHome() {
 
 
 
+
+
+
+
           '<span class="rank-hours">' + selectedText + allYearText + '</span>' +
+
+
+
+
 
 
 
@@ -2603,7 +5195,15 @@ function renderHome() {
 
 
 
+
+
+
+
       }).join('') + (totalMatches > HOME_LIST_LIMIT ? '<div class="search-note">Showing ' + HOME_LIST_LIMIT + ' of ' + totalMatches + ' locations. Keep typing to narrow the search.</div>' : '') : '<div class="search-note">Try another spelling or nearby community name.</div>') +
+
+
+
+
 
 
 
@@ -2615,7 +5215,19 @@ function renderHome() {
 
 
 
+
+
+
+
+
+
+
+
   const input = document.getElementById('siteSearch');
+
+
+
+
 
 
 
@@ -2623,7 +5235,15 @@ function renderHome() {
 
 
 
+
+
+
+
     input.addEventListener('input', () => {
+
+
+
+
 
 
 
@@ -2631,7 +5251,15 @@ function renderHome() {
 
 
 
+
+
+
+
       refreshMapScale();
+
+
+
+
 
 
 
@@ -2639,7 +5267,15 @@ function renderHome() {
 
 
 
+
+
+
+
       fitToSearchResults();
+
+
+
+
 
 
 
@@ -2647,7 +5283,15 @@ function renderHome() {
 
 
 
+
+
+
+
       if (nextInput) {
+
+
+
+
 
 
 
@@ -2655,7 +5299,15 @@ function renderHome() {
 
 
 
+
+
+
+
         const len = nextInput.value.length;
+
+
+
+
 
 
 
@@ -2663,7 +5315,15 @@ function renderHome() {
 
 
 
+
+
+
+
       }
+
+
+
+
 
 
 
@@ -2671,7 +5331,15 @@ function renderHome() {
 
 
 
+
+
+
+
     if (hasQuery) {
+
+
+
+
 
 
 
@@ -2679,7 +5347,15 @@ function renderHome() {
 
 
 
+
+
+
+
       const len = input.value.length;
+
+
+
+
 
 
 
@@ -2687,11 +5363,27 @@ function renderHome() {
 
 
 
+
+
+
+
     }
 
 
 
+
+
+
+
   }
+
+
+
+
+
+
+
+
 
 
 
@@ -2703,7 +5395,15 @@ function renderHome() {
 
 
 
+
+
+
+
     row.addEventListener('click', () => {
+
+
+
+
 
 
 
@@ -2711,7 +5411,15 @@ function renderHome() {
 
 
 
+
+
+
+
       if (site) focusSite(site);
+
+
+
+
 
 
 
@@ -2719,11 +5427,27 @@ function renderHome() {
 
 
 
+
+
+
+
   });
 
 
 
+
+
+
+
 }
+
+
+
+
+
+
+
+
 
 
 
@@ -2735,7 +5459,15 @@ function returnToList() {
 
 
 
+
+
+
+
   currentSite = null;
+
+
+
+
 
 
 
@@ -2743,7 +5475,15 @@ function returnToList() {
 
 
 
+
+
+
+
   updateMarkers();
+
+
+
+
 
 
 
@@ -2751,7 +5491,19 @@ function returnToList() {
 
 
 
+
+
+
+
 }
+
+
+
+
+
+
+
+
 
 
 
@@ -2763,7 +5515,15 @@ function focusSite(site) {
 
 
 
+
+
+
+
   const row = markerRows.find(r => r.site.name === site.name);
+
+
+
+
 
 
 
@@ -2771,7 +5531,15 @@ function focusSite(site) {
 
 
 
+
+
+
+
     if (!map.hasLayer(row.marker)) row.marker.addTo(map);
+
+
+
+
 
 
 
@@ -2779,7 +5547,15 @@ function focusSite(site) {
 
 
 
+
+
+
+
     const targetZoom = Math.max(map.getZoom(), 8);
+
+
+
+
 
 
 
@@ -2787,7 +5563,15 @@ function focusSite(site) {
 
 
 
+
+
+
+
     row.marker.bringToFront();
+
+
+
+
 
 
 
@@ -2795,7 +5579,15 @@ function focusSite(site) {
 
 
 
+
+
+
+
   }
+
+
+
+
 
 
 
@@ -2803,7 +5595,19 @@ function focusSite(site) {
 
 
 
+
+
+
+
 }
+
+
+
+
+
+
+
+
 
 
 
@@ -2815,7 +5619,15 @@ function fitToSearchResults() {
 
 
 
+
+
+
+
   if (!hasActiveSearch()) return;
+
+
+
+
 
 
 
@@ -2823,7 +5635,15 @@ function fitToSearchResults() {
 
 
 
+
+
+
+
   if (!matched.length) return;
+
+
+
+
 
 
 
@@ -2831,7 +5651,15 @@ function fitToSearchResults() {
 
 
 
+
+
+
+
     const site = matched[0];
+
+
+
+
 
 
 
@@ -2839,7 +5667,15 @@ function fitToSearchResults() {
 
 
 
+
+
+
+
     const ll = displayLatLng(site);
+
+
+
+
 
 
 
@@ -2847,7 +5683,15 @@ function fitToSearchResults() {
 
 
 
+
+
+
+
     if (row) {
+
+
+
+
 
 
 
@@ -2855,7 +5699,15 @@ function fitToSearchResults() {
 
 
 
+
+
+
+
       setTimeout(() => row.marker.openTooltip(), 250);
+
+
+
+
 
 
 
@@ -2863,11 +5715,23 @@ function fitToSearchResults() {
 
 
 
+
+
+
+
     return;
 
 
 
+
+
+
+
   }
+
+
+
+
 
 
 
@@ -2875,7 +5739,15 @@ function fitToSearchResults() {
 
 
 
+
+
+
+
     const bounds = L.latLngBounds(matched.map(site => {
+
+
+
+
 
 
 
@@ -2883,7 +5755,15 @@ function fitToSearchResults() {
 
 
 
+
+
+
+
       return L.latLng(ll[0], ll[1]);
+
+
+
+
 
 
 
@@ -2891,7 +5771,15 @@ function fitToSearchResults() {
 
 
 
+
+
+
+
     map.fitBounds(bounds, { padding: [42, 42], maxZoom: 8, animate: true });
+
+
+
+
 
 
 
@@ -2899,7 +5787,19 @@ function fitToSearchResults() {
 
 
 
+
+
+
+
 }
+
+
+
+
+
+
+
+
 
 
 
@@ -2911,7 +5811,15 @@ function showSite(site) {
 
 
 
+
+
+
+
   currentSite = site;
+
+
+
+
 
 
 
@@ -2919,7 +5827,15 @@ function showSite(site) {
 
 
 
+
+
+
+
   updateMarkers();
+
+
+
+
 
 
 
@@ -2927,7 +5843,15 @@ function showSite(site) {
 
 
 
+
+
+
+
   if (selectedRow && map.hasLayer(selectedRow.marker)) selectedRow.marker.bringToFront();
+
+
+
+
 
 
 
@@ -2935,7 +5859,15 @@ function showSite(site) {
 
 
 
+
+
+
+
   const values = months.map(m => site.monthly[m] || 0);
+
+
+
+
 
 
 
@@ -2943,7 +5875,15 @@ function showSite(site) {
 
 
 
+
+
+
+
   const selectedEpisodes = siteEpisodes(site, selectedYear);
+
+
+
+
 
 
 
@@ -2951,7 +5891,15 @@ function showSite(site) {
 
 
 
+
+
+
+
     ? 'Monthly closure hours, August 2021 to May 2026. Zero-hour months indicate no posted disruption at this site.'
+
+
+
+
 
 
 
@@ -2963,7 +5911,19 @@ function showSite(site) {
 
 
 
+
+
+
+
+
+
+
+
   if (site.has_disruption_data === false) {
+
+
+
+
 
 
 
@@ -2971,7 +5931,15 @@ function showSite(site) {
 
 
 
+
+
+
+
       ? statBlock('Captured Hours', '0') + statBlock('Episodes', '0') + statBlock('Status', 'Reference') + statBlock('Analyzed Layer', serviceLabel())
+
+
+
+
 
 
 
@@ -2979,7 +5947,15 @@ function showSite(site) {
 
 
 
+
+
+
+
     sidebar.innerHTML =
+
+
+
+
 
 
 
@@ -2987,7 +5963,15 @@ function showSite(site) {
 
 
 
+
+
+
+
       '<div class="panel-label">AHS Location</div>' +
+
+
+
+
 
 
 
@@ -2995,7 +5979,15 @@ function showSite(site) {
 
 
 
+
+
+
+
       '<div class="period-note">' + siteIdNote(site) + '</div>' +
+
+
+
+
 
 
 
@@ -3003,7 +5995,15 @@ function showSite(site) {
 
 
 
+
+
+
+
       '<div class="panel-label">Interpretation</div>' +
+
+
+
+
 
 
 
@@ -3011,7 +6011,15 @@ function showSite(site) {
 
 
 
+
+
+
+
     document.getElementById('backToList').addEventListener('click', returnToList);
+
+
+
+
 
 
 
@@ -3019,7 +6027,19 @@ function showSite(site) {
 
 
 
+
+
+
+
   }
+
+
+
+
+
+
+
+
 
 
 
@@ -3031,7 +6051,15 @@ function showSite(site) {
 
 
 
+
+
+
+
     ? statBlock('Total Hours', fmtHours(site.total_hours)) +
+
+
+
+
 
 
 
@@ -3039,7 +6067,15 @@ function showSite(site) {
 
 
 
+
+
+
+
       statBlock('Years Active', yearCount(site)) +
+
+
+
+
 
 
 
@@ -3047,7 +6083,15 @@ function showSite(site) {
 
 
 
+
+
+
+
     : statBlock(selectedYear + ' Hours', fmtHours(selectedHours)) +
+
+
+
+
 
 
 
@@ -3055,7 +6099,15 @@ function showSite(site) {
 
 
 
+
+
+
+
       statBlock(selectedYear + ' Episodes', selectedEpisodes) +
+
+
+
+
 
 
 
@@ -3067,7 +6119,19 @@ function showSite(site) {
 
 
 
+
+
+
+
+
+
+
+
   sidebar.innerHTML =
+
+
+
+
 
 
 
@@ -3075,7 +6139,15 @@ function showSite(site) {
 
 
 
+
+
+
+
     '<div class="panel-label">Site Detail</div>' +
+
+
+
+
 
 
 
@@ -3083,7 +6155,15 @@ function showSite(site) {
 
 
 
+
+
+
+
     (siteIdNote(site) ? '<div class="period-note">' + siteIdNote(site) + '</div>' : '') +
+
+
+
+
 
 
 
@@ -3091,11 +6171,23 @@ function showSite(site) {
 
 
 
+
+
+
+
     '<div class="panel-label">Monthly Disruption Hours</div>' +
 
 
 
+
+
+
+
     '<div class="chart-wrap"><canvas id="tsChart"></canvas></div>' +
+
+
+
+
 
 
 
@@ -3107,7 +6199,19 @@ function showSite(site) {
 
 
 
+
+
+
+
+
+
+
+
   document.getElementById('backToList').addEventListener('click', returnToList);
+
+
+
+
 
 
 
@@ -3115,7 +6219,15 @@ function showSite(site) {
 
 
 
+
+
+
+
   activeChart = new Chart(ctx, {
+
+
+
+
 
 
 
@@ -3123,7 +6235,15 @@ function showSite(site) {
 
 
 
+
+
+
+
     data: {
+
+
+
+
 
 
 
@@ -3131,7 +6251,15 @@ function showSite(site) {
 
 
 
+
+
+
+
       datasets: [{
+
+
+
+
 
 
 
@@ -3139,7 +6267,15 @@ function showSite(site) {
 
 
 
+
+
+
+
         backgroundColor: '#3B82C4',
+
+
+
+
 
 
 
@@ -3147,7 +6283,15 @@ function showSite(site) {
 
 
 
+
+
+
+
         barPercentage: 1.0,
+
+
+
+
 
 
 
@@ -3155,7 +6299,15 @@ function showSite(site) {
 
 
 
+
+
+
+
       }]
+
+
+
+
 
 
 
@@ -3163,7 +6315,15 @@ function showSite(site) {
 
 
 
+
+
+
+
     options: {
+
+
+
+
 
 
 
@@ -3171,7 +6331,15 @@ function showSite(site) {
 
 
 
+
+
+
+
       maintainAspectRatio: false,
+
+
+
+
 
 
 
@@ -3179,7 +6347,15 @@ function showSite(site) {
 
 
 
+
+
+
+
       plugins: {
+
+
+
+
 
 
 
@@ -3187,7 +6363,15 @@ function showSite(site) {
 
 
 
+
+
+
+
         tooltip: {
+
+
+
+
 
 
 
@@ -3195,7 +6379,15 @@ function showSite(site) {
 
 
 
+
+
+
+
             title: items => fmtMonth(items[0].label),
+
+
+
+
 
 
 
@@ -3203,11 +6395,23 @@ function showSite(site) {
 
 
 
+
+
+
+
           }
 
 
 
+
+
+
+
         }
+
+
+
+
 
 
 
@@ -3215,7 +6419,15 @@ function showSite(site) {
 
 
 
+
+
+
+
       scales: {
+
+
+
+
 
 
 
@@ -3223,7 +6435,15 @@ function showSite(site) {
 
 
 
+
+
+
+
           ticks: {
+
+
+
+
 
 
 
@@ -3231,7 +6451,15 @@ function showSite(site) {
 
 
 
+
+
+
+
             color: '#5A6A85',
+
+
+
+
 
 
 
@@ -3239,7 +6467,15 @@ function showSite(site) {
 
 
 
+
+
+
+
             callback: function(val) {
+
+
+
+
 
 
 
@@ -3247,7 +6483,15 @@ function showSite(site) {
 
 
 
+
+
+
+
               if (selectedYear !== 'all') return lbl.slice(5);
+
+
+
+
 
 
 
@@ -3255,7 +6499,15 @@ function showSite(site) {
 
 
 
+
+
+
+
             }
+
+
+
+
 
 
 
@@ -3263,7 +6515,15 @@ function showSite(site) {
 
 
 
+
+
+
+
           grid: { display: false }
+
+
+
+
 
 
 
@@ -3271,7 +6531,15 @@ function showSite(site) {
 
 
 
+
+
+
+
         y: {
+
+
+
+
 
 
 
@@ -3279,7 +6547,15 @@ function showSite(site) {
 
 
 
+
+
+
+
           ticks: { font: { family: 'Lato', size: 9 }, color: '#5A6A85' },
+
+
+
+
 
 
 
@@ -3287,7 +6563,15 @@ function showSite(site) {
 
 
 
+
+
+
+
           title: { display: true, text: 'Hours', font: { family: 'Lato', size: 10 }, color: '#1B3A6B' }
+
+
+
+
 
 
 
@@ -3295,7 +6579,15 @@ function showSite(site) {
 
 
 
+
+
+
+
       }
+
+
+
+
 
 
 
@@ -3303,11 +6595,27 @@ function showSite(site) {
 
 
 
+
+
+
+
   });
 
 
 
+
+
+
+
 }
+
+
+
+
+
+
+
+
 
 
 
@@ -3319,7 +6627,15 @@ function updateMarkers() {
 
 
 
+
+
+
+
   const maxH = currentScaleMaxHours();
+
+
+
+
 
 
 
@@ -3327,7 +6643,15 @@ function updateMarkers() {
 
 
 
+
+
+
+
   markerRows.forEach(row => {
+
+
+
+
 
 
 
@@ -3335,7 +6659,15 @@ function updateMarkers() {
 
 
 
+
+
+
+
     const matchesSearch = !filtering || siteMatchesSearch(row.site, searchQuery);
+
+
+
+
 
 
 
@@ -3343,7 +6675,15 @@ function updateMarkers() {
 
 
 
+
+
+
+
       if (map.hasLayer(row.marker)) map.removeLayer(row.marker);
+
+
+
+
 
 
 
@@ -3351,7 +6691,15 @@ function updateMarkers() {
 
 
 
+
+
+
+
     }
+
+
+
+
 
 
 
@@ -3359,7 +6707,15 @@ function updateMarkers() {
 
 
 
+
+
+
+
     const isReferenceSite = row.site.has_disruption_data === false;
+
+
+
+
 
 
 
@@ -3367,7 +6723,15 @@ function updateMarkers() {
 
 
 
+
+
+
+
     const h = siteHours(row.site, selectedYear);
+
+
+
+
 
 
 
@@ -3375,7 +6739,15 @@ function updateMarkers() {
 
 
 
+
+
+
+
     row.marker.setRadius(r);
+
+
+
+
 
 
 
@@ -3383,7 +6755,15 @@ function updateMarkers() {
 
 
 
+
+
+
+
       fillColor: '#D0D8E8',
+
+
+
+
 
 
 
@@ -3391,7 +6771,15 @@ function updateMarkers() {
 
 
 
+
+
+
+
       weight: isSelectedSite ? 2 : 0.8,
+
+
+
+
 
 
 
@@ -3399,7 +6787,15 @@ function updateMarkers() {
 
 
 
+
+
+
+
       fillOpacity: isSelectedSite ? 0.6 : (filtering ? 0.7 : 0.35)
+
+
+
+
 
 
 
@@ -3407,7 +6803,15 @@ function updateMarkers() {
 
 
 
+
+
+
+
       fillColor: '#3B82C4',
+
+
+
+
 
 
 
@@ -3415,7 +6819,15 @@ function updateMarkers() {
 
 
 
+
+
+
+
       weight: isSelectedSite ? 3 : (h > 0 ? 1 : 0.5),
+
+
+
+
 
 
 
@@ -3423,7 +6835,15 @@ function updateMarkers() {
 
 
 
+
+
+
+
       fillOpacity: isSelectedSite ? 0.72 : (h > 0 ? 0.55 : 0.12)
+
+
+
+
 
 
 
@@ -3431,7 +6851,15 @@ function updateMarkers() {
 
 
 
+
+
+
+
     row.marker.unbindTooltip();
+
+
+
+
 
 
 
@@ -3439,7 +6867,15 @@ function updateMarkers() {
 
 
 
+
+
+
+
       ? 'No posted disruption hours captured for the selected analyzed service layer'
+
+
+
+
 
 
 
@@ -3447,7 +6883,15 @@ function updateMarkers() {
 
 
 
+
+
+
+
     row.marker.bindTooltip(
+
+
+
+
 
 
 
@@ -3455,7 +6899,15 @@ function updateMarkers() {
 
 
 
+
+
+
+
       '<div class="popup-stat">' + tooltipText + '</div>',
+
+
+
+
 
 
 
@@ -3463,7 +6915,15 @@ function updateMarkers() {
 
 
 
+
+
+
+
     );
+
+
+
+
 
 
 
@@ -3471,7 +6931,19 @@ function updateMarkers() {
 
 
 
+
+
+
+
 }
+
+
+
+
+
+
+
+
 
 
 
@@ -3483,7 +6955,15 @@ DATA.sites.forEach(site => {
 
 
 
+
+
+
+
   const ll = displayLatLng(site);
+
+
+
+
 
 
 
@@ -3491,7 +6971,15 @@ DATA.sites.forEach(site => {
 
 
 
+
+
+
+
   const marker = L.circleMarker(ll, {
+
+
+
+
 
 
 
@@ -3499,7 +6987,15 @@ DATA.sites.forEach(site => {
 
 
 
+
+
+
+
     fillColor: isReferenceSite ? '#D0D8E8' : '#3B82C4',
+
+
+
+
 
 
 
@@ -3507,7 +7003,15 @@ DATA.sites.forEach(site => {
 
 
 
+
+
+
+
     weight: isReferenceSite ? 0.8 : 1,
+
+
+
+
 
 
 
@@ -3515,7 +7019,15 @@ DATA.sites.forEach(site => {
 
 
 
+
+
+
+
     fillOpacity: isReferenceSite ? 0.35 : 0.55
+
+
+
+
 
 
 
@@ -3523,7 +7035,15 @@ DATA.sites.forEach(site => {
 
 
 
+
+
+
+
   marker.on('click', () => showSite(site));
+
+
+
+
 
 
 
@@ -3531,7 +7051,19 @@ DATA.sites.forEach(site => {
 
 
 
+
+
+
+
 });
+
+
+
+
+
+
+
+
 
 
 
@@ -3543,7 +7075,15 @@ let legendDiv = null;
 
 
 
+
+
+
+
 const legend = L.control({ position: 'bottomleft' });
+
+
+
+
 
 
 
@@ -3551,7 +7091,15 @@ legend.onAdd = function() {
 
 
 
+
+
+
+
   legendDiv = L.DomUtil.create('div', 'legend');
+
+
+
+
 
 
 
@@ -3559,11 +7107,23 @@ legend.onAdd = function() {
 
 
 
+
+
+
+
   return legendDiv;
 
 
 
+
+
+
+
 };
+
+
+
+
 
 
 
@@ -3575,7 +7135,19 @@ legend.addTo(map);
 
 
 
+
+
+
+
+
+
+
+
 function updateLegend() {
+
+
+
+
 
 
 
@@ -3583,7 +7155,15 @@ function updateLegend() {
 
 
 
+
+
+
+
   const matched = currentSearchSites();
+
+
+
+
 
 
 
@@ -3591,7 +7171,15 @@ function updateLegend() {
 
 
 
+
+
+
+
     legendDiv.innerHTML =
+
+
+
+
 
 
 
@@ -3599,7 +7187,15 @@ function updateLegend() {
 
 
 
+
+
+
+
       '<div class="legend-note">No matching mapped site for this search.</div>';
+
+
+
+
 
 
 
@@ -3607,7 +7203,15 @@ function updateLegend() {
 
 
 
+
+
+
+
   }
+
+
+
+
 
 
 
@@ -3615,7 +7219,15 @@ function updateLegend() {
 
 
 
+
+
+
+
   const rows = legendExamples(maxH).map(h => {
+
+
+
+
 
 
 
@@ -3623,7 +7235,15 @@ function updateLegend() {
 
 
 
+
+
+
+
     return '<div class="legend-row"><span class="legend-dot" style="width:' + d + 'px;height:' + d + 'px;"></span><span>~' + fmtHours(h) + ' h</span></div>';
+
+
+
+
 
 
 
@@ -3631,7 +7251,15 @@ function updateLegend() {
 
 
 
+
+
+
+
   const filterNote = hasActiveSearch()
+
+
+
+
 
 
 
@@ -3639,7 +7267,15 @@ function updateLegend() {
 
 
 
+
+
+
+
     : 'Examples recalculate for the selected year and current visible map extent.';
+
+
+
+
 
 
 
@@ -3647,7 +7283,15 @@ function updateLegend() {
 
 
 
+
+
+
+
     ? '<div class="legend-row"><span class="legend-dot" style="width:8px;height:8px;background:#D0D8E8;border-color:#5A6A85;opacity:0.75;"></span><span>No posted data</span></div>'
+
+
+
+
 
 
 
@@ -3655,7 +7299,15 @@ function updateLegend() {
 
 
 
+
+
+
+
   legendDiv.innerHTML =
+
+
+
+
 
 
 
@@ -3663,7 +7315,15 @@ function updateLegend() {
 
 
 
+
+
+
+
     '<div class="legend-note">' + filterNote + '</div>' +
+
+
+
+
 
 
 
@@ -3671,7 +7331,19 @@ function updateLegend() {
 
 
 
+
+
+
+
 }
+
+
+
+
+
+
+
+
 
 
 
@@ -3683,11 +7355,23 @@ updateSummaryStats();
 
 
 
+
+
+
+
 updateMarkers();
 
 
 
+
+
+
+
 updateLegend();
+
+
+
+
 
 
 
@@ -3699,7 +7383,19 @@ renderHome();
 
 
 
+
+
+
+
+
+
+
+
 function refreshMapScale() {
+
+
+
+
 
 
 
@@ -3707,11 +7403,23 @@ function refreshMapScale() {
 
 
 
+
+
+
+
   updateLegend();
 
 
 
+
+
+
+
 }
+
+
+
+
 
 
 
@@ -3723,7 +7431,19 @@ map.on('zoomend moveend resize', refreshMapScale);
 
 
 
+
+
+
+
+
+
+
+
 yearSelect.addEventListener('change', () => {
+
+
+
+
 
 
 
@@ -3731,7 +7451,15 @@ yearSelect.addEventListener('change', () => {
 
 
 
+
+
+
+
   updateSummaryStats();
+
+
+
+
 
 
 
@@ -3739,7 +7467,15 @@ yearSelect.addEventListener('change', () => {
 
 
 
+
+
+
+
   if (currentSite) showSite(currentSite);
+
+
+
+
 
 
 
@@ -3747,7 +7483,19 @@ yearSelect.addEventListener('change', () => {
 
 
 
+
+
+
+
 });
+
+
+
+
+
+
+
+
 
 
 
@@ -3759,7 +7507,15 @@ serviceSelect.addEventListener('change', () => {
 
 
 
+
+
+
+
   selectedService = serviceSelect.value;
+
+
+
+
 
 
 
@@ -3767,7 +7523,15 @@ serviceSelect.addEventListener('change', () => {
 
 
 
+
+
+
+
   refreshMapScale();
+
+
+
+
 
 
 
@@ -3775,11 +7539,27 @@ serviceSelect.addEventListener('change', () => {
 
 
 
+
+
+
+
   else renderHome();
 
 
 
+
+
+
+
 });
+
+
+
+
+
+
+
+
 
 
 
@@ -3791,7 +7571,15 @@ showNoDataToggle.addEventListener('change', () => {
 
 
 
+
+
+
+
   showNoDataSites = showNoDataToggle.checked;
+
+
+
+
 
 
 
@@ -3799,7 +7587,15 @@ showNoDataToggle.addEventListener('change', () => {
 
 
 
+
+
+
+
   refreshMapScale();
+
+
+
+
 
 
 
@@ -3807,7 +7603,15 @@ showNoDataToggle.addEventListener('change', () => {
 
 
 
+
+
+
+
 });
+
+
+
+
 
 
 
@@ -3815,7 +7619,15 @@ showNoDataToggle.addEventListener('change', () => {
 
 
 
+
+
+
+
 </body>
+
+
+
+
 
 
 
