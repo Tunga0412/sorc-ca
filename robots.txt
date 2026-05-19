@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /sorctracks_tool.html
+
+Sitemap: https://sorc.ca/sitemap.xml
