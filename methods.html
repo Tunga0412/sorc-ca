@@ -397,6 +397,10 @@
               <div class="def-term">Unioned hours</div>
               <div class="def-desc">Unique site-level disruption hours after overlapping intervals are merged within each site and year. This measure avoids double-counting when multiple disruptions overlap at the same site.</div>
             </div>
+            <div class="def-row">
+              <div class="def-term">Manual fixed interval</div>
+              <div class="def-desc">A manually curated interval added when a disruption was clearly documented in the public source material but was not captured in usable form by either archive scrape. Manual additions are subject to overlap merging and contribute to unioned hours only where they add time not already captured by other sources.</div>
+            </div>
           </div>
         </div>
       </div>
@@ -415,8 +419,7 @@
             <div class="criteria-label">Excluded</div>
             <ul class="criteria-list">
               <li>Non-ED service disruptions.</li>
-              <li>Partial capacity or bed reductions without ED closure.</li>
-              <li>Staffing issues described without sufficient timing to support a defensible interval.</li>
+              <li>Bed or capacity reduction notices not describing an ED service disruption.</li>
               <li>Events outside the study window.</li>
               <li>Reopen-only notices without a defensible start time.</li>
             </ul>
@@ -429,7 +432,7 @@
         <div class="method-heading">Interval Reconstruction</div>
         <div class="method-body">
           <p>Intervals were reconstructed from public wording using rule-based parsing. Explicit start and end times were retained directly from the source text.</p>
-          <p>Recurring overnight, weekend, or reduced-hours schedules were converted into intervals when the wording supported a defensible interpretation. Ambiguous or incomplete wording was not imputed unless a fixed interval could be manually justified from the source material.</p>
+          <p>Recurring overnight, weekend, or reduced-hours schedules were converted into intervals when the wording supported a defensible interpretation. Records with incomplete or ambiguous timing were retained for review but not converted into closure hours unless supported by another source or a manually documented fixed interval.</p>
         </div>
       </div>
 
@@ -446,7 +449,7 @@
       <div class="method-section">
         <div class="method-heading">Manual Recoveries</div>
         <div class="method-body">
-          <p>Manual fixed intervals were added only when a disruption was clearly documented in public source material but was missed, undercaptured, or not parsable by the automated workflow. These additions were logged and retained as auditable fixed intervals in the dataset.</p>
+          <p>Manual fixed intervals were added when a disruption was clearly documented in the public source material but was not captured in usable form by either archive scrape. These additions were logged and retained as auditable fixed intervals in the dataset.</p>
         </div>
       </div>
 
@@ -466,6 +469,8 @@
           <p>SORCTracks is a public-record reconstruction rather than an operational gold standard. Public wording is inconsistent across notices, site names are not always standardized, and some real disruptions cannot be timed defensibly from available source material.</p>
           <p>Open-ended disruptions may accumulate hours as the observed source window expands. A disruption with no posted end date will accrue additional hours in each successive data release until a resolution is captured or the disruption is manually closed. This means site-year totals for the most recent period in any given release should be treated as provisional, and cross-version comparisons should account for the data-through date of each release.</p>
           <p>Some disruptions may not have been publicly posted at all, or may have been posted but not archived in a form captured by the reconstruction process. SORCTracks therefore represents a lower bound on total disruption burden rather than a complete inventory.</p>
+          <p>Disruption reasons are categorized from the verbatim text of source postings and reflect the stated reason as posted. They may not capture the underlying or proximate cause in all cases.</p>
+          <p>The deposit includes documentation sufficient to inspect the analytic logic and verify selected outputs against the public source material. Full independent reproduction of all outputs would require reimplementation of the described procedures or scoped access to additional pipeline artifacts. Source code is not publicly distributed. Researchers seeking to validate specific records or coordinate on independent re-implementation are invited to contact <a href="mailto:info@sorc.ca" class="inline-link">info@sorc.ca</a>.</p>
           <p>Analytic data files for the Emergency Department layer are embargoed pending manuscript release, at which point they will become publicly accessible through the <a href="https://doi.org/10.17605/OSF.IO/NCFYK" class="inline-link" target="_blank" rel="noopener">OSF project</a>. Documentation and audit files are publicly accessible now.</p>
         </div>
       </div>
