@@ -172,6 +172,22 @@
 
     .changelog-table tr:last-child td { border-bottom: none; }
 
+    .changelog-toggle {
+      margin-top: 0.6rem;
+      background: none;
+      border: none;
+      font-family: 'Lato', sans-serif;
+      font-size: 0.72rem;
+      font-weight: 400;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--blue);
+      cursor: pointer;
+      padding: 0;
+      display: block;
+    }
+    .changelog-toggle:hover { text-decoration: underline; }
+
     /* ── Caution box ─────────────────────────────────────────────── */
     .caution-box {
       margin-bottom: 1.75rem;
@@ -447,7 +463,7 @@
   "url": "https://sorc.ca/sorctracks.html",
   "identifier": "https://doi.org/10.17605/OSF.IO/NCFYK",
   "license": "https://creativecommons.org/licenses/by/4.0/",
-  "temporalCoverage": "2021-08-01/2026-05-12",
+  "temporalCoverage": "2021-08-01/2026-05-31",
   "spatialCoverage": {
     "@type": "Place",
     "name": "Alberta, Canada"
@@ -491,8 +507,8 @@
     <div class="hero-rule"></div>
     <p class="page-intro">SORC is primarily led by students in the University of Alberta MD Program and has a strong interest in Alberta's ongoing health service access challenges. This interest has led SORC to develop projects that make fragmented public health system data more accessible, interpretable, and useful for communities, clinicians, researchers, and policymakers.</p>
     <p class="page-intro" style="margin-top: 1rem;">SORCTracks is an independent public-data visualization tool that reconstructs publicly archived Alberta Health Services temporary service disruption postings into an interactive, searchable map. Users can explore where, when, and how often temporary service disruptions have been publicly posted across Alberta.</p>
-    <p class="page-intro" style="margin-top: 1rem;">The tool currently includes a completed Emergency Department layer and a searchable reference layer of Alberta Health Services locations. Additional service layers, including maternity and obstetric services, acute care and inpatient services, surgery and operating rooms, endoscopy, urgent and ambulatory care, orthopedics, long-term care, home care, rehabilitation, detox, ophthalmology, and cardiology, will be added as those data are analyzed.</p>
-    <p class="page-intro" style="margin-top: 1rem;">SORCTracks is not a real-time operational dashboard. It is a reconstructed research and public-information resource based on archived public postings. Data will be updated quarterly as additional archived notices are reviewed and incorporated.</p>
+    <p class="page-intro" style="margin-top: 1rem;">The tool currently includes completed Emergency Department and Obstetrics layers, and a searchable reference layer of Alberta Health Services locations. Additional service layers, including acute care and inpatient services, surgery and operating rooms, endoscopy, urgent and ambulatory care, orthopedics, long-term care, home care, rehabilitation, detox, ophthalmology, and cardiology, will be added as those data are analyzed.</p>
+    <p class="page-intro" style="margin-top: 1rem;">SORCTracks is not a real-time operational dashboard. It is a reconstructed research and public-information resource based on archived public postings.</p>
 
     <div style="margin-top: 2rem;">
       <div class="section-label" style="margin-bottom: 0.6rem;">Version History</div>
@@ -507,12 +523,18 @@
         </thead>
         <tbody>
           <tr>
+            <td>Beta v0.3</td>
+            <td>May 31, 2026</td>
+            <td>May 31, 2026</td>
+            <td>Obstetrics layer added; full manual review of all data through May 31, 2026; parser upgrades for improved capture accuracy</td>
+          </tr>
+          <tr class="changelog-history" style="display:none;">
             <td>Beta v0.2</td>
             <td>May 18, 2026</td>
             <td>May 12, 2026</td>
             <td>Parser upgrade; corrected undercapture of 2026 Barrhead Healthcare Centre and 2023 Coronation Community Health Centre hours</td>
           </tr>
-          <tr>
+          <tr class="changelog-history" style="display:none;">
             <td>Beta v0.1</td>
             <td>May 10, 2026</td>
             <td>Mar 31, 2026</td>
@@ -520,6 +542,7 @@
           </tr>
         </tbody>
       </table>
+      <button class="changelog-toggle" onclick="toggleChangelog(this)">Show version history</button>
     </div>
   </div>
 
@@ -548,7 +571,7 @@
     <div style="display: flex; flex-direction: column; gap: 1.25rem; margin-bottom: 1.75rem; max-width: 760px;">
       <div style="padding: 1.25rem 1.5rem; border: 1px solid var(--rule); background: white;">
         <div style="font-size: 0.68rem; color: var(--blue); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 0.6rem;">Visualization Tool</div>
-        <p style="font-size: 0.875rem; color: var(--mid); line-height: 1.8;">Tung A. SORCTracks: A visualization of temporary health service disruptions across Alberta [Internet]. Version Beta v0.2. Edmonton: Systematic Outcomes Research Collaborative; 2026 May 12 [cited YYYY Mon DD]. Available from: https://sorc.ca/sorctracks.html</p>
+        <p style="font-size: 0.875rem; color: var(--mid); line-height: 1.8;">Tung A. SORCTracks: A visualization of temporary health service disruptions across Alberta [Internet]. Version Beta v0.3. Edmonton: Systematic Outcomes Research Collaborative; 2026 May 31 [cited YYYY Mon DD]. Available from: https://sorc.ca/sorctracks.html</p>
       </div>
       <div style="padding: 1.25rem 1.5rem; border: 1px solid var(--rule); background: white;">
         <div style="font-size: 0.68rem; color: var(--blue); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 0.6rem;">Dataset and Documentation</div>
@@ -630,7 +653,7 @@
         <div class="collab-callout">
           <div class="collab-callout-title">We are seeking collaborators for this project</div>
           <p>We are looking for clinicians or researchers with expertise in rural maternity care, obstetrics, or Alberta health services who can contribute to the interpretation and clinical significance of these findings.</p>
-          <p>Collaborators would review findings for clinical plausibility, help contextualize disruption patterns relative to rural obstetrical access challenges, advise on service-layer classification, and contribute to manuscript framing. Authorship would be offered for contributions meeting ICMJE criteria. To express interest, contact us at <a href="mailto:info@sorc.ca">info@sorc.ca</a>.</p>
+          <p>Collaborators would review findings for clinical plausibility, help contextualize disruption patterns relative to rural obstetrical access challenges, advise on manuscript framing, and contribute to the clinical interpretation of the Obstetrics layer now live in SORCTracks. Authorship would be offered for contributions meeting ICMJE criteria. To express interest, contact us at <a href="mailto:info@sorc.ca">info@sorc.ca</a>.</p>
         </div>
       </div>
 
@@ -648,6 +671,13 @@
   </footer>
 
   <script>
+    function toggleChangelog(btn) {
+      const rows = document.querySelectorAll('.changelog-history');
+      const hidden = rows[0].style.display === 'none';
+      rows.forEach(r => r.style.display = hidden ? '' : 'none');
+      btn.textContent = hidden ? 'Hide version history' : 'Show version history';
+    }
+
     document.querySelectorAll('.has-dropdown > .dropdown-toggle').forEach(toggle => {
       toggle.addEventListener('click', e => {
         if (window.matchMedia('(max-width: 768px)').matches) {
