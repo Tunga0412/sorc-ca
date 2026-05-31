@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="description" content="Data sources, definitions, and analytical methods for the SORCTracks Alberta Emergency Department disruption dataset, reconstructed from archived Alberta Health Services public postings.">
+  <meta name="description" content="Data sources, definitions, and analytical methods for the SORCTracks Alberta health service disruption dataset, reconstructed from archived Alberta Health Services public postings.">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SORCTracks Methods | Alberta ED Disruption Dataset</title>
+  <title>SORCTracks Methods | Alberta Health Service Disruption Dataset</title>
   <link rel="icon" type="image/png" href="SORC_LOGO.png">
   <link rel="shortcut icon" href="SORC_LOGO.png">
   <link rel="apple-touch-icon" href="SORC_LOGO.png">
@@ -338,7 +338,7 @@
   <link rel="canonical" href="https://sorc.ca/methods.html">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Systematic Outcomes Research Collaborative">
-  <meta property="og:title" content="SORCTracks Methods | Alberta ED Disruption Dataset">
+  <meta property="og:title" content="SORCTracks Methods | Alberta Health Service Disruption Dataset">
   <meta property="og:description" content="Full methodology for the SORCTracks Alberta Emergency Department disruption dataset — data sources, definitions, interval reconstruction, limitations, and OSF documentation.">
   <meta property="og:url" content="https://sorc.ca/methods.html">
 </head>
@@ -365,7 +365,7 @@
     <h1 class="page-title">Methods</h1>
     <div class="hero-rule"></div>
     <p class="page-intro">SORCTracks is a public-record reconstruction. For interpretive caveats that apply before consulting these methods, see the <a href="sorctracks.html" class="inline-link">SORCTracks page</a>.</p>
-    <p class="page-intro" style="margin-top: 1rem;">This page is a web-facing summary of the methods underlying SORCTracks. The full methodology documentation, data dictionary, and audit files are available through the OSF project: <a href="https://doi.org/10.17605/OSF.IO/NCFYK" class="inline-link" target="_blank" rel="noopener">SORCTracks parent project</a>. Emergency Department layer documentation is available in the <a href="https://doi.org/10.17605/OSF.IO/JNC4H" class="inline-link" target="_blank" rel="noopener">ED component</a>. The methods documented here apply to the Emergency Department layer and reflect the procedures in use as of Beta v0.3 (May 31, 2026). Methods for subsequent service layers will be documented as those layers are released.</p>
+    <p class="page-intro" style="margin-top: 1rem;">This page is a web-facing summary of the methods common across SORCTracks service layers. Full methodology documentation, data dictionaries, and audit files are available through the <a href="https://doi.org/10.17605/OSF.IO/NCFYK" class="inline-link" target="_blank" rel="noopener">SORCTracks OSF project</a>, with layer-specific components linked from there. These methods reflect procedures in use as of Beta v0.3 (May 31, 2026). Layer-specific documentation will be added to the OSF project as each layer matures.</p>
   </div>
 
   <div class="section">
@@ -378,7 +378,7 @@
         <div class="method-heading">Data Sources</div>
         <div class="method-body">
           <p>Data are drawn from two public Alberta Health Services (AHS) sources: archived snapshots of active temporary service disruptions and the AHS notice/news archive.</p>
-          <p>The snapshot archive provides recurring records of disruptions active on specific dates. The notice archive is used to identify additional ED-related disruptions that may be missed or underrepresented in the snapshot stream.</p>
+          <p>The snapshot archive provides recurring records of disruptions active on specific dates. The notice archive is used to identify additional disruptions that may be missed or underrepresented in the snapshot stream.</p>
         </div>
       </div>
 
@@ -393,11 +393,11 @@
             </div>
             <div class="def-row">
               <div class="def-term">Episode</div>
-              <div class="def-desc">A deduplicated ED disruption, produced after repeated postings referring to the same underlying disruption are collapsed into a single record.</div>
+              <div class="def-desc">A deduplicated service disruption, produced after repeated postings referring to the same underlying disruption are collapsed into a single record.</div>
             </div>
             <div class="def-row">
               <div class="def-term">Closure interval</div>
-              <div class="def-desc">The reconstructed start-to-end period during which ED service was unavailable or reduced, according to the public wording of the source record.</div>
+              <div class="def-desc">The reconstructed start-to-end period during which service was unavailable or reduced, according to the public wording of the source record.</div>
             </div>
             <div class="def-row">
               <div class="def-term">Unioned hours</div>
@@ -418,14 +418,14 @@
           <div class="criteria-block">
             <div class="criteria-label">Included</div>
             <ul class="criteria-list">
-              <li>Records referring to temporary ED closures or ED service disruptions during the study window.</li>
+              <li>Records referring to temporary service disruptions of the relevant service type during the study window.</li>
             </ul>
           </div>
           <div class="criteria-block" style="margin-top: 1rem;">
             <div class="criteria-label">Excluded</div>
             <ul class="criteria-list">
-              <li>Non-ED service disruptions.</li>
-              <li>Bed or capacity reduction notices not describing an ED service disruption.</li>
+              <li>Service disruptions not relevant to the layer under analysis.</li>
+              <li>Bed or capacity reduction notices not describing a service disruption of the relevant type.</li>
               <li>Events outside the study window.</li>
               <li>Reopen-only notices without a defensible start time.</li>
             </ul>
@@ -464,7 +464,7 @@
         <div class="method-heading">Update Schedule</div>
         <div class="method-body">
           <p>The dataset can be refreshed when new AHS archive snapshots or notices become available. Cached reruns support parser or manual-adjudication updates without re-scraping. Full fresh scrapes are required when newly posted public records must be incorporated.</p>
-          <p>Data will be updated quarterly under normal circumstances. The data-through date for each release is listed in the version history on the <a href="sorctracks.html" class="inline-link">SORCTracks page</a>.</p>
+          <p>The data-through date for each release is listed in the version history on the <a href="sorctracks.html" class="inline-link">SORCTracks page</a>.</p>
         </div>
       </div>
 
@@ -477,7 +477,7 @@
           <p>Some disruptions may not have been publicly posted at all, or may have been posted but not archived in a form captured by the reconstruction process. SORCTracks therefore represents a lower bound on total disruption burden rather than a complete inventory.</p>
           <p>Disruption reasons are categorized from the verbatim text of source postings and reflect the stated reason as posted. They may not capture the underlying or proximate cause in all cases.</p>
           <p>The deposit includes documentation sufficient to inspect the analytic logic and verify selected outputs against the public source material. Full independent reproduction of all outputs would require reimplementation of the described procedures or scoped access to additional pipeline artifacts. Source code is not publicly distributed. Researchers seeking to validate specific records or coordinate on independent re-implementation are invited to contact <a href="mailto:info@sorc.ca" class="inline-link">info@sorc.ca</a>.</p>
-          <p>Analytic data files for the Emergency Department layer are embargoed pending manuscript release, at which point they will become publicly accessible through the <a href="https://doi.org/10.17605/OSF.IO/NCFYK" class="inline-link" target="_blank" rel="noopener">OSF project</a>. Documentation and audit files are publicly accessible now.</p>
+          <p>Analytic data files are embargoed on a per-layer basis pending manuscript release, at which point they will become publicly accessible through the <a href="https://doi.org/10.17605/OSF.IO/NCFYK" class="inline-link" target="_blank" rel="noopener">OSF project</a>. Documentation and audit files are publicly accessible now.</p>
         </div>
       </div>
 
