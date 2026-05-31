@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 
 
 
@@ -91135,7 +91135,7 @@
 
 
     <div class="total-stat" id="summaryStats" aria-live="polite">
-      <strong>538,854</strong>service-disruption hours<strong>2,362</strong>episodes<strong>66</strong>sites affected
+      <strong>538,854</strong>disruption hours<strong>2,362</strong>episodes<strong>66</strong>sites affected
     </div>
 
 
@@ -99091,7 +99091,7 @@ const DATA = {"sites":[{"name":"ahs zero alberta childrens hospital","display_na
 
 const YEAR_SUMMARY = {"all":{"hours":538853.9299,"episodes":2362,"affected_sites":66,"reference_sites":102},"2021":{"hours":33026.0,"episodes":198,"affected_sites":27,"reference_sites":102},"2022":{"hours":120436.5,"episodes":520,"affected_sites":47,"reference_sites":102},"2023":{"hours":124694.75,"episodes":478,"affected_sites":51,"reference_sites":102},"2024":{"hours":112537.7133,"episodes":538,"affected_sites":41,"reference_sites":102},"2025":{"hours":105270.9666,"episodes":544,"affected_sites":48,"reference_sites":102},"2026":{"hours":42888.0,"episodes":189,"affected_sites":42,"reference_sites":102}};
 const OB_SUBSECTION_META = {"default":"all_ob_maternity_signals","order":["all_ob_maternity_signals","all_obstetrics_unavailable","operative_ob_c_section_unavailable","epidural_unavailable","other_named_ob_service_disruption"],"options":{"all_ob_maternity_signals":{"label":"All obstetrics disruptions","note":"All parsed obstetrics disruption signals combined; use specific types for clinical interpretation."},"all_obstetrics_unavailable":{"label":"Obstetrics/labour & delivery unavailable","note":"Rows whose wording indicates all obstetrics or labour/delivery service was unavailable, diverted, paused, or closed."},"operative_ob_c_section_unavailable":{"label":"Operative/C-section capability unavailable","note":"Rows describing unavailable or disrupted C-section, surgical, operating-room, anesthesia, or operative OB backup capability."},"epidural_unavailable":{"label":"Epidural unavailable","note":"Rows describing epidural capability disruption, including simultaneous C-section and epidural disruption."},"other_named_ob_service_disruption":{"label":"Other","note":"Rows describing other named obstetrics disruptions, including physician/staffing coverage disruption, LDRP capacity reduction, non-emergent OB unavailability, or preserved emergency C-section caveats."}}};
-const SERVICE_LAYER_META = {"all":{"label":"All analyzed services","note":"All analyzed services reports additive service-disruption hours across completed service layers.","color":"#5A6A85","sort_order":0},"ed":{"label":"Emergency Department","note":"Emergency Department layer selected.","color":"#C23B3B","sort_order":10},"ob":{"label":"Obstetrics","note":"Obstetrics layer selected. Use the Type filter for broad disruption views; hover over monthly bars to see contributing service categories.","color":"#2F8C83","sort_order":20}};
+const SERVICE_LAYER_META = {"all":{"label":"All analyzed services","note":"All analyzed services reports additive disruption hours across completed service layers.","color":"#5A6A85","sort_order":0},"ed":{"label":"Emergency Department","note":"Emergency Department layer selected.","color":"#C23B3B","sort_order":10},"ob":{"label":"Obstetrics","note":"Obstetrics layer selected. Use the Type filter for broad disruption views; hover over monthly bars to see contributing service categories.","color":"#2F8C83","sort_order":20}};
 const SERVICE_YEAR_SUMMARY = {"all":{"all":{"hours":538853.9299,"episodes":2362,"affected_sites":66,"reference_sites":102},"2021":{"hours":33026.0,"episodes":198,"affected_sites":27,"reference_sites":102},"2022":{"hours":120436.5,"episodes":520,"affected_sites":47,"reference_sites":102},"2023":{"hours":124694.75,"episodes":478,"affected_sites":51,"reference_sites":102},"2024":{"hours":112537.7133,"episodes":538,"affected_sites":41,"reference_sites":102},"2025":{"hours":105270.9666,"episodes":544,"affected_sites":48,"reference_sites":102},"2026":{"hours":42888.0,"episodes":189,"affected_sites":42,"reference_sites":102}},"ed":{"all":{"hours":154074.6999,"episodes":1070,"affected_sites":49,"reference_sites":102},"2021":{"hours":6155.0,"episodes":60,"affected_sites":13,"reference_sites":102},"2022":{"hours":27866.0,"episodes":230,"affected_sites":27,"reference_sites":102},"2023":{"hours":38896.25,"episodes":206,"affected_sites":33,"reference_sites":102},"2024":{"hours":36280.2333,"episodes":291,"affected_sites":27,"reference_sites":102},"2025":{"hours":31088.2166,"episodes":300,"affected_sites":34,"reference_sites":102},"2026":{"hours":13789.0,"episodes":88,"affected_sites":27,"reference_sites":102}},"ob":{"all":{"hours":384779.23,"episodes":1292,"affected_sites":45,"reference_sites":102},"2021":{"hours":26871.0,"episodes":138,"affected_sites":17,"reference_sites":102},"2022":{"hours":92570.5,"episodes":290,"affected_sites":26,"reference_sites":102},"2023":{"hours":85798.5,"episodes":272,"affected_sites":32,"reference_sites":102},"2024":{"hours":76257.48,"episodes":247,"affected_sites":28,"reference_sites":102},"2025":{"hours":74182.75,"episodes":244,"affected_sites":31,"reference_sites":102},"2026":{"hours":29099.0,"episodes":101,"affected_sites":21,"reference_sites":102}}};
 
 
@@ -118356,8 +118356,6 @@ function serviceLayerDisplayName(layerId) {
 }
 
 function hourMetricLabel() {
-  if (selectedService === 'all') return 'service-disruption hours';
-  if (selectedService === 'ed') return 'closure hours';
   return 'disruption hours';
 }
 
@@ -151657,7 +151655,7 @@ function showSite(site) {
   const selectedHours = siteHours(site, selectedYear);
   const selectedEpisodes = siteEpisodes(site, selectedYear);
   const hourLabel = hourMetricLabel();
-  const chartPanelLabel = selectedService === 'all' ? 'Monthly Service-Disruption Hours' : 'Monthly Disruption Hours';
+  const chartPanelLabel = selectedService === 'all' ? 'Monthly Disruption Hours' : 'Monthly Disruption Hours';
   const chartLabel = selectedYear === 'all'
     ? 'Monthly ' + hourLabel + ', August 2021 to May 2026. Zero-hour months indicate no posted disruption at this site.'
     : 'Monthly ' + hourLabel + ' within ' + selectedYear + '. Zero-hour months indicate no posted disruption at this site.';
@@ -174598,3 +174596,4 @@ showNoDataToggle.addEventListener('change', () => {
 
 
 </html>
+
