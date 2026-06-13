@@ -160,6 +160,7 @@
       text-align: left;
       padding: 0.5rem 1.5rem 0.5rem 0;
       border-bottom: 1px solid var(--rule);
+      white-space: nowrap;
     }
 
     .changelog-table td {
@@ -169,6 +170,8 @@
       border-bottom: 1px solid var(--rule);
       vertical-align: top;
     }
+
+    .changelog-table td:not(:last-child) { white-space: nowrap; }
 
     .changelog-table tr:last-child td { border-bottom: none; }
 
@@ -507,7 +510,7 @@
     <div class="hero-rule"></div>
     <p class="page-intro">SORC is primarily led by students in the University of Alberta MD Program and has a strong interest in Alberta's ongoing health service access challenges. This interest has led SORC to develop projects that make fragmented public health system data more accessible, interpretable, and useful for communities, clinicians, researchers, and policymakers.</p>
     <p class="page-intro" style="margin-top: 1rem;">SORCTracks is an independent public-data visualization tool that reconstructs publicly archived Alberta Health Services temporary service disruption postings into an interactive, searchable map. Users can explore where, when, and how often temporary service disruptions have been publicly posted across Alberta.</p>
-    <p class="page-intro" style="margin-top: 1rem;">The tool currently includes completed Emergency Department and Obstetrics layers, and a searchable reference layer of Alberta Health Services locations. Additional service layers, including acute care and inpatient services, surgery and operating rooms, endoscopy, urgent and ambulatory care, orthopedics, long-term care, home care, rehabilitation, detox, ophthalmology, and cardiology, will be added as those data are analyzed.</p>
+    <p class="page-intro" style="margin-top: 1rem;">The tool currently includes completed Emergency Department, Obstetrics, and Acute Care layers, and a searchable reference layer of Alberta Health Services locations. Additional service layers, including surgery and operating rooms, endoscopy, urgent and ambulatory care, orthopedics, long-term care, home care, rehabilitation, detox, ophthalmology, and cardiology, will be added as those data are analyzed.</p>
     <p class="page-intro" style="margin-top: 1rem;">SORCTracks is not a real-time operational dashboard. It is a reconstructed research and public-information resource based on archived public postings.</p>
 
     <div style="margin-top: 2rem;">
@@ -523,6 +526,12 @@
         </thead>
         <tbody>
           <tr>
+            <td>Beta v0.4</td>
+            <td>Jun 12, 2026</td>
+            <td>May 31, 2026</td>
+            <td>Acute Care layer added</td>
+          </tr>
+          <tr class="changelog-history" style="display:none;">
             <td>Beta v0.3</td>
             <td>May 31, 2026</td>
             <td>May 31, 2026</td>
@@ -571,7 +580,7 @@
     <div style="display: flex; flex-direction: column; gap: 1.25rem; margin-bottom: 1.75rem; max-width: 760px;">
       <div style="padding: 1.25rem 1.5rem; border: 1px solid var(--rule); background: white;">
         <div style="font-size: 0.68rem; color: var(--blue); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 0.6rem;">Visualization Tool</div>
-        <p style="font-size: 0.875rem; color: var(--mid); line-height: 1.8;">Tung A. SORCTracks: A visualization of temporary health service disruptions across Alberta [Internet]. Version Beta v0.3. Edmonton: Systematic Outcomes Research Collaborative; 2026 May 31 [cited YYYY Mon DD]. Available from: https://sorc.ca/sorctracks.html</p>
+        <p style="font-size: 0.875rem; color: var(--mid); line-height: 1.8;">Tung A. SORCTracks: A visualization of temporary health service disruptions across Alberta [Internet]. Version Beta v0.4. Edmonton: Systematic Outcomes Research Collaborative; 2026 Jun 12 [cited YYYY Mon DD]. Available from: https://sorc.ca/sorctracks.html</p>
       </div>
       <div style="padding: 1.25rem 1.5rem; border: 1px solid var(--rule); background: white;">
         <div style="font-size: 0.68rem; color: var(--blue); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 0.6rem;">Dataset and Documentation</div>
