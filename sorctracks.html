@@ -148,6 +148,7 @@
       max-width: 680px;
       border-collapse: collapse;
       margin-top: 0.5rem;
+      table-layout: fixed;
     }
 
     .changelog-table th {
@@ -516,6 +517,12 @@
     <div style="margin-top: 2rem;">
       <div class="section-label" style="margin-bottom: 0.6rem;">Version History</div>
       <table class="changelog-table">
+        <colgroup>
+          <col style="width: 90px;">
+          <col style="width: 110px;">
+          <col style="width: 115px;">
+          <col>
+        </colgroup>
         <thead>
           <tr>
             <th>Version</th>
