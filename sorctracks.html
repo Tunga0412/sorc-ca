@@ -450,7 +450,7 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Systematic Outcomes Research Collaborative">
   <meta property="og:title" content="SORCTracks | Alberta Health Service Disruption Map">
-  <meta property="og:description" content="Interactive map of all publicly posted Alberta Health Services temporary service disruptions, reconstructed from archived postings. Open data, peer-reviewed methods.">
+  <meta property="og:description" content="Interactive map of publicly posted Alberta Health Services temporary service disruptions, reconstructed from archived postings across five analyzed service layers.">
   <meta property="og:url" content="https://sorc.ca/sorctracks.html">
 </head>
 <script type="application/ld+json">
@@ -458,14 +458,13 @@
   "@context": "https://schema.org",
   "@type": "Dataset",
   "name": "SORCTracks: Alberta Health Service Disruption Dataset",
-  "description": "A public-record reconstruction of temporary health service disruptions across Alberta, derived from publicly archived Alberta Health Services postings. The Emergency Department layer covers August 2021 through May 2026.",
+  "description": "A public-record reconstruction of temporary health service disruptions across Alberta, derived from publicly archived Alberta Health Services postings. Covers all analyzed service layers (Emergency Department, Obstetrics, Acute Care, Surgery/Operative Capability, and Other Services) from August 2021 through May 2026.",
   "creator": {
     "@type": "Organization",
     "name": "Systematic Outcomes Research Collaborative",
     "url": "https://sorc.ca"
   },
   "url": "https://sorc.ca/sorctracks.html",
-  "identifier": "https://doi.org/10.17605/OSF.IO/NCFYK",
   "license": "https://creativecommons.org/licenses/by/4.0/",
   "temporalCoverage": "2021-08-01/2026-05-31",
   "spatialCoverage": {
@@ -474,13 +473,14 @@
   },
   "keywords": [
     "Alberta Health Services",
-    "emergency department closures",
-    "Alberta emergency department disruptions",
     "health service disruptions Alberta",
+    "hospital service disruptions",
+    "AHS service disruption",
     "SORCTracks",
     "rural health Alberta",
-    "hospital service disruptions",
-    "AHS service disruption"
+    "emergency department closures Alberta",
+    "maternity service disruptions Alberta",
+    "hospital access Alberta"
   ],
   "isAccessibleForFree": true,
   "isBasedOn": "https://www.albertahealthservices.ca/br/Page17634.aspx"
@@ -511,7 +511,7 @@
     <div class="hero-rule"></div>
     <p class="page-intro">SORC is primarily led by students in the University of Alberta MD Program and has a strong interest in Alberta's ongoing health service access challenges. This interest has led SORC to develop projects that make fragmented public health system data more accessible, interpretable, and useful for communities, clinicians, researchers, and policymakers.</p>
     <p class="page-intro" style="margin-top: 1rem;">SORCTracks is an independent public-data visualization tool that reconstructs publicly archived Alberta Health Services temporary service disruption postings into an interactive, searchable map. Users can explore where, when, and how often temporary service disruptions have been publicly posted across Alberta.</p>
-    <p class="page-intro" style="margin-top: 1rem;">The tool covers all Alberta Health Services temporary service disruption types and includes a searchable reference layer of AHS locations.</p>
+    <p class="page-intro" style="margin-top: 1rem;">The tool covers all analyzed service layers — Emergency Department, Obstetrics, Acute Care, Surgery/Operative Capability, and Other Services — and includes a searchable reference layer of AHS locations.</p>
     <p class="page-intro" style="margin-top: 1rem;">SORCTracks is not a real-time operational dashboard. It is a reconstructed research and public-information resource based on archived public postings.</p>
 
     <div style="margin-top: 2rem;">
@@ -533,6 +533,12 @@
         </thead>
         <tbody>
           <tr>
+            <td>Version 1.2</td>
+            <td>Jul 24, 2026</td>
+            <td>May 31, 2026</td>
+            <td>Hour Breakdown panel added (timing pattern and time of week); site statistics updated to focus on disruption hours</td>
+          </tr>
+          <tr class="changelog-history" style="display:none;">
             <td>Version 1.1</td>
             <td>Jun 22, 2026</td>
             <td>May 31, 2026</td>
@@ -542,7 +548,7 @@
             <td>Version 1.0</td>
             <td>Jun 16, 2026</td>
             <td>May 31, 2026</td>
-            <td>Official public launch; all AHS service disruption types included</td>
+            <td>Official public launch; all analyzed service layers included</td>
           </tr>
           <tr class="changelog-history" style="display:none;">
             <td>Beta v0.4</td>
@@ -584,6 +590,8 @@
         <li>This is a public-record reconstruction, not an operational gold standard. Some disruptions may not have been publicly posted, archived consistently, or timed defensibly from available source material.</li>
         <li>SORCTracks is not real-time. It reflects archived public postings through the data-through date listed above. It is not an Alberta Health Services product and is not affiliated with AHS.</li>
         <li>Estimated hours reflect publicly reconstructable disruption intervals. Unioned hours represent unique site-level disruption time after overlapping intervals are merged, and should not be treated as a precise operational measure.</li>
+        <li>When all analyzed services are selected, hours are summed across service layers. Overlaps between different services at the same site are not removed in this view; the total reflects service-hours, not a union across service types.</li>
+        <li>Nearby sites shown in the tool are capability-aware nearest candidates based on the AHS facility directory. They are not a real-time indication that a given site was open or available during any specific disruption.</li>
         <li>This tool supports research and public understanding. It is not intended for clinical or operational decision-making.</li>
       </ul>
     </div>
@@ -599,11 +607,7 @@
     <div style="display: flex; flex-direction: column; gap: 1.25rem; margin-bottom: 1.75rem; max-width: 760px;">
       <div style="padding: 1.25rem 1.5rem; border: 1px solid var(--rule); background: white;">
         <div style="font-size: 0.68rem; color: var(--blue); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 0.6rem;">Visualization Tool</div>
-        <p style="font-size: 0.875rem; color: var(--mid); line-height: 1.8;">Tung A. SORCTracks: A visualization of temporary health service disruptions across Alberta [Internet]. Version 1.1. Edmonton: Systematic Outcomes Research Collaborative; 2026 Jun 22 [cited YYYY Mon DD]. Available from: https://sorc.ca/sorctracks.html</p>
-      </div>
-      <div style="padding: 1.25rem 1.5rem; border: 1px solid var(--rule); background: white;">
-        <div style="font-size: 0.68rem; color: var(--blue); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 0.6rem;">Dataset and Documentation</div>
-        <p style="font-size: 0.875rem; color: var(--mid); line-height: 1.8;">Tung A. SORCTracks [Internet]. Edmonton: Systematic Outcomes Research Collaborative; 2026 May 16 [cited YYYY Mon DD]. Available from: https://doi.org/10.17605/OSF.IO/NCFYK</p>
+        <p style="font-size: 0.875rem; color: var(--mid); line-height: 1.8;">Tung A. SORCTracks: A visualization of temporary health service disruptions across Alberta [Internet]. Version 1.2. Edmonton: Systematic Outcomes Research Collaborative; 2026 Jul 24 [cited YYYY Mon DD]. Available from: https://sorc.ca/sorctracks.html</p>
       </div>
     </div>
 
@@ -635,12 +639,12 @@
 
         <div class="abstract-section">
           <div class="abstract-heading">Methods</div>
-          <div class="abstract-text">We conducted a retrospective descriptive study of AHS ED service disruption postings from August 1, 2021, to May 31, 2026. Records were identified from archived service-disruption snapshot pages and the AHS news/notice archive. Duplicate captures were collapsed, and repeated, extended, overlapping, or continuous same-site ED disruptions were merged into site-level episodes. Public wording was used to reconstruct disruption intervals, which were clipped to the study window and overlap-adjusted within site-year to estimate annual disruption hours. Notice-derived records were checked against snapshot-derived records to avoid duplicate counting. Source-supported manual intervals were added where routine parsing missed or undercaptured a disruption. Reconstructed intervals were manually reviewed by one author, with targeted second-author review.</div>
+          <div class="abstract-text">We conducted a retrospective descriptive study of AHS ED service disruption postings from August 1, 2021, to May 31, 2026. Records were identified from archived service-disruption snapshot pages and the AHS news/notice archive. Duplicate captures were collapsed, and repeated, extended, overlapping, or continuous same-site ED disruptions were merged into site-level disruption records. Public wording was used to reconstruct disruption intervals, which were clipped to the study window and overlap-adjusted within site-year to estimate annual disruption hours. Notice-derived records were checked against snapshot-derived records to avoid duplicate counting. Source-supported manual intervals were added where routine parsing missed or undercaptured a disruption. Reconstructed intervals were manually reviewed by one author, with targeted second-author review.</div>
         </div>
 
         <div class="abstract-section">
           <div class="abstract-heading">Results</div>
-          <div class="abstract-text">The final dataset contained 630 disruption episodes, 656 episode-years, and 154,074.7 total disruption hours. Full-calendar-year episode-years ranged from 114 to 187 annually. Disruption hours peaked in 2023 at 38,896.3 h and remained high in 2024 and 2025, with 36,280.2 h and 31,088.2 h, respectively. The highest overall burdens occurred in Consort, Hardisty, Boyle, Grimshaw, and Two Hills.</div>
+          <div class="abstract-text">The final dataset yielded 154,074.7 total disruption hours across 630 merged disruption records and 656 site-years. Full-calendar-year site-years ranged from 114 to 187 annually. Disruption hours peaked in 2023 at 38,896.3 h and remained high in 2024 and 2025, with 36,280.2 h and 31,088.2 h, respectively. The highest overall burdens occurred in Consort, Hardisty, Boyle, Grimshaw, and Two Hills.</div>
         </div>
 
         <div class="abstract-section">
@@ -668,12 +672,12 @@
 
         <div class="abstract-section">
           <div class="abstract-heading">Methods</div>
-          <div class="abstract-text">We conducted a retrospective descriptive study of AHS temporary service disruption postings from August 1, 2021, to May 31, 2026. Records were identified from archived active-disruption snapshot pages and the AHS news/notice archive. We included postings that explicitly affected maternity care, labour and delivery availability, caesarean or operative maternity capability, epidural access, or maternity backup. Records were standardized by site, deduplicated into site-level episodes, classified by affected capability, and reconstructed into dated intervals. Earlier reopening notices or later postings were used to truncate intervals when they documented return of service. Overlapping intervals at the same site were unioned to estimate site-level disruption hours. Capability layers were not mutually exclusive.</div>
+          <div class="abstract-text">We conducted a retrospective descriptive study of AHS temporary service disruption postings from August 1, 2021, to May 31, 2026. Records were identified from archived active-disruption snapshot pages and the AHS news/notice archive. We included postings that explicitly affected maternity care, labour and delivery availability, caesarean or operative maternity capability, epidural access, or maternity backup. Records were standardized by site, deduplicated into site-level disruption records, classified by affected capability, and reconstructed into dated intervals. Earlier reopening notices or later postings were used to truncate intervals when they documented return of service. Overlapping intervals at the same site were unioned to estimate site-level disruption hours. Capability layers were not mutually exclusive.</div>
         </div>
 
         <div class="abstract-section">
           <div class="abstract-heading">Results</div>
-          <div class="abstract-text">The dataset included 504 site-level maternity disruption episodes and 558 episode-year records across 45 sites. Total unioned burden was 384,803.2 site-level disruption hours. Annual burden was highest in 2022 at 92,570.5 h and remained substantial through 2025 at 74,182.8 h, with partial-year totals of 26,871.0 h in 2021 and 29,123.0 h through May 2026. By capability layer, maternity/labour and delivery unavailability accounted for 257,528.8 h, operative/caesarean capability unavailability for 176,594.0 h, epidural unavailability for 30,994.7 h, and other named maternity disruptions for 13,448.5 h. The highest-burden sites were Sundre, Rimbey, Three Hills, Slave Lake, and Westlock.</div>
+          <div class="abstract-text">The dataset covered 45 sites with 504 merged disruption records and 558 site-years, yielding 384,803.2 total disruption hours. Annual burden was highest in 2022 at 92,570.5 h and remained substantial through 2025 at 74,182.8 h, with partial-year totals of 26,871.0 h in 2021 and 29,123.0 h through May 2026. By capability layer, maternity/labour and delivery unavailability accounted for 257,528.8 h, operative/caesarean capability unavailability for 176,594.0 h, epidural unavailability for 30,994.7 h, and other named maternity disruptions for 13,448.5 h. The highest-burden sites were Sundre, Rimbey, Three Hills, Slave Lake, and Westlock.</div>
         </div>
 
         <div class="abstract-section">

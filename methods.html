@@ -339,7 +339,7 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Systematic Outcomes Research Collaborative">
   <meta property="og:title" content="SORCTracks Methods | Alberta Health Service Disruption Dataset">
-  <meta property="og:description" content="Full methodology for the SORCTracks Alberta health service disruption dataset: data sources, definitions, interval reconstruction, limitations, and OSF documentation.">
+  <meta property="og:description" content="Full methodology for the SORCTracks Alberta health service disruption dataset: data sources, definitions, interval reconstruction, and limitations.">
   <meta property="og:url" content="https://sorc.ca/methods.html">
 </head>
 <body>
@@ -365,7 +365,7 @@
     <h1 class="page-title">Methods</h1>
     <div class="hero-rule"></div>
     <p class="page-intro">SORCTracks is a public-record reconstruction. For interpretive caveats that apply before consulting these methods, see the <a href="sorctracks.html" class="inline-link">SORCTracks page</a>.</p>
-    <p class="page-intro" style="margin-top: 1rem;">This page is a web-facing summary of the methods common across SORCTracks service layers. Full methodology documentation, data dictionaries, and audit files are available through the <a href="https://doi.org/10.17605/OSF.IO/NCFYK" class="inline-link" target="_blank" rel="noopener">SORCTracks OSF project</a>, with layer-specific components linked from there. These methods reflect procedures in use as of Version 1.1 (Jun 22, 2026). Layer-specific documentation will be added to the OSF project as each layer matures.</p>
+    <p class="page-intro" style="margin-top: 1rem;">This page is a web-facing summary of the methods common across SORCTracks service layers. These methods reflect procedures in use as of Version 1.2 (Jul 24, 2026).</p>
   </div>
 
   <div class="section">
@@ -392,8 +392,8 @@
               <div class="def-desc">A source-specific archive entry before deduplication.</div>
             </div>
             <div class="def-row">
-              <div class="def-term">Episode</div>
-              <div class="def-desc">A deduplicated service disruption, produced after repeated postings referring to the same underlying disruption are collapsed into a single record.</div>
+              <div class="def-term">Merged disruption</div>
+              <div class="def-desc">A deduplicated service disruption record, produced after repeated postings referring to the same underlying disruption are collapsed into a single record.</div>
             </div>
             <div class="def-row">
               <div class="def-term">Closure interval</div>
@@ -446,7 +446,7 @@
       <div class="method-section">
         <div class="method-heading">Duplicate Handling</div>
         <div class="method-body">
-          <p>Repeated records from snapshot pages were deduplicated into episodes using site, timing, service, and text fields. Notice-derived episodes were reconciled against the snapshot-derived corpus to identify duplicates, overlaps, and distinct events not captured in the snapshot stream.</p>
+          <p>Repeated records from snapshot pages were deduplicated into merged disruption records using site, timing, service, and text fields. Notice-derived records were reconciled against the snapshot-derived corpus to identify duplicates, overlaps, and distinct disruptions not captured in the snapshot stream.</p>
           <p>Overlapping intervals were merged before calculating site-year burden.</p>
         </div>
       </div>
@@ -468,6 +468,18 @@
         </div>
       </div>
 
+      <!-- Hour Breakdown -->
+      <div class="method-section">
+        <div class="method-heading">Hour Breakdown</div>
+        <div class="method-body">
+          <p>SORCTracks includes an hour breakdown panel that distributes unioned disruption hours across two independently selectable frameworks: timing pattern and time of week. Breakdowns are applied to final unioned intervals and reconcile exactly to the service-layer total hours for the selected site and year.</p>
+          <p><strong>Timing pattern</strong> classifies hours as Regular or Irregular. Regular hours are those where the public posting wording supports an explicitly recurring schedule or a repeated daily/weekly timing pattern. Irregular hours are all remaining hours where no such pattern is identifiable from the source text. These labels describe the structure of the public posting, not the predictability or preventability of the disruption from a clinical or operational standpoint.</p>
+          <p><strong>Time of week</strong> distributes hours across four windows using local Alberta time: weekday daytime (07:00–17:00), weekday evening (17:00–22:00), weekend or statutory holiday (07:00–22:00), and night (22:00–07:00 every day). The statutory holiday classification uses Alberta statutory general holidays, not the broader observed paid-holiday calendar. Hours spanning daylight-saving transitions are calculated using nominal local civil-clock arithmetic; no correction is applied at the clock change.</p>
+          <p>When all analyzed services are selected, hours are summed across service layers. Overlaps between different service layers at the same site are not deduplicated in this view, so the total reflects service-hours rather than unioned hours across services.</p>
+          <p>The hour breakdown panel is not available when a service subtype filter is active, as the framework data are service-layer totals rather than subtype totals.</p>
+        </div>
+      </div>
+
       <!-- Known Limitations -->
       <div class="method-section">
         <div class="method-heading">Known Limitations</div>
@@ -477,7 +489,6 @@
           <p>Some disruptions may not have been publicly posted at all, or may have been posted but not archived in a form captured by the reconstruction process. SORCTracks therefore represents a lower bound on total disruption burden rather than a complete inventory.</p>
           <p>Disruption reasons are categorized from the verbatim text of source postings and reflect the stated reason as posted. They may not capture the underlying or proximate cause in all cases.</p>
           <p>The deposit includes documentation sufficient to inspect the analytic logic and verify selected outputs against the public source material. Full independent reproduction of all outputs would require reimplementation of the described procedures or scoped access to additional pipeline artifacts. Source code is not publicly distributed. Researchers seeking to validate specific records or coordinate on independent re-implementation are invited to contact <a href="mailto:info@sorc.ca" class="inline-link">info@sorc.ca</a>.</p>
-          <p>Analytic data files are embargoed on a per-layer basis pending manuscript release, at which point they will become publicly accessible through the <a href="https://doi.org/10.17605/OSF.IO/NCFYK" class="inline-link" target="_blank" rel="noopener">OSF project</a>. Documentation and audit files are publicly accessible now.</p>
         </div>
       </div>
 
