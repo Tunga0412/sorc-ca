@@ -1433672,6 +1433672,9 @@
 
 </style>
 <style>
+
+</style>
+<style>
 /* HOUR_FRAMEWORKS_STYLES_START */
 .hour-framework-panel { margin: 0.42rem 0 0.52rem; padding: 0.42rem 0.48rem 0.48rem; border: 1px solid rgba(90,106,133,.18); border-radius: 5px; background: rgba(248,250,253,.82); }
 .hour-framework-head { display: flex; align-items: center; justify-content: space-between; gap: 0.42rem; margin-bottom: 0.34rem; }
@@ -1433684,6 +1433687,10 @@
 .hour-framework-swatch { width: 0.42rem; height: 0.42rem; border-radius: 1px; }
 .hour-framework-value { color: var(--ink); font-variant-numeric: tabular-nums; white-space: nowrap; }
 .hour-framework-note { margin-top: 0.32rem; color: var(--muted); font: 400 .60rem/1.22 Lato, sans-serif; }
+.province-view-control { display: grid; grid-template-columns: 1fr 1fr; gap: 0.28rem; margin: 0 0 0.5rem; }
+.province-view-btn { min-width: 0; border: 1px solid rgba(90,106,133,.24); border-radius: 4px; padding: 0.34rem 0.38rem; background: #fff; color: var(--muted); font: 700 .72rem/1.15 Lato, sans-serif; cursor: pointer; }
+.province-view-btn.active { border-color: rgba(27,58,107,.42); background: rgba(59,130,196,.09); color: var(--ink); }
+.province-view-content[hidden] { display: none; }
 @media (max-width: 768px) { .hour-framework-panel { margin-top: 0.36rem; padding: 0.38rem 0.4rem 0.42rem; } .hour-framework-select { min-width: 7.1rem; } }
 /* HOUR_FRAMEWORKS_STYLES_END */
 </style>
@@ -2767777,8 +2767784,11 @@ showNoDataToggle.addEventListener('change', () => {
 
 
 
+
+
 /* HOUR_FRAMEWORKS_RUNTIME_START */
 let hourFrameworkMode = 'regularity';
+let provinceDetailView = 'overview';
 const HOUR_FRAMEWORKS_LAYER_NAMES = { ed: 'ED', ob: 'Obstetrics', acute: 'Acute care', surgery: 'Surgery/OR', other: 'Other services' };
 const HOUR_FRAMEWORKS_META = {
   regularity: { label: 'Timing structure', order: ['predictable', 'sustained', 'non_regular'], labels: { predictable: 'Scheduled', sustained: 'Sustained', non_regular: 'Intermittent' }, colors: { predictable: '#227c70', sustained: '#a14b16', non_regular: '#64748b' } },
@@ -2767810,8 +2767820,23 @@ function hourFrameworkValues(site) {
   const total = Object.values(values).reduce((sum, value) => sum + value, 0);
   return total > 0 ? { values, total } : null;
 }
-function hourFrameworkPanelHtml(site) {
-  const result = hourFrameworkValues(site);
+function provinceHourFrameworkValues() {
+  if (typeof HOUR_FRAMEWORKS === 'undefined' || hourFrameworkHasSubtypeFilter()) return null;
+  const rows = HOUR_FRAMEWORKS.site_year_cross_tab || [];
+  const layerNames = selectedService === 'all' ? Object.values(HOUR_FRAMEWORKS_LAYER_NAMES) : [HOUR_FRAMEWORKS_LAYER_NAMES[selectedService]];
+  if (!layerNames.length || layerNames[0] === undefined) return null;
+  const values = {};
+  HOUR_FRAMEWORKS_META[hourFrameworkMode].order.forEach(key => { values[key] = 0; });
+  rows.forEach(row => {
+    if (!layerNames.includes(row.service_layer)) return;
+    if (String(selectedYear) !== 'all' && String(row.analysis_year) !== String(selectedYear)) return;
+    const key = hourFrameworkMode === 'regularity' ? row.regularity : row.time_category;
+    if (Object.prototype.hasOwnProperty.call(values, key)) values[key] += Number(row.hours) || 0;
+  });
+  const total = Object.values(values).reduce((sum, value) => sum + value, 0);
+  return total > 0 ? { values, total } : null;
+}
+function hourFrameworkPanelMarkup(result, selectId, label) {
   if (!result) return '';
   const meta = HOUR_FRAMEWORKS_META[hourFrameworkMode];
   const options = '<option value="regularity"' + (hourFrameworkMode === 'regularity' ? ' selected' : '') + '>Timing structure</option>' +
@@ -2767819,7 +2767844,13 @@ function hourFrameworkPanelHtml(site) {
   const segments = meta.order.map(key => '<span class="hour-framework-segment" style="width:' + ((result.values[key] / result.total) * 100).toFixed(3) + '%;background:' + meta.colors[key] + '"></span>').join('');
   const rows = meta.order.map(key => '<div class="hour-framework-row"><span class="hour-framework-swatch" style="background:' + meta.colors[key] + '"></span><span>' + meta.labels[key] + '</span><span class="hour-framework-value">' + fmtHours(result.values[key]) + ' h</span></div>').join('');
   const note = hourFrameworkMode === 'regularity' ? '<div class="hour-framework-note">Scheduled hours follow a recurring pattern; sustained disruption continues for 7 days or more; intermittent hours are isolated or irregular.</div>' : '';
-  return '<section class="hour-framework-panel" aria-label="Hour timing breakdown"><div class="hour-framework-head"><div class="panel-label">Hour Breakdown</div><select id="hourFrameworkSelect" class="hour-framework-select" aria-label="Hour breakdown">' + options + '</select></div><div class="hour-framework-track">' + segments + '</div><div class="hour-framework-legend">' + rows + '</div>' + note + '</section>';
+  return '<section class="hour-framework-panel" aria-label="Hour timing breakdown"><div class="hour-framework-head"><div class="panel-label">' + label + '</div><select id="' + selectId + '" class="hour-framework-select" aria-label="Hour breakdown">' + options + '</select></div><div class="hour-framework-track">' + segments + '</div><div class="hour-framework-legend">' + rows + '</div>' + note + '</section>';
+}
+function hourFrameworkPanelHtml(site) {
+  return hourFrameworkPanelMarkup(hourFrameworkValues(site), 'hourFrameworkSelect', 'Hour Breakdown');
+}
+function provinceHourFrameworkPanelHtml() {
+  return hourFrameworkPanelMarkup(provinceHourFrameworkValues(), 'provinceHourFrameworkSelect', 'Hour Breakdown');
 }
 function injectHourFrameworkPanel(site) {
   const sidebar = document.getElementById('sidebar');
@@ -2767836,6 +2767867,51 @@ function injectHourFrameworkPanel(site) {
 }
 const hourFrameworkOriginalShowSite = showSite;
 showSite = function(site) { hourFrameworkOriginalShowSite(site); window.setTimeout(() => injectHourFrameworkPanel(site), 0); };
+function provinceViewControlHtml() {
+  const overviewActive = provinceDetailView !== 'data';
+  return '<div class="province-view-control" role="group" aria-label="Province-wide view">' +
+    '<button type="button" class="province-view-btn' + (overviewActive ? ' active' : '') + '" data-province-view="overview">Overview</button>' +
+    '<button type="button" class="province-view-btn' + (!overviewActive ? ' active' : '') + '" data-province-view="data">Data</button>' +
+  '</div>';
+}
+function arrangeProvinceHome() {
+  const root = document.getElementById('sidebar');
+  if (!root) return;
+  const search = root.querySelector('.search-panel');
+  const chartLabel = search && search.nextElementSibling;
+  const chart = chartLabel && chartLabel.nextElementSibling;
+  const rankLabel = chart && chart.nextElementSibling;
+  const rankList = rankLabel && rankLabel.nextElementSibling;
+  if (!search || !chartLabel || !chart || !rankLabel || !rankList) return;
+  chartLabel.textContent = 'Province-wide hours';
+  const overview = document.createElement('div');
+  overview.className = 'province-view-content';
+  overview.hidden = provinceDetailView === 'data';
+  overview.append(search, rankLabel, rankList);
+  const data = document.createElement('div');
+  data.className = 'province-view-content';
+  data.hidden = provinceDetailView !== 'data';
+  data.append(chartLabel, chart);
+  const hourBreakdown = provinceHourFrameworkPanelHtml();
+  if (hourBreakdown) data.insertAdjacentHTML('beforeend', hourBreakdown);
+  root.replaceChildren();
+  root.insertAdjacentHTML('beforeend', provinceViewControlHtml());
+  root.append(overview, data);
+  root.querySelectorAll('[data-province-view]').forEach(button => {
+    button.addEventListener('click', () => {
+      provinceDetailView = button.getAttribute('data-province-view') === 'data' ? 'data' : 'overview';
+      renderHome();
+    });
+  });
+  const select = document.getElementById('provinceHourFrameworkSelect');
+  if (select) select.addEventListener('change', () => { hourFrameworkMode = select.value === 'time' ? 'time' : 'regularity'; renderHome(); });
+}
+const hourFrameworkOriginalRenderHome = renderHome;
+renderHome = function() {
+  hourFrameworkOriginalRenderHome();
+  arrangeProvinceHome();
+};
+window.setTimeout(() => renderHome(), 0);
 /* HOUR_FRAMEWORKS_RUNTIME_END */
 </script>
 
