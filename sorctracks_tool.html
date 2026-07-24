@@ -1433681,6 +1433681,12 @@
 
 </style>
 <style>
+
+</style>
+<style>
+
+</style>
+<style>
 /* HOUR_FRAMEWORKS_STYLES_START */
 .hour-framework-panel { margin: 0.42rem 0 0.52rem; padding: 0.42rem 0.48rem 0.48rem; border: 1px solid rgba(90,106,133,.18); border-radius: 5px; background: rgba(248,250,253,.82); }
 .hour-framework-head { display: flex; align-items: center; justify-content: space-between; gap: 0.42rem; margin-bottom: 0.34rem; }
@@ -2767797,10 +2767803,15 @@ showNoDataToggle.addEventListener('change', () => {
 
 
 
+
+
+
+
 /* HOUR_FRAMEWORKS_RUNTIME_START */
 let hourFrameworkMode = 'regularity';
 let provinceDetailView = 'overview';
 let provinceBreakdownChart = null;
+let provinceTimeBreakdownChart = null;
 const HOUR_FRAMEWORKS_LAYER_NAMES = { ed: 'ED', ob: 'Obstetrics', acute: 'Acute care', surgery: 'Surgery/OR', other: 'Other services' };
 const HOUR_FRAMEWORKS_META = {
   regularity: { label: 'Timing structure', order: ['predictable', 'sustained', 'non_regular'], labels: { predictable: 'Scheduled', sustained: 'Sustained', non_regular: 'Intermittent' }, colors: { predictable: '#227c70', sustained: '#a14b16', non_regular: '#64748b' } },
@@ -2767848,19 +2767859,21 @@ function provinceHourFrameworkValues() {
   const total = Object.values(values).reduce((sum, value) => sum + value, 0);
   return total > 0 ? { values, total } : null;
 }
-function provinceMonthlyTimingDatasets(months) {
+function provinceMonthlyFrameworkDatasets(months, mode) {
   if (typeof HOUR_FRAMEWORKS === 'undefined') return [];
   const rows = HOUR_FRAMEWORKS.monthly_cross_tab || [];
   const layerNames = selectedService === 'all' ? Object.values(HOUR_FRAMEWORKS_LAYER_NAMES) : [HOUR_FRAMEWORKS_LAYER_NAMES[selectedService]];
   if (!layerNames.length || layerNames[0] === undefined) return [];
-  const meta = HOUR_FRAMEWORKS_META.regularity;
+  const meta = HOUR_FRAMEWORKS_META[mode];
+  const rowKey = mode === 'regularity' ? 'regularity' : 'time_category';
   const values = {};
   meta.order.forEach(key => { values[key] = Object.fromEntries(months.map(month => [month, 0])); });
   rows.forEach(row => {
     if (!layerNames.includes(row.service_layer)) return;
     if (String(selectedYear) !== 'all' && String(row.analysis_year) !== String(selectedYear)) return;
-    if (!values[row.regularity] || !Object.prototype.hasOwnProperty.call(values[row.regularity], row.month)) return;
-    values[row.regularity][row.month] += Number(row.hours) || 0;
+    const key = row[rowKey];
+    if (!values[key] || !Object.prototype.hasOwnProperty.call(values[key], row.month)) return;
+    values[key][row.month] += Number(row.hours) || 0;
   });
   return meta.order.map(key => ({
     label: meta.labels[key],
@@ -2767876,13 +2767889,17 @@ function destroyProvinceBreakdownChart() {
     provinceBreakdownChart.destroy();
     provinceBreakdownChart = null;
   }
+  if (provinceTimeBreakdownChart) {
+    provinceTimeBreakdownChart.destroy();
+    provinceTimeBreakdownChart = null;
+  }
 }
-function renderProvinceBreakdownChart(canvas) {
+function renderProvinceBreakdownChart(canvas, mode) {
   if (!canvas || typeof Chart === 'undefined') return;
   const months = projectMonthsForYear(selectedYear);
-  const datasets = provinceMonthlyTimingDatasets(months);
+  const datasets = provinceMonthlyFrameworkDatasets(months, mode);
   if (!datasets.length) return;
-  provinceBreakdownChart = new Chart(canvas.getContext('2d'), {
+  const chart = new Chart(canvas.getContext('2d'), {
     type: 'bar',
     data: { labels: months, datasets: datasets },
     options: {
@@ -2767927,6 +2767944,8 @@ function renderProvinceBreakdownChart(canvas) {
       }
     }
   });
+  if (mode === 'time') provinceTimeBreakdownChart = chart;
+  else provinceBreakdownChart = chart;
 }
 function hourFrameworkPanelMarkup(result, selectId, label) {
   if (!result) return '';
@@ -2767951,9 +2767970,12 @@ function injectHourFrameworkPanel(site) {
   if (existing) existing.remove();
   const html = hourFrameworkPanelHtml(site);
   if (!html) return;
-  const stats = sidebar.querySelector('.stats-row');
-  if (!stats) return;
-  stats.insertAdjacentHTML('afterend', html);
+  const canvas = sidebar.querySelector('#tsChart');
+  const chart = canvas && canvas.closest('.chart-wrap');
+  if (!chart) return;
+  const caption = chart.nextElementSibling;
+  if (caption && caption.classList.contains('chart-caption')) caption.insertAdjacentHTML('afterend', html);
+  else chart.insertAdjacentHTML('afterend', html);
   const select = document.getElementById('hourFrameworkSelect');
   if (select) select.addEventListener('change', () => { hourFrameworkMode = select.value === 'time' ? 'time' : 'regularity'; injectHourFrameworkPanel(site); });
 }
@@ -2767984,17 +2768006,25 @@ function arrangeProvinceHome() {
   data.className = 'province-view-content';
   data.hidden = provinceDetailView !== 'data';
   data.append(chartLabel, chart);
+  const timingLabel = document.createElement('div');
+  timingLabel.className = 'panel-label';
+  timingLabel.textContent = 'Timing structure by month';
+  const timingWrap = document.createElement('div');
+  timingWrap.className = 'chart-wrap province-breakdown-chart-wrap';
+  const timingCanvas = document.createElement('canvas');
+  timingCanvas.id = 'provinceBreakdownChart';
+  timingWrap.append(timingCanvas);
+  const timeLabel = document.createElement('div');
+  timeLabel.className = 'panel-label';
+  timeLabel.textContent = 'Time of week by month';
+  const timeWrap = document.createElement('div');
+  timeWrap.className = 'chart-wrap province-breakdown-chart-wrap';
+  const timeCanvas = document.createElement('canvas');
+  timeCanvas.id = 'provinceTimeBreakdownChart';
+  timeWrap.append(timeCanvas);
+  data.append(timingLabel, timingWrap, timeLabel, timeWrap);
   const hourBreakdown = provinceHourFrameworkPanelHtml();
   if (hourBreakdown) data.insertAdjacentHTML('beforeend', hourBreakdown);
-  const breakdownLabel = document.createElement('div');
-  breakdownLabel.className = 'panel-label';
-  breakdownLabel.textContent = 'Timing structure by month';
-  const breakdownWrap = document.createElement('div');
-  breakdownWrap.className = 'chart-wrap province-breakdown-chart-wrap';
-  const breakdownCanvas = document.createElement('canvas');
-  breakdownCanvas.id = 'provinceBreakdownChart';
-  breakdownWrap.append(breakdownCanvas);
-  data.append(breakdownLabel, breakdownWrap);
   root.replaceChildren();
   root.insertAdjacentHTML('beforeend', provinceViewControlHtml());
   root.append(overview, data);
@@ -2768006,7 +2768036,8 @@ function arrangeProvinceHome() {
   });
   const select = document.getElementById('provinceHourFrameworkSelect');
   if (select) select.addEventListener('change', () => { hourFrameworkMode = select.value === 'time' ? 'time' : 'regularity'; renderHome(); });
-  renderProvinceBreakdownChart(breakdownCanvas);
+  renderProvinceBreakdownChart(timingCanvas, 'regularity');
+  renderProvinceBreakdownChart(timeCanvas, 'time');
 }
 const hourFrameworkOriginalRenderHome = renderHome;
 renderHome = function() {
