@@ -1433711,6 +1433711,9 @@
 
 </style>
 <style>
+
+</style>
+<style>
 /* HOUR_FRAMEWORKS_STYLES_START */
 .chart-view-control { margin: 0 0 0.34rem; }
 .chart-view-select { width: 100%; height: 1.7rem; padding: 0.2rem 0.4rem; border: 1px solid var(--rule); border-radius: 2px; background: #fff; color: var(--navy); font-family: 'Lato', sans-serif; font-size: 0.72rem; font-weight: 400; line-height: normal; }
@@ -1433722,6 +1433725,7 @@
 .hour-breakdown-row { display: grid; grid-template-columns: 0.48rem minmax(0,1fr) max-content; gap: 0.3rem; align-items: center; color: var(--mid); font-family: 'Lato', sans-serif; font-size: 0.77rem; font-weight: 400; line-height: 1.3; }
 .hour-breakdown-swatch { width: 0.4rem; height: 0.4rem; border-radius: 1px; }
 .hour-breakdown-value { color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.hour-breakdown-note { margin: 0.3rem 0 0; color: var(--muted); font-family: 'Lato', sans-serif; font-size: 0.69rem; line-height: 1.35; }
 @media (max-width: 768px) { .chart-view-select { height: 1.68rem; } }
 /* HOUR_FRAMEWORKS_STYLES_END */
 </style>
@@ -2767841,6 +2767845,8 @@ showNoDataToggle.addEventListener('change', () => {
 
 
 
+
+
 /* HOUR_FRAMEWORKS_RUNTIME_START */
 let provinceChartMode = 'disruption';
 let siteChartMode = 'disruption';
@@ -2767917,7 +2767923,12 @@ function hourBreakdownHtml(result, mode) {
   const activeKeys = meta.order.filter(key => Number(result.values[key]) > 0);
   const segments = activeKeys.map(key => '<span class="hour-breakdown-segment" style="width:' + ((result.values[key] / result.total) * 100).toFixed(3) + '%;background:' + meta.colors[key] + '"></span>').join('');
   const rows = activeKeys.map(key => '<div class="hour-breakdown-row"><span class="hour-breakdown-swatch" style="background:' + meta.colors[key] + '"></span><span>' + meta.labels[key] + '</span><span class="hour-breakdown-value">' + fmtHours(result.values[key]) + ' h</span></div>').join('');
-  return '<section class="hour-breakdown" aria-label="Hour breakdown"><div class="panel-label">Hour Breakdown</div><div class="hour-breakdown-track">' + segments + '</div><div class="hour-breakdown-legend">' + rows + '</div></section>';
+  const note = mode === 'regularity'
+    ? '<p class="hour-breakdown-note">Scheduled hours reflect a recurring posted pattern; sustained hours belong to continuous disruption lasting at least seven days; intermittent hours are the remaining non-continuous hours.</p>'
+    : mode === 'time'
+      ? '<p class="hour-breakdown-note">Daytime: weekdays 07:00-17:00; evening: weekdays 17:00-22:00; weekend / holiday: weekends or Alberta statutory holidays 07:00-22:00; night: 22:00-07:00 daily.</p>'
+      : '';
+  return '<section class="hour-breakdown" aria-label="Hour breakdown"><div class="panel-label">Hour Breakdown</div><div class="hour-breakdown-track">' + segments + '</div><div class="hour-breakdown-legend">' + rows + '</div>' + note + '</section>';
 }
 function provinceMonthlyFrameworkDatasets(months, mode) {
   if (typeof HOUR_FRAMEWORKS === 'undefined') return [];
