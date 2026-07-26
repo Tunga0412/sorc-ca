@@ -396,7 +396,7 @@
               <div class="def-desc">A deduplicated service disruption record, produced after repeated postings referring to the same underlying disruption are collapsed into a single record.</div>
             </div>
             <div class="def-row">
-              <div class="def-term">Closure interval</div>
+              <div class="def-term">Disruption interval</div>
               <div class="def-desc">The reconstructed start-to-end period during which service was unavailable or reduced, according to the public wording of the source record.</div>
             </div>
             <div class="def-row">
@@ -438,7 +438,7 @@
         <div class="method-heading">Interval Reconstruction</div>
         <div class="method-body">
           <p>Intervals were reconstructed from public wording using rule-based parsing. Explicit start and end times were retained directly from the source text.</p>
-          <p>Recurring overnight, weekend, or reduced-hours schedules were converted into intervals when the wording supported a defensible interpretation. Records with incomplete or ambiguous timing were retained for review but not converted into closure hours unless supported by another source or a manually documented fixed interval.</p>
+          <p>Recurring overnight, weekend, or reduced-hours schedules were converted into intervals when the wording supported a defensible interpretation. Records with incomplete or ambiguous timing were retained for review but not converted into disruption hours unless supported by another source or a manually documented fixed interval.</p>
         </div>
       </div>
 
@@ -473,7 +473,7 @@
         <div class="method-heading">Hour Breakdown</div>
         <div class="method-body">
           <p>SORCTracks includes an hour breakdown panel that distributes unioned disruption hours across two independently selectable frameworks: timing pattern and time of week. Breakdowns are applied to final unioned intervals and reconcile exactly to the service-layer total hours for the selected site and year.</p>
-          <p><strong>Timing pattern</strong> classifies each disruption's hours into one of three mutually exclusive categories. Scheduled hours reflect a recurring posted pattern, such as an explicitly stated daily or weekly schedule. Sustained hours belong to a continuous disruption lasting at least seven days with no recorded reopening. Intermittent hours are the remaining hours from disruptions that do not qualify as Scheduled or Sustained. The tool's timing panel combines Sustained and Intermittent under the label Irregular, contrasted with Scheduled shown as Regular.</p>
+          <p><strong>Timing pattern</strong> classifies each disruption's hours into one of three mutually exclusive categories. Scheduled hours are source-evidence based: the classification is assigned when source wording explicitly supports a recurring posted timing pattern. Sustained hours are assigned after final interval unioning to uninterrupted disruption spans of at least seven days. Intermittent hours are the remaining hours that are neither Scheduled nor Sustained. The tool displays all three categories directly.</p>
           <p><strong>Time of week</strong> distributes hours across four windows using local Alberta time. Daytime covers weekdays 07:00–17:00, evening covers weekdays 17:00–22:00, weekend or holiday covers weekends and Alberta statutory holidays 07:00–22:00, and night covers 22:00–07:00 every day. The statutory holiday classification uses Alberta statutory general holidays, not the broader observed paid-holiday calendar. Hours spanning daylight-saving transitions are calculated using nominal local civil-clock arithmetic with no correction applied at the clock change.</p>
           <p>When all analyzed services are selected, hours are summed across service layers. Overlaps between different service layers at the same site are not deduplicated in this view, so the total reflects service-hours rather than unioned hours across services.</p>
           <p>The hour breakdown panel is not available when a service subtype filter is active, as the framework data are service-layer totals rather than subtype totals.</p>
