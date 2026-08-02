@@ -365,7 +365,7 @@
     <h1 class="page-title">Methods</h1>
     <div class="hero-rule"></div>
     <p class="page-intro">SORCTracks is a public-record reconstruction. For interpretive caveats that apply before consulting these methods, see the <a href="sorctracks.html" class="inline-link">SORCTracks page</a>.</p>
-    <p class="page-intro" style="margin-top: 1rem;">This page is a web-facing summary of the methods common across SORCTracks service layers. These methods reflect procedures in use as of Version 1.2 (Jul 24, 2026).</p>
+    <p class="page-intro" style="margin-top: 1rem;">This page is a web-facing summary of the methods common across SORCTracks service layers. These methods reflect procedures in use as of Version 1.3 (Aug 2, 2026).</p>
   </div>
 
   <div class="section">
@@ -472,11 +472,11 @@
       <div class="method-section">
         <div class="method-heading">Hour Breakdown</div>
         <div class="method-body">
-          <p>SORCTracks includes an hour breakdown panel that distributes unioned disruption hours across two independently selectable frameworks: timing pattern and time of week. Breakdowns are applied to final unioned intervals and reconcile exactly to the service-layer total hours for the selected site and year.</p>
-          <p><strong>Timing pattern</strong> classifies each disruption's hours into one of three mutually exclusive categories. Scheduled hours are source-evidence based: the classification is assigned when source wording explicitly supports a recurring posted timing pattern. Sustained hours are assigned after final interval unioning to uninterrupted disruption spans of at least seven days. Intermittent hours are the remaining hours that are neither Scheduled nor Sustained. The tool displays all three categories directly.</p>
+          <p>SORCTracks includes an hour breakdown panel that distributes unioned disruption hours across two independently selectable frameworks: timing structure and time of week. Breakdowns are applied to final unioned intervals and reconcile exactly to the service-layer total hours for the selected site and year.</p>
+          <p><strong>Timing structure</strong> classifies each disruption's hours into one of three mutually exclusive categories. Scheduled hours are source-evidence based: the classification is assigned when source wording explicitly supports a recurring posted timing pattern. Sustained hours are assigned after final interval unioning to uninterrupted disruption spans of at least seven days. Intermittent hours are the remaining hours that are neither Scheduled nor Sustained. The tool displays all three categories directly.</p>
           <p><strong>Time of week</strong> distributes hours across four windows using local Alberta time. Daytime covers weekdays 07:00–17:00, evening covers weekdays 17:00–22:00, weekend or holiday covers weekends and Alberta statutory holidays 07:00–22:00, and night covers 22:00–07:00 every day. The statutory holiday classification uses Alberta statutory general holidays, not the broader observed paid-holiday calendar. Hours spanning daylight-saving transitions are calculated using nominal local civil-clock arithmetic with no correction applied at the clock change.</p>
           <p>When all analyzed services are selected, hours are summed across service layers. Overlaps between different service layers at the same site are not deduplicated in this view, so the total reflects service-hours rather than unioned hours across services.</p>
-          <p>The hour breakdown panel is not available when a service subtype filter is active, as the framework data are service-layer totals rather than subtype totals.</p>
+          <p>Where a selected subtype has recorded disruption hours, the tool applies the same hour-breakdown logic to that subtype view.</p>
         </div>
       </div>
 
