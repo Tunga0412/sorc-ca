@@ -270,6 +270,7 @@
     .badge-sorc       { background: var(--navy); color: white; }
     .badge-inprogress { background: #2a1a2a; color: #d5a8d0; }
     .badge-submitted  { background: #2a2a1a; color: #d5d0a8; }
+    .badge-accepted   { background: #0a2a12; color: #a8d5b2; }
     .badge-collab     { background: var(--blue); color: white; }
 
     .project-title {
@@ -634,6 +635,39 @@
 
     <div class="project-list">
 
+      <!-- FMWC Poster -->
+      <div class="project-card" id="fmwc-obstetrics">
+        <div class="project-meta">
+          <span class="badge badge-sorc">SORC</span>
+          <span class="badge badge-accepted">Accepted</span>
+        </div>
+        <div class="project-title">Geographic Context of Publicly Posted Complete Obstetric Service Unavailability in Alberta: A Retrospective Archive-Based Analysis</div>
+        <div class="project-authors"><strong>Tung A</strong>, <strong>Nurmambetova E</strong>, <strong>Zhang M</strong>.</div>
+        <div style="font-size: 0.82rem; color: var(--muted); margin-top: 0.35rem;">Poster Presentation. Accepted, Federation of Medical Women of Canada 2026 Annual Meeting.</div>
+
+        <div class="abstract-label">Abstract</div>
+
+        <div class="abstract-section">
+          <div class="abstract-heading">Background</div>
+          <div class="abstract-text">Complete local obstetric service unavailability may require patients to seek care outside their community. We characterized the duration of publicly posted complete obstetric service unavailability in Alberta and the proximity of affected sites to another currently listed maternity-related service.</div>
+        </div>
+
+        <div class="abstract-section">
+          <div class="abstract-heading">Methods</div>
+          <div class="abstract-text">Using Alberta Health Services archived disruption snapshots and news or notice postings, we reconstructed intervals from August 1, 2021, to June 30, 2026, during which all local obstetric services or obstetric coverage were reported as unavailable. Repeated captures were reconciled, recurring schedules were expanded, and overlapping intervals were unioned within each site and calendar year. For each affected site, road distance and estimated driving time to the nearest other facility matching predefined maternity-related terms were calculated using a local OSRM automobile-routing matrix based on the Geofabrik Alberta OpenStreetMap extract and an AHS directory reviewed July 26, 2026.</div>
+        </div>
+
+        <div class="abstract-section">
+          <div class="abstract-heading">Results</div>
+          <div class="abstract-text">Thirty-six sites contributed 262,232 cumulative site-hours, representing 67.2% of reconstructed maternity-disruption site-hours. The median road distance to another currently directory-listed maternity-related facility was 77.7 km (IQR 41.2–89.7), corresponding to 61.5 driving minutes (IQR 34.2–72.7). Six sites were at least 100 road km away, and Slave Lake and Wabasca were at least 120 driving minutes away. Sundre, Rimbey, Three Hills, and Westlock contributed 157,896 site-hours (60.2%) but were 38.0–62.4 road km from another currently listed maternity-related facility.</div>
+        </div>
+
+        <div class="abstract-section">
+          <div class="abstract-heading">Conclusion</div>
+          <div class="abstract-text">Duration burden and geographic separation were distinct dimensions of publicly documented obstetric-service instability. Most cumulative hours were concentrated at four sites with shorter estimated driving times, whereas several lower-burden communities were more geographically isolated. Distances based on the current AHS directory provide geographic context only and do not establish historical service availability, actual patient travel, or clinical suitability.</div>
+        </div>
+      </div>
+
       <!-- ED Disruptions -->
       <div class="project-card" id="ed-disruptions">
         <div class="project-meta">
@@ -698,38 +732,6 @@
           <div class="abstract-text">Publicly posted AHS records show recurrent and sustained loss of maternity-related hospital capability across Alberta. Several high-burden sites reflect long posted suspensions, including intervals already active at the archive start and therefore left-censored. Capability-specific reporting better reflects operational changes that may affect local delivery access, while these public records do not establish real-time availability, patient outcomes, or a formal rurality classification.</div>
         </div>
 
-      </div>
-
-      <div class="project-card" id="fmwc-obstetrics">
-        <div class="project-meta">
-          <span class="badge badge-sorc">SORC</span>
-          <span class="badge badge-accepted">Accepted</span>
-        </div>
-        <div class="project-title">Geographic Context of Publicly Posted Complete Obstetric Service Unavailability in Alberta: A Retrospective Archive-Based Analysis</div>
-        <div class="project-authors"><strong>Tung A</strong>, <strong>Nurmambetova E</strong>, <strong>Zhang M</strong>.</div>
-        <div style="font-size: 0.82rem; color: var(--muted); margin-top: 0.35rem;">Poster Presentation. Accepted, Federation of Medical Women of Canada 2026 Annual Meeting.</div>
-
-        <div class="abstract-label">Abstract</div>
-
-        <div class="abstract-section">
-          <div class="abstract-heading">Background</div>
-          <div class="abstract-text">Complete local obstetric service unavailability may require patients to seek care outside their community. We characterized the duration of publicly posted complete obstetric service unavailability in Alberta and the proximity of affected sites to another currently listed maternity-related service.</div>
-        </div>
-
-        <div class="abstract-section">
-          <div class="abstract-heading">Methods</div>
-          <div class="abstract-text">Using Alberta Health Services archived disruption snapshots and news or notice postings, we reconstructed intervals from August 1, 2021, to June 30, 2026, during which all local obstetric services or obstetric coverage were reported as unavailable. Repeated captures were reconciled, recurring schedules were expanded, and overlapping intervals were unioned within each site and calendar year. For each affected site, road distance and estimated driving time to the nearest other facility matching predefined maternity-related terms were calculated using a local OSRM automobile-routing matrix based on the Geofabrik Alberta OpenStreetMap extract and an AHS directory reviewed July 26, 2026.</div>
-        </div>
-
-        <div class="abstract-section">
-          <div class="abstract-heading">Results</div>
-          <div class="abstract-text">Thirty-six sites contributed 262,232 cumulative site-hours, representing 67.2% of reconstructed maternity-disruption site-hours. The median road distance to another currently directory-listed maternity-related facility was 77.7 km (IQR 41.2–89.7), corresponding to 61.5 driving minutes (IQR 34.2–72.7). Six sites were at least 100 road km away, and Slave Lake and Wabasca were at least 120 driving minutes away. Sundre, Rimbey, Three Hills, and Westlock contributed 157,896 site-hours (60.2%) but were 38.0–62.4 road km from another currently listed maternity-related facility.</div>
-        </div>
-
-        <div class="abstract-section">
-          <div class="abstract-heading">Conclusion</div>
-          <div class="abstract-text">Duration burden and geographic separation were distinct dimensions of publicly documented obstetric-service instability. Most cumulative hours were concentrated at four sites with shorter estimated driving times, whereas several lower-burden communities were more geographically isolated. Distances based on the current AHS directory provide geographic context only and do not establish historical service availability, actual patient travel, or clinical suitability.</div>
-        </div>
       </div>
 
     </div>
