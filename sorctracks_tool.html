@@ -450,11 +450,26 @@ if (typeof window.Chart === 'undefined') {
 @media (max-width: 768px) { .chart-view-select { min-height: 2.75rem; } .chart-data-table summary { min-height: 2.75rem; } }
 /* HOUR_FRAMEWORKS_STYLES_END */
 </style>
+
+    <style>
+      .sorc-mode-switch { display:flex; gap:.45rem; margin-left:auto; align-items:center; }
+      .sorc-mode-switch a { border:1px solid #1b3a6b; border-radius:5px; padding:.35rem .6rem; color:#1b3a6b; text-decoration:none; background:#fff; font-size:.82rem; }
+      .sorc-mode-switch a.active { color:#fff; background:#1b3a6b; }
+      header { align-items:center; row-gap:.7rem; }
+      .sorc-header-title { order:1; min-width:0; flex:1 1 auto; }
+      .sorc-mode-switch { order:2; }
+      header > .total-stat, header > .live-summary { order:3; width:100%; }
+      header > .control-pair { order:4; }
+      header > .toggle-control { order:5; margin-left:auto; }
+      header .view-control select { width:8.8rem; min-width:8.8rem; height:1.55rem; }
+      @media (max-width:768px) { .sorc-mode-switch { margin-left:0; } header > .toggle-control { margin-left:0; } }
+    </style>
 </head>
 <body>
   <header>
     <h1 class="sr-only">SORCTracks Alberta service disruption data</h1>
-    <div>
+    <div class="sorc-header-title">
+      <div class="title">SORCTracks</div>
       <div class="subtitle">Reconstructed from publicly archived AHS postings, August 2021 to July 2026</div>
     </div>
     <div class="total-stat" id="summaryStats" aria-live="polite"><strong>982,657</strong> service-hours <strong>80</strong> sites affected</div>
@@ -490,6 +505,11 @@ if (typeof window.Chart === 'undefined') {
     <div class="view-control toggle-control">
       <label for="showNoDataSites"><input id="showNoDataSites" type="checkbox" checked /> Show sites with no posted disruption data</label>
     </div>
+
+    <nav class="sorc-mode-switch" aria-label="SORCTracks mode">
+      <a class="active" href="sorctracks_tool.html" aria-current="page">SORCTracks</a>
+      <a href="sorctracks_live.html">SORCTracks Live</a>
+    </nav>
   </header>
   <div id="map" role="region" aria-label="Map of Alberta service disruption locations"></div>
   <main class="sidebar" id="sidebar" aria-label="Service disruption data and site details">
