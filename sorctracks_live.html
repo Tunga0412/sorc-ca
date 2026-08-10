@@ -1,0 +1,539 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SORCTracks Live</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Lato:wght@300;400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <style>
+    :root {
+      --navy: #0F2347;
+      --navy2: #162E5A;
+      --blue: #216B9E;
+      --bg: #F8F9FC;
+      --text: #0F2347;
+      --mid: #1B3A6B;
+      --muted: #5A6A85;
+      --rule: #D0D8E8;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { min-height: 100%; overflow-x: hidden; overflow-y: auto; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      line-height: 1.6;
+      display: grid;
+      grid-template-columns: 1fr 360px;
+      grid-template-rows: auto clamp(500px, calc(100vh - 150px), 600px) auto;
+      grid-template-areas: "header header" "map sidebar" "footer footer";
+      min-height: 100vh;
+      height: auto;
+    }
+    header {
+      grid-area: header;
+      padding: 1rem 1.5rem;
+      border-bottom: 1px solid var(--rule);
+      background: white;
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+    .title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.5rem;
+      color: var(--navy);
+      font-weight: 600;
+      line-height: 1.2;
+    }
+    .subtitle {
+      font-size: 0.78rem;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+      margin-top: 0.2rem;
+    }
+    .total-stat {
+      font-size: 0.85rem;
+      color: var(--mid);
+      white-space: nowrap;
+    }
+    .total-stat strong {
+      font-family: 'Cormorant Garamond', serif;
+      color: var(--navy);
+      font-size: 1.05rem;
+      font-weight: 600;
+      margin: 0 0.3rem 0 0.6rem;
+    }
+    .total-stat strong:first-child { margin-left: 0; }
+    .leaflet-container .leaflet-interactive:focus {
+      outline: none;
+    }
+    #map {
+      grid-area: map;
+      background: #e8eef5;
+      height: 100%;
+      min-height: 0;
+      align-self: stretch;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+    .sidebar {
+      grid-area: sidebar;
+      background: white;
+      border-left: 1px solid var(--rule);
+      padding: 1rem 1.25rem;
+      overflow: visible;
+      min-height: 0;
+      align-self: stretch;
+    }
+    .panel-label {
+      font-size: 0.68rem;
+      color: var(--blue);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+    .site-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.38rem;
+      color: var(--navy);
+      font-weight: 600;
+      text-transform: capitalize;
+      margin-bottom: 0.65rem;
+    }
+    .stats-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.55rem 0.85rem;
+      margin-bottom: 0.75rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    .stat-block .stat-label {
+      font-size: 0.64rem;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 0.2rem;
+    }
+    .stat-block .stat-value {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.18rem;
+      color: var(--navy);
+      font-weight: 600;
+    }
+    .chart-wrap {
+      height: 150px;
+      margin-bottom: 0.55rem;
+      position: relative;
+    }
+    .chart-caption {
+      font-size: 0.69rem;
+      color: var(--muted);
+      line-height: 1.35;
+      margin-bottom: 0;
+    }
+    .empty-state {
+      color: var(--muted);
+      font-size: 0.85rem;
+      padding: 2rem 0;
+      text-align: center;
+      font-style: italic;
+    }
+    footer {
+      grid-area: footer;
+      padding: 0.75rem 1.5rem;
+      border-top: 1px solid var(--rule);
+      background: white;
+      font-size: 0.72rem;
+      line-height: 1.45;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 0.5rem 1.5rem;
+    }
+    footer a { color: var(--blue); text-decoration: none; }
+    .legend {
+      background: rgba(255,255,255,0.95);
+      padding: 0.65rem 0.85rem;
+      border: 1px solid var(--rule);
+      border-radius: 2px;
+      font-size: 0.72rem;
+      color: var(--mid);
+      line-height: 1.5;
+    }
+    .legend-title {
+      font-size: 0.65rem;
+      color: var(--navy);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 0.4rem;
+    }
+    .legend-row {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin-bottom: 0.25rem;
+    }
+    .legend-dot {
+      display: inline-block;
+      border-radius: 50%;
+      background: #3B82C4;
+      opacity: 0.7;
+      border: 1px solid #0F2347;
+      flex-shrink: 0;
+    }
+    .legend-note {
+      color: var(--muted);
+      font-size: 0.68rem;
+      line-height: 1.35;
+      margin-bottom: 0.45rem;
+      max-width: 190px;
+    }
+    .popup-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 600;
+      color: #0F2347;
+      text-transform: capitalize;
+      font-size: 1rem;
+      margin-bottom: 0.2rem;
+    }
+    .popup-stat {
+      font-size: 0.78rem;
+      color: #1B3A6B;
+    }
+    .view-control {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.72rem;
+      color: var(--mid);
+      white-space: nowrap;
+    }
+    .view-control label {
+      font-size: 0.65rem;
+      color: var(--blue);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    .view-control select {
+      font-family: 'Lato', sans-serif;
+      color: var(--navy);
+      background: white;
+      border: 1px solid var(--rule);
+      border-radius: 2px;
+      padding: 0.2rem 0.4rem;
+      font-size: 0.72rem;
+    }
+    .control-pair {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: nowrap;
+    }
+    .toggle-control label {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      cursor: pointer;
+      letter-spacing: normal;
+      text-transform: none;
+      color: var(--mid);
+      font-size: 0.72rem;
+    }
+    .toggle-control input { accent-color: var(--blue); }
+    .period-note {
+      color: var(--muted);
+      font-size: 0.75rem;
+      margin: -0.25rem 0 0.65rem;
+      line-height: 1.3;
+    }
+    .search-panel {
+      margin: 0.15rem 0 0.65rem;
+      padding-bottom: 0.6rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    .search-input {
+      width: 100%;
+      font-family: 'Lato', sans-serif;
+      color: var(--navy);
+      background: white;
+      border: 1px solid var(--rule);
+      border-radius: 2px;
+      padding: 0.42rem 0.55rem;
+      font-size: 0.8rem;
+      outline: none;
+    }
+    .search-input:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 2px rgba(33,107,158,0.12);
+    }
+    .search-note {
+      color: var(--muted);
+      font-size: 0.72rem;
+      line-height: 1.35;
+      margin-top: 0.35rem;
+    }
+    .result-count {
+      color: var(--muted);
+      font-size: 0.72rem;
+      margin-top: 0.25rem;
+    }
+    .rank-list {
+      margin-top: 0.45rem;
+      border-top: 1px solid var(--rule);
+    }
+    .rank-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 0.24rem 0;
+      border-bottom: 1px solid rgba(208,216,232,0.65);
+      cursor: pointer;
+      color: var(--mid);
+      font-size: 0.77rem;
+    }
+    .rank-row:hover { color: var(--navy); }
+    .rank-name { text-transform: capitalize; }
+    .rank-hours { color: var(--muted); white-space: nowrap; }
+    .back-btn {
+      display: inline-block;
+      margin-top: 0.1rem;
+      margin-bottom: 0.45rem;
+      font-family: 'Lato', sans-serif;
+      font-size: 0.74rem;
+      color: var(--blue);
+      background: transparent;
+      border: 0;
+      padding: 0;
+      cursor: pointer;
+    }
+    .back-btn:hover { color: var(--navy); }
+    @media (max-width: 768px) {
+      html, body { overflow-x: hidden; overflow-y: auto; }
+      body {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto auto auto;
+        grid-template-areas: "header" "sidebar" "map" "footer";
+      }
+      header { padding: 0.6rem 1rem; gap: 0.5rem; }
+      .subtitle { font-size: 0.72rem; }
+      .total-stat { font-size: 0.78rem; }
+      #map {
+        height: 40vh;
+        min-height: 240px;
+        align-self: auto;
+        position: relative;
+        top: auto;
+      }
+      .sidebar { border-left: none; border-top: 1px solid var(--rule); overflow: visible; }
+      .control-pair { flex-wrap: wrap; gap: 0.4rem 0.6rem; }
+      .legend { display: none; }
+    }
+/* Compact sidebar/list fit for the province chart plus top-ten list. */
+.sidebar { padding: 0.45rem 1rem 0.75rem; max-width: 100%; overflow-x: hidden; }
+.sidebar > * { max-width: 100%; }
+.search-panel { margin: 0 0 0.42rem; padding-bottom: 0.42rem; }
+.search-input, .view-control select, .stats-row, .chart-wrap, .rank-list, .site-detail-view-control, .nearest-service-list, .nearest-service-source { max-width: 100%; }
+.panel-label { margin-bottom: 0.32rem; font-size: 0.66rem; }
+.chart-wrap { height: 128px; margin-bottom: 0.36rem; }
+.overview-chart-wrap { height: 150px; }
+.rank-list { margin-top: 0.28rem; }
+.rank-row { display: grid; grid-template-columns: minmax(0, 1fr) max-content; column-gap: 0.52rem; padding: 0.17rem 0.2rem 0.17rem 0; font-size: 0.74rem; line-height: 1.22; align-items: start; }
+.rank-name { min-width: 0; overflow-wrap: anywhere; }
+.rank-hours { color: var(--muted); text-align: right; white-space: nowrap; line-height: 1.2; padding-right: 0.1rem; max-width: 9.8rem; }
+@media (max-width: 768px) {
+  header { max-width: 100vw; overflow-x: hidden; gap: 0.45rem; padding-right: 0.85rem; }
+  .total-stat { max-width: 100%; min-width: 0; white-space: normal; line-height: 1.35; overflow-wrap: anywhere; }
+  .view-control { max-width: 100%; min-width: 0; white-space: normal; }
+  .view-control select { max-width: 100%; min-width: 0; }
+  .sidebar { width: 100%; padding: 0.38rem 0.88rem 0.65rem 0.85rem; overflow-x: clip; }
+  .search-panel { margin-bottom: 0.36rem; padding-bottom: 0.36rem; }
+  .panel-label { margin-bottom: 0.28rem; font-size: 0.64rem; }
+  .chart-wrap { height: 120px; margin-bottom: 0.32rem; }
+  .chart-wrap canvas { max-width: 100% !important; }
+  .overview-chart-wrap { height: 140px; }
+  .rank-list { margin-top: 0.24rem; }
+  .rank-row { column-gap: 0.38rem; padding: 0.16rem 0.38rem 0.16rem 0; font-size: 0.72rem; line-height: 1.18; }
+  .rank-hours { max-width: 7.2rem; padding-right: 0.22rem; }
+}
+/* Service-aware nearest-site access overlay. */
+.site-detail-view-control { display: grid; grid-template-columns: 1fr 1fr; gap: 0.28rem; margin: 0.36rem 0 0.5rem; }
+.site-detail-view-btn { min-width: 0; border: 1px solid rgba(90, 106, 133, 0.24); border-radius: 4px; padding: 0.34rem 0.38rem; background: #fff; color: var(--muted); font-family: inherit; font-size: 0.72rem; font-weight: 700; line-height: 1.15; cursor: pointer; }
+.site-detail-view-btn.active { border-color: rgba(27, 58, 107, 0.42); background: rgba(59, 130, 196, 0.09); color: var(--ink); }
+.nearest-service-list { display: grid; gap: 0.32rem; margin: 0.18rem 0 0.52rem; }
+.nearest-service-row { display: grid; grid-template-columns: 1.35rem minmax(0, 1fr) max-content; align-items: start; gap: 0.42rem; padding: 0.32rem 0; border-bottom: 1px solid rgba(90, 106, 133, 0.16); font-size: 0.73rem; line-height: 1.22; }
+.nearest-service-index { color: var(--muted); font-weight: 700; }
+.nearest-service-name { min-width: 0; overflow-wrap: anywhere; color: var(--ink); font-weight: 700; }
+.nearest-service-link { appearance: none; border: 0; background: transparent; padding: 0; margin: 0; text-align: left; font: inherit; line-height: inherit; color: var(--ink); cursor: pointer; text-decoration: none; }
+.nearest-service-link:hover,
+.nearest-service-link:focus-visible { color: var(--navy); outline: none; }
+.nearest-service-meta { color: var(--muted); text-align: right; white-space: nowrap; }
+.nearest-service-burden { grid-column: 2 / 4; color: var(--ink); font-size: 0.7rem; line-height: 1.25; }
+.nearest-service-source { margin-top: -0.24rem; color: var(--muted); font-size: 0.66rem; line-height: 1.28; }
+.nearest-service-source a { color: var(--muted); text-decoration: underline; text-underline-offset: 2px; }
+@media (max-width: 768px) {
+  .site-detail-view-control { gap: 0.22rem; margin: 0.32rem 0 0.44rem; }
+  .site-detail-view-btn { min-height: 2.15rem; padding: 0.32rem 0.3rem; font-size: 0.74rem; }
+  .nearest-service-row { grid-template-columns: 1.15rem minmax(0, 1fr); }
+  .nearest-service-meta { grid-column: 2; text-align: left; white-space: normal; }
+  .nearest-service-burden { grid-column: 2; }
+}
+
+
+/* RELEASE_HARDENING_START */
+:root { --ink: #0F2347; }
+body { grid-template-rows: auto clamp(500px, calc(100vh - 150px), 600px) auto; height: auto; }
+#map { min-height: 0; }
+.sidebar { overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+.runtime-fallback { margin: 1rem; padding: 0.8rem 1rem; border: 1px solid var(--rule); background: #fff; color: var(--mid); font-size: 0.82rem; line-height: 1.4; }
+.leaflet-container .leaflet-interactive:focus { outline: 3px solid #216B9E; outline-offset: 2px; }
+@media (max-width: 768px) { body { grid-template-rows: auto auto auto auto; } #map { min-height: 240px; } .sidebar { overflow: visible; } }
+/* RELEASE_HARDENING_END */
+
+
+/* HOUR_FRAMEWORKS_STYLES_START */
+.chart-view-control { margin: 0 0 0.34rem; }
+.chart-view-select { width: 100%; min-height: 2rem; padding: 0.28rem 0.4rem; border: 1px solid var(--rule); border-radius: 2px; background: #fff; color: var(--navy); font-family: 'Lato', sans-serif; font-size: 0.72rem; font-weight: 400; line-height: normal; }
+.chart-data-table { margin: 0.36rem 0 0.5rem; border-top: 1px solid var(--rule); color: var(--mid); font-family: 'Lato', sans-serif; font-size: 0.68rem; }
+.chart-data-table summary { min-height: 2rem; display: flex; align-items: center; cursor: pointer; color: var(--navy); font-weight: 700; }
+.chart-data-table-scroll { max-height: 16rem; overflow: auto; border: 1px solid var(--rule); }
+.chart-data-table table { width: max-content; min-width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+.chart-data-table caption { caption-side: top; padding: 0.24rem 0.3rem; color: var(--muted); text-align: left; white-space: normal; }
+.chart-data-table th, .chart-data-table td { padding: 0.24rem 0.28rem; border-bottom: 1px solid rgba(208,216,232,0.7); text-align: right; white-space: nowrap; }
+.chart-data-table th { font-size: 0.65rem; font-weight: 600; }
+.chart-data-table th:first-child, .chart-data-table td:first-child { text-align: left; }
+.chart-runtime-note { margin: 0.32rem 0 0; color: var(--muted); font-family: 'Lato', sans-serif; font-size: 0.7rem; line-height: 1.35; }
+.hour-breakdown { margin: 0.42rem 0 0.52rem; }
+.hour-breakdown .panel-label { margin-bottom: 0.28rem; }
+.hour-breakdown-track { display: flex; height: 0.38rem; overflow: hidden; border-radius: 2px; background: rgba(90,106,133,.13); }
+.hour-breakdown-segment { min-width: 0; }
+.hour-breakdown-legend { display: grid; gap: 0.18rem; margin-top: 0.32rem; }
+.hour-breakdown-row { display: grid; grid-template-columns: 0.48rem minmax(0,1fr) max-content; gap: 0.3rem; align-items: center; color: var(--mid); font-family: 'Lato', sans-serif; font-size: 0.77rem; font-weight: 400; line-height: 1.3; }
+.hour-breakdown-swatch { width: 0.4rem; height: 0.4rem; border-radius: 1px; }
+.hour-breakdown-value { color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.hour-breakdown-note { margin: 0.3rem 0 0; color: var(--muted); font-family: 'Lato', sans-serif; font-size: 0.69rem; line-height: 1.35; }
+.hour-breakdown-comparison { grid-column: 2 / -1; color: var(--muted); font-family: 'Lato', sans-serif; font-size: 0.65rem; font-variant-numeric: tabular-nums; line-height: 1.35; }
+.hour-breakdown-comparison strong { color: var(--mid); font-weight: 600; }
+.nearest-service-concurrent { grid-column: 2 / 4; color: var(--muted); font-family: 'Lato', sans-serif; font-size: 0.68rem; line-height: 1.25; }
+.nearest-service-concurrent-note { margin: -0.12rem 0 0.42rem; color: var(--muted); font-family: 'Lato', sans-serif; font-size: 0.66rem; line-height: 1.28; }
+.nearest-service-source { margin-top: 0.28rem; color: var(--muted); font-family: 'Lato', sans-serif; font-size: 0.66rem; line-height: 1.35; }
+.nearest-service-source summary { cursor: pointer; color: var(--navy); font-weight: 700; }
+.nearest-service-source > div { margin-top: 0.25rem; }
+.hour-framework-scope-note { margin: 0 0 0.4rem; color: var(--muted); font-family: 'Lato', sans-serif; font-size: 0.69rem; line-height: 1.35; }
+.rank-row[role="button"] { cursor: pointer; min-height: 2rem; align-items: center; }
+.rank-row[role="button"]:focus-visible, .nearest-service-link:focus-visible, .chart-view-select:focus-visible, .site-detail-view-btn:focus-visible, .back-btn:focus-visible { outline: 2px solid #216b9e; outline-offset: 2px; }
+.nearest-service-link { min-height: 2rem; padding: 0.1rem 0; }
+@media (max-width: 768px) { .nearest-service-concurrent { grid-column: 2; } }
+@media (max-width: 768px) { .chart-view-select { min-height: 2.75rem; } .chart-data-table summary { min-height: 2.75rem; } }
+/* HOUR_FRAMEWORKS_STYLES_END */
+
+
+      .sorc-mode-switch { display:flex; gap:.45rem; margin-left:auto; align-items:center; }
+      .sorc-mode-switch a { border:1px solid #1b3a6b; border-radius:5px; padding:.35rem .6rem; color:#1b3a6b; text-decoration:none; background:#fff; font-size:.82rem; }
+      .sorc-mode-switch a.active { color:#fff; background:#1b3a6b; }
+      header { align-items:center; row-gap:.7rem; }
+      .sorc-header-title { order:1; min-width:0; flex:1 1 auto; }
+      .sorc-mode-switch { order:2; }
+      header > .total-stat, header > .live-summary { order:3; width:100%; }
+      header > .control-pair { order:4; }
+      header > .toggle-control { order:5; margin-left:auto; }
+      header .view-control select { width:8.8rem; min-width:8.8rem; height:1.55rem; }
+      @media (max-width:768px) { .sorc-mode-switch { margin-left:0; } header > .toggle-control { margin-left:0; } }
+    
+
+    .sorc-mode-switch { display:flex; gap:.45rem; margin-left:auto; align-items:center; }
+    .sorc-mode-switch a { border:1px solid #1b3a6b; border-radius:5px; padding:.35rem .6rem; color:#1b3a6b; text-decoration:none; background:#fff; font-size:.82rem; }
+    .sorc-mode-switch a.active { color:#fff; background:#1b3a6b; }
+    header { align-items:center; row-gap:.7rem; }
+    .sorc-header-title { order:1; min-width:0; flex:1 1 auto; }
+    .sorc-mode-switch { order:2; }
+    header > .total-stat, header > .live-summary { order:3; width:100%; }
+    header > .control-pair { order:4; }
+    header > .toggle-control { order:5; margin-left:auto; }
+    header .view-control select { width:8.8rem; min-width:8.8rem; height:1.55rem; }
+    .live-badge { color:#B42318; font-family:'Cormorant Garamond',serif; font-size:1.12rem; font-weight:600; letter-spacing:.05em; white-space:nowrap; }
+    .demo-badge { color:#9A6500; font-size:.64rem; letter-spacing:.1em; text-transform:uppercase; }
+    .live-summary { width:100%; color:var(--mid); font-size:.82rem; }
+    .live-summary strong { color:var(--navy); font-family:'Cormorant Garamond',serif; font-size:1.08rem; }
+    .status-legend { display:flex; gap:.9rem; flex-wrap:wrap; margin:.45rem 0 .75rem; color:var(--muted); font-size:.7rem; }
+    .status-key { display:inline-flex; align-items:center; gap:.3rem; }
+    .status-dot { width:.58rem; height:.58rem; display:inline-block; border-radius:50%; border:1px solid var(--navy); }
+    .status-dot.now { background:#B42318; } .status-dot.scheduled { background:#C8871A; }
+    .live-card { margin:.55rem 0; padding:.55rem .65rem; border-left:3px solid #B42318; background:#fff8f7; }
+    .live-card.scheduled { border-left-color:#C8871A; background:#fffaf0; }
+    .live-status { display:inline-block; margin-bottom:.25rem; color:#B42318; font-size:.64rem; font-weight:400; letter-spacing:.1em; text-transform:uppercase; }
+    .live-status.scheduled { color:#9A6500; }
+    .live-card .service { color:var(--navy); font-size:.82rem; font-weight:400; }
+    .live-card .details { color:var(--mid); font-size:.74rem; line-height:1.4; }
+    .live-card a { color:var(--blue); font-size:.7rem; text-decoration:none; }
+    .live-filter-note { color:var(--muted); font-size:.7rem; line-height:1.35; margin:.35rem 0 .7rem; }
+    .empty-state a { color:var(--blue); }
+    @media (max-width:768px) { .sorc-mode-switch { margin-left:0; } header > .toggle-control { margin-left:0; } }
+    </style>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+</head>
+<body>
+  <header>
+    <div class="sorc-header-title">
+      <div class="title">SORCTracks <span class="live-badge">● LIVE</span></div>
+      <div class="subtitle">Current AHS service disruptions as of 2026-08-09</div>
+    </div>
+    <nav class="sorc-mode-switch" aria-label="SORCTracks mode">
+      <a href="sorctracks_tool.html">SORCTracks</a>
+      <a class="active" href="sorctracks_live.html" aria-current="page">SORCTracks Live</a>
+    </nav>
+    <div class="live-summary" id="summaryStats"><strong>8</strong> active now · <strong>5</strong> scheduled / recurring · <strong>12</strong> sites shown</div>
+    <div class="control-pair" role="group" aria-label="Live map filters">
+      <div class="view-control"><label for="statusSelect">Map view</label><select id="statusSelect"><option value="all">All notices</option><option value="active_now">Active now</option><option value="scheduled">Scheduled / recurring</option></select></div>
+      <div class="view-control"><label for="serviceSelect">Service</label><select id="serviceSelect"><option value="all">All analyzed services</option><option value="ed">Emergency</option><option value="ob">Obstetrics</option><option value="acute">Acute Care</option><option value="surgery">Surgery</option><option value="other">Other Services</option></select></div>
+    </div>
+  </header>
+  <div id="map" role="region" aria-label="Map of current Alberta service disruptions"></div>
+  <main class="sidebar" id="sidebar" aria-label="Current service disruption data">
+    <div class="panel-label">Live disruption notices</div>
+    <div class="search-panel"><input id="search" class="search-input" type="search" placeholder="Search site or service" aria-label="Search live disruptions" /><div class="live-filter-note">Red markers are active at the current time. Gold markers are scheduled or recurring notices that may not be active right now.</div><div class="status-legend"><span class="status-key"><span class="status-dot now"></span> Active now</span><span class="status-key"><span class="status-dot scheduled"></span> Scheduled / recurring</span></div><div id="resultCount" class="result-count"></div></div>
+    <div id="list"></div>
+  </main>
+  <footer><div>Updated 2026-08-09 &middot; Current AHS service-disruption notices &middot; SORC, 2026</div><div>Source: <a href="https://www.albertahealthservices.ca/br/Page17594.aspx" target="_blank" rel="noopener">AHS current service-disruption page</a> &middot; <a href="https://sorc.ca">sorc.ca</a></div></footer>
+  <script>
+    const LIVE_DATA = {"as_of":"2026-08-09","as_of_timestamp":"2026-08-09T23:35:19.161583-06:00","generated_at":"2026-08-09T23:35:20.380717-06:00","source_url":"https://www.albertahealthservices.ca/br/Page17594.aspx","demo_fixture":false,"sites":[{"name":"athabasca","display_name":"Athabasca","facility_name":"Athabasca Healthcare Centre","community":"","lat":54.7197,"lng":-113.2867,"disruptions":[{"service":"Emergency Department","service_layer":"ed","reduction":"No physician on site, nursing staff remain on site. VEP program engaged as available. August 3 (6 pm) - August 4 (6 am), August 4 (6 pm) - August 5 (6 am), August 5 (6 pm) - August 6 (6 am), August 23 (6 pm) - August 24 (6 am).","reason":"Due to clinical personnel shortage","start":"August 3, 2026","end":"August 24, 2026","status":"scheduled","status_label":"Scheduled / recurring","start_date_key":"2026-08-03","end_date_key":"2026-08-24","schedule_windows":[{"start":"2026-08-03T18:00:00-06:00","end":"2026-08-04T06:00:00-06:00"},{"start":"2026-08-04T18:00:00-06:00","end":"2026-08-05T06:00:00-06:00"},{"start":"2026-08-05T18:00:00-06:00","end":"2026-08-06T06:00:00-06:00"},{"start":"2026-08-23T18:00:00-06:00","end":"2026-08-24T06:00:00-06:00"}],"details":"Program or Service: Emergency Department | Bed or Space Reduction: No physician on site, nursing staff remain on site. VEP program engaged as available. August 3 (6 pm) - August 4 (6 am), August 4 (6 pm) - August 5 (6 am), August 5 (6 pm) - August 6 (6 am), August 23 (6 pm) - August 24 (6 am). | Reason: Due to clinical personnel shortage | Start Date: August 3, 2026 | Anticipated End Date: August 24, 2026","source_url":"https://www.albertahealthservices.ca/br/Page17594.aspx"}],"disruption_count":1,"active_now_count":0,"scheduled_count":1},{"name":"barrhead","display_name":"Barrhead","facility_name":"Barrhead Healthcare Centre","community":"","lat":54.1294,"lng":-114.4022,"disruptions":[{"service":"Obstetrics - all services","service_layer":"ob","reduction":"No Obstetrics. June 1 (7 am) - June 3 (5 pm), June 4 (7 am - 5 pm), June 5 (7 am - 5 pm), June 6 (7 am) - June 10 (5 pm), June 11 (7 am) - June 17 (5 pm), June 18 (7 am) - July 1 (7 am), July 1 (7 am) - August 1 (7 am), August 1 (7 am) - September 1 (7 am)","reason":"Due to clinical personnel shortage","start":"June 1, 2026","end":"September 1, 2026","status":"active_now","status_label":"Active now","start_date_key":"2026-06-01","end_date_key":"2026-09-01","schedule_windows":[{"start":"2026-06-01T07:00:00-06:00","end":"2026-06-03T17:00:00-06:00"},{"start":"2026-06-04T07:00:00-06:00","end":"2026-06-04T17:00:00-06:00"},{"start":"2026-06-05T07:00:00-06:00","end":"2026-06-05T17:00:00-06:00"},{"start":"2026-06-06T07:00:00-06:00","end":"2026-06-10T17:00:00-06:00"},{"start":"2026-06-11T07:00:00-06:00","end":"2026-06-17T17:00:00-06:00"},{"start":"2026-06-18T07:00:00-06:00","end":"2026-07-01T07:00:00-06:00"},{"start":"2026-07-01T07:00:00-06:00","end":"2026-08-01T07:00:00-06:00"},{"start":"2026-08-01T07:00:00-06:00","end":"2026-09-01T07:00:00-06:00"}],"details":"Program or Service: Obstetrics - all services | Bed or Space Reduction: No Obstetrics. June 1 (7 am) - June 3 (5 pm), June 4 (7 am - 5 pm), June 5 (7 am - 5 pm), June 6 (7 am) - June 10 (5 pm), June 11 (7 am) - June 17 (5 pm), June 18 (7 am) - July 1 (7 am), July 1 (7 am) - August 1 (7 am), August 1 (7 am) - September 1 (7 am) | Reason: Due to clinical personnel shortage | Start Date: June 1, 2026 | Anticipated End Date: September 1, 2026","source_url":"https://www.albertahealthservices.ca/br/Page17594.aspx"}],"disruption_count":1,"active_now_count":1,"scheduled_count":0},{"name":"bow island","display_name":"Bow Island","facility_name":"Bow Island Health Centre","community":"","lat":49.8703,"lng":-111.37,"disruptions":[{"service":"Emergency Department","service_layer":"ed","reduction":"Adjusted hours of operation: Open Tuesday 0800 - 2000 Open Wednesday 0800 - 2000 Open Thursday 0800 - 2000 Open 24 hours per day starting Fridays at 0700 through to Mondays at 2000","reason":"Due to clinical personnel shortage","start":"September 8, 2025","end":"December 31, 2026","status":"active_now","status_label":"Active now","start_date_key":"2025-09-08","end_date_key":"2026-12-31","schedule_windows":[{"start":"2025-09-08T00:00:00-06:00","end":"2027-01-01T00:00:00-07:00"}],"details":"Program or Service: Emergency Department | Bed or Space Reduction: Adjusted hours of operation: Open Tuesday 0800 - 2000 Open Wednesday 0800 - 2000 Open Thursday 0800 - 2000 Open 24 hours per day starting Fridays at 0700 through to Mondays at 2000 | Reason: Due to clinical personnel shortage | Start Date: September 8, 2025 | Anticipated End Date: December 31, 2026","source_url":"https://www.albertahealthservices.ca/br/Page17594.aspx"}],"disruption_count":1,"active_now_count":1,"scheduled_count":0},{"name":"boyle","display_name":"Boyle","facility_name":"Boyle Healthcare Centre","community":"","lat":54.5847,"lng":-112.8089,"disruptions":[{"service":"Emergency Department","service_layer":"ed","reduction":"Temporary reduction in Emergency Department operation to 12 hours daily (closed from 2100 - 0900); 4/4 treatment spaces.","reason":"Due to clinical personnel shortage","start":"July 2, 2024","end":"August 31, 2026","status":"active_now","status_label":"Active now","start_date_key":"2024-07-02","end_date_key":"2026-08-31","schedule_windows":[{"start":"2024-07-02T00:00:00-06:00","end":"2026-09-01T00:00:00-06:00"}],"details":"Program or Service: Emergency Department | Bed or Space Reduction: Temporary reduction in Emergency Department operation to 12 hours daily (closed from 2100 - 0900); 4/4 treatment spaces. | Reason: Due to clinical personnel shortage | Start Date: July 2, 2024 | Anticipated End Date: August 31, 2026","source_url":"https://www.albertahealthservices.ca/br/Page17594.aspx"}],"disruption_count":1,"active_now_count":1,"scheduled_count":0},{"name":"edson","display_name":"Edson","facility_name":"Edson Healthcare Centre","community":"","lat":53.5836,"lng":-116.4356,"disruptions":[{"service":"Emergency Department","service_layer":"ed","reduction":"Emergency department closed, nursing staff remain on site. August 5 (3 pm) - August 6 (8 am), August 8 (3 pm) - August 9 (8 am), August 12 (3 pm) - August 13 (8 am), August 13 (3 pm) - August 14 (8 am), August 19 (3 pm) - August 20 (8 am), August 21 (3 pm) - August 22 (8 am), August 23 (3 pm) - August 24 (8 am), August 26 (3 pm) - August 27 (8 am)","reason":"Due to clinical personnel shortage","start":"August 5, 2026","end":"August 27, 2026","status":"scheduled","status_label":"Scheduled / recurring","start_date_key":"2026-08-05","end_date_key":"2026-08-27","schedule_windows":[{"start":"2026-08-05T15:00:00-06:00","end":"2026-08-06T08:00:00-06:00"},{"start":"2026-08-08T15:00:00-06:00","end":"2026-08-09T08:00:00-06:00"},{"start":"2026-08-12T15:00:00-06:00","end":"2026-08-13T08:00:00-06:00"},{"start":"2026-08-13T15:00:00-06:00","end":"2026-08-14T08:00:00-06:00"},{"start":"2026-08-19T15:00:00-06:00","end":"2026-08-20T08:00:00-06:00"},{"start":"2026-08-21T15:00:00-06:00","end":"2026-08-22T08:00:00-06:00"},{"start":"2026-08-23T15:00:00-06:00","end":"2026-08-24T08:00:00-06:00"},{"start":"2026-08-26T15:00:00-06:00","end":"2026-08-27T08:00:00-06:00"}],"details":"Program or Service: Emergency Department | Bed or Space Reduction: Emergency department closed, nursing staff remain on site. August 5 (3 pm) - August 6 (8 am), August 8 (3 pm) - August 9 (8 am), August 12 (3 pm) - August 13 (8 am), August 13 (3 pm) - August 14 (8 am), August 19 (3 pm) - August 20 (8 am), August 21 (3 pm) - August 22 (8 am), August 23 (3 pm) - August 24 (8 am), August 26 (3 pm) - August 27 (8 am) | Reason: Due to clinical personnel shortage | Start Date: August 5, 2026 | Anticipated End Date: August 27, 2026","source_url":"https://www.albertahealthservices.ca/br/Page17594.aspx"}],"disruption_count":1,"active_now_count":0,"scheduled_count":1},{"name":"grimshaw","display_name":"Grimshaw","facility_name":"Grimshaw / Berwyn and District Community Health Centre","community":"","lat":56.1844,"lng":-117.6075,"disruptions":[{"service":"Emergency Department","service_layer":"ed","reduction":"Emergency Department closed from 2100-0900 daily","reason":"Due to clinical personnel shortage","start":"September 17, 2022","end":"September 30, 2026","status":"active_now","status_label":"Active now","start_date_key":"2022-09-17","end_date_key":"2026-09-30","schedule_windows":[{"start":"2022-09-17T00:00:00-06:00","end":"2026-10-01T00:00:00-06:00"}],"details":"Program or Service: Emergency Department | Bed or Space Reduction: Emergency Department closed from 2100-0900 daily | Reason: Due to clinical personnel shortage | Start Date: September 17, 2022 | Anticipated End Date: September 30, 2026","source_url":"https://www.albertahealthservices.ca/br/Page17594.aspx"}],"disruption_count":1,"active_now_count":1,"scheduled_count":0},{"name":"hinton","display_name":"Hinton","facility_name":"Hinton Healthcare Centre","community":"","lat":53.4117,"lng":-117.5675,"disruptions":[{"service":"Emergency Department","service_layer":"ed","reduction":"Emergency Department closed, nursing staff remain on site. August 1 (9 pm) - August 2 (7 am), August 2 (9 pm) - August 3 (7 am), August 5 (9 pm) - August 6 (7 am), August 6 (9 pm) - August 7 (7 am), August 10 (9 pm) - August 11 (7 am), August 11 (3 pm) - August 12 (7 am), August 12 (3 pm) - August 13 (7 am), August 13 (3 pm) - August 14 (7 am), August 14 (3 pm) - August 15 (7 am), August 15 (9 pm) - August 16 (7 am), August 16 (9 pm) - August 17 (7 am), August 17 (9 pm) - August 18 (7 am), August 18 (9 pm) - August 19 (7 am), August 19 (9 pm) - August 20 (7 am), August 20 (3 pm) - August 21 (7 am), August 21 (9 pm) - August 22 (7 am), August 22 (9 pm) - August 23 (7 am), August 23 (9 pm) - August 24 (7 am), August 24 (9 pm) - August 25 (7 am), August 25 (9 pm) - August 26 (7 am), August 26 (9 pm) - August 27 (7 am), August 27 (9 pm) - August 28 (7 am), August 28 (9 pm) - August 29 (7 am), August 29 (9 pm) - August 30 (7 am), August 30 (9 pm) - August 31 (7 am)","reason":"Due to clinical personnel shortage","start":"August 1, 2026","end":"August 31, 2026","status":"scheduled","status_label":"Scheduled / recurring","start_date_key":"2026-08-01","end_date_key":"2026-08-31","schedule_windows":[{"start":"2026-08-01T21:00:00-06:00","end":"2026-08-02T07:00:00-06:00"},{"start":"2026-08-02T21:00:00-06:00","end":"2026-08-03T07:00:00-06:00"},{"start":"2026-08-05T21:00:00-06:00","end":"2026-08-06T07:00:00-06:00"},{"start":"2026-08-06T21:00:00-06:00","end":"2026-08-07T07:00:00-06:00"},{"start":"2026-08-10T21:00:00-06:00","end":"2026-08-11T07:00:00-06:00"},{"start":"2026-08-11T15:00:00-06:00","end":"2026-08-12T07:00:00-06:00"},{"start":"2026-08-12T15:00:00-06:00","end":"2026-08-13T07:00:00-06:00"},{"start":"2026-08-13T15:00:00-06:00","end":"2026-08-14T07:00:00-06:00"},{"start":"2026-08-14T15:00:00-06:00","end":"2026-08-15T07:00:00-06:00"},{"start":"2026-08-15T21:00:00-06:00","end":"2026-08-16T07:00:00-06:00"},{"start":"2026-08-16T21:00:00-06:00","end":"2026-08-17T07:00:00-06:00"},{"start":"2026-08-17T21:00:00-06:00","end":"2026-08-18T07:00:00-06:00"},{"start":"2026-08-18T21:00:00-06:00","end":"2026-08-19T07:00:00-06:00"},{"start":"2026-08-19T21:00:00-06:00","end":"2026-08-20T07:00:00-06:00"},{"start":"2026-08-20T15:00:00-06:00","end":"2026-08-21T07:00:00-06:00"},{"start":"2026-08-21T21:00:00-06:00","end":"2026-08-22T07:00:00-06:00"},{"start":"2026-08-22T21:00:00-06:00","end":"2026-08-23T07:00:00-06:00"},{"start":"2026-08-23T21:00:00-06:00","end":"2026-08-24T07:00:00-06:00"},{"start":"2026-08-24T21:00:00-06:00","end":"2026-08-25T07:00:00-06:00"},{"start":"2026-08-25T21:00:00-06:00","end":"2026-08-26T07:00:00-06:00"},{"start":"2026-08-26T21:00:00-06:00","end":"2026-08-27T07:00:00-06:00"},{"start":"2026-08-27T21:00:00-06:00","end":"2026-08-28T07:00:00-06:00"},{"start":"2026-08-28T21:00:00-06:00","end":"2026-08-29T07:00:00-06:00"},{"start":"2026-08-29T21:00:00-06:00","end":"2026-08-30T07:00:00-06:00"},{"start":"2026-08-30T21:00:00-06:00","end":"2026-08-31T07:00:00-06:00"}],"details":"Program or Service: Emergency Department | Bed or Space Reduction: Emergency Department closed, nursing staff remain on site. August 1 (9 pm) - August 2 (7 am), August 2 (9 pm) - August 3 (7 am), August 5 (9 pm) - August 6 (7 am), August 6 (9 pm) - August 7 (7 am), August 10 (9 pm) - August 11 (7 am), August 11 (3 pm) - August 12 (7 am), August 12 (3 pm) - August 13 (7 am), August 13 (3 pm) - August 14 (7 am), August 14 (3 pm) - August 15 (7 am), August 15 (9 pm) - August 16 (7 am), August 16 (9 pm) - August 17 (7 am), August 17 (9 pm) - August 18 (7 am), August 18 (9 pm) - August 19 (7 am), August 19 (9 pm) - August 20 (7 am), August 20 (3 pm) - August 21 (7 am), August 21 (9 pm) - August 22 (7 am), August 22 (9 pm) - August 23 (7 am), August 23 (9 pm) - August 24 (7 am), August 24 (9 pm) - August 25 (7 am), August 25 (9 pm) - August 26 (7 am), August 26 (9 pm) - August 27 (7 am), August 27 (9 pm) - August 28 (7 am), August 28 (9 pm) - August 29 (7 am), August 29 (9 pm) - August 30 (7 am), August 30 (9 pm) - August 31 (7 am) | Reason: Due to clinical personnel shortage | Start Date: August 1, 2026 | Anticipated End Date: August 31, 2026","source_url":"https://www.albertahealthservices.ca/br/Page17594.aspx"}],"disruption_count":1,"active_now_count":0,"scheduled_count":1},{"name":"smoky lake","display_name":"Smoky Lake","facility_name":"George McDougall - Smoky Lake Healthcare Centre","community":"","lat":54.1117,"lng":-112.4717,"disruptions":[{"service":"Emergency Department","service_layer":"ed","reduction":"Emergency Dept Closed. Nursing staff remain on Site. July 31 (5 pm) - August 1 (8 am), August 3 (8 am) - August 4 (8 am), August 6 (5 pm) - August 7 (8 am), August 13 (5 pm) - August 14 (8 am), August 14 (5 pm) - August 17 (8 am), August 20 (5 pm) - August 21 (8 am), August 21 (5 pm) - August 24 (8 am), August 27 (5 pm) - August 28 (8 am), August 28 (5 pm) - August 31 (8 am)","reason":"Due to clinical personnel shortage","start":"July 31, 2026","end":"August 31, 2026","status":"scheduled","status_label":"Scheduled / recurring","start_date_key":"2026-07-31","end_date_key":"2026-08-31","schedule_windows":[{"start":"2026-07-31T17:00:00-06:00","end":"2026-08-01T08:00:00-06:00"},{"start":"2026-08-03T08:00:00-06:00","end":"2026-08-04T08:00:00-06:00"},{"start":"2026-08-06T17:00:00-06:00","end":"2026-08-07T08:00:00-06:00"},{"start":"2026-08-13T17:00:00-06:00","end":"2026-08-14T08:00:00-06:00"},{"start":"2026-08-14T17:00:00-06:00","end":"2026-08-17T08:00:00-06:00"},{"start":"2026-08-20T17:00:00-06:00","end":"2026-08-21T08:00:00-06:00"},{"start":"2026-08-21T17:00:00-06:00","end":"2026-08-24T08:00:00-06:00"},{"start":"2026-08-27T17:00:00-06:00","end":"2026-08-28T08:00:00-06:00"},{"start":"2026-08-28T17:00:00-06:00","end":"2026-08-31T08:00:00-06:00"}],"details":"Program or Service: Emergency Department | Bed or Space Reduction: Emergency Dept Closed. Nursing staff remain on Site. July 31 (5 pm) - August 1 (8 am), August 3 (8 am) - August 4 (8 am), August 6 (5 pm) - August 7 (8 am), August 13 (5 pm) - August 14 (8 am), August 14 (5 pm) - August 17 (8 am), August 20 (5 pm) - August 21 (8 am), August 21 (5 pm) - August 24 (8 am), August 27 (5 pm) - August 28 (8 am), August 28 (5 pm) - August 31 (8 am) | Reason: Due to clinical personnel shortage | Start Date: July 31, 2026 | Anticipated End Date: August 31, 2026","source_url":"https://www.albertahealthservices.ca/br/Page17594.aspx"}],"disruption_count":1,"active_now_count":0,"scheduled_count":1},{"name":"tofield","display_name":"Tofield","facility_name":"Tofield Health Centre","community":"","lat":53.3661,"lng":-112.6669,"disruptions":[{"service":"Emergency Department","service_layer":"ed","reduction":"Monday, Tuesday, Wednesday, Thursday ED will be closed from 2000 to 0800. 24/7 Emergency coverage supported by Locums on weekends - Starting Fridays 0800 ends Mondays 2000. Nursing staff remain on-site. No impact to in-patient unit(s). August 4 (8 pm) - August 5 (8 am), August 5 (8 pm) - August 6 (8 am), August 6 (8 pm) - August 7 (8 am), August 10 (8 pm) - August 11 (8 am), August 11 (8 pm) - August 12 (8 am), August 12 (8 pm) - August 13 (8 am), August 13 (8 pm) - August 14 (8 am), August 17 (8 pm) - August 18 (8 am), August 18 (8 pm) - August 19 (8 am), August 19 (8 pm) - August 20 (8 am), August 20 (8 pm) - August 21 (8 am), August 24 (8 pm) - August 25 (8 am), August 25 (8 pm) - August 26 (8 am), August 26 (8 pm) - August 27 (8 am), August 27 (8 pm) - August 28 (8 am).","reason":"Due to clinical personnel shortage","start":"August 4, 2026","end":"August 28, 2026","status":"scheduled","status_label":"Scheduled / recurring","start_date_key":"2026-08-04","end_date_key":"2026-08-28","schedule_windows":[{"start":"2026-08-04T20:00:00-06:00","end":"2026-08-05T08:00:00-06:00"},{"start":"2026-08-05T20:00:00-06:00","end":"2026-08-06T08:00:00-06:00"},{"start":"2026-08-06T20:00:00-06:00","end":"2026-08-07T08:00:00-06:00"},{"start":"2026-08-10T20:00:00-06:00","end":"2026-08-11T08:00:00-06:00"},{"start":"2026-08-11T20:00:00-06:00","end":"2026-08-12T08:00:00-06:00"},{"start":"2026-08-12T20:00:00-06:00","end":"2026-08-13T08:00:00-06:00"},{"start":"2026-08-13T20:00:00-06:00","end":"2026-08-14T08:00:00-06:00"},{"start":"2026-08-17T20:00:00-06:00","end":"2026-08-18T08:00:00-06:00"},{"start":"2026-08-18T20:00:00-06:00","end":"2026-08-19T08:00:00-06:00"},{"start":"2026-08-19T20:00:00-06:00","end":"2026-08-20T08:00:00-06:00"},{"start":"2026-08-20T20:00:00-06:00","end":"2026-08-21T08:00:00-06:00"},{"start":"2026-08-24T20:00:00-06:00","end":"2026-08-25T08:00:00-06:00"},{"start":"2026-08-25T20:00:00-06:00","end":"2026-08-26T08:00:00-06:00"},{"start":"2026-08-26T20:00:00-06:00","end":"2026-08-27T08:00:00-06:00"},{"start":"2026-08-27T20:00:00-06:00","end":"2026-08-28T08:00:00-06:00"}],"details":"Program or Service: Emergency Department | Bed or Space Reduction: Monday, Tuesday, Wednesday, Thursday ED will be closed from 2000 to 0800. 24/7 Emergency coverage supported by Locums on weekends - Starting Fridays 0800 ends Mondays 2000. Nursing staff remain on-site. No impact to in-patient unit(s). August 4 (8 pm) - August 5 (8 am), August 5 (8 pm) - August 6 (8 am), August 6 (8 pm) - August 7 (8 am), August 10 (8 pm) - August 11 (8 am), August 11 (8 pm) - August 12 (8 am), August 12 (8 pm) - August 13 (8 am), August 13 (8 pm) - August 14 (8 am), August 17 (8 pm) - August 18 (8 am), August 18 (8 pm) - August 19 (8 am), August 19 (8 pm) - August 20 (8 am), August 20 (8 pm) - August 21 (8 am), August 24 (8 pm) - August 25 (8 am), August 25 (8 pm) - August 26 (8 am), August 26 (8 pm) - August 27 (8 am), August 27 (8 pm) - August 28 (8 am). | Reason: Due to clinical personnel shortage | Start Date: August 4, 2026 | Anticipated End Date: August 28, 2026","source_url":"https://www.albertahealthservices.ca/br/Page17594.aspx"}],"disruption_count":1,"active_now_count":0,"scheduled_count":1},{"name":"two hills","display_name":"Two Hills","facility_name":"Two Hills Health Centre","community":"","lat":53.7128,"lng":-111.7506,"disruptions":[{"service":"Emergency Department","service_layer":"ed","reduction":"No Locum available to cover the weekend. VEP will be available and nursing staff remain on site. Inpatients and Residents in Continuing Care will be cared for by local Physician August 7 (5pm) - August 10 (8 am).","reason":"Due to clinical personnel shortage","start":"August 7, 2026","end":"August 10, 2026","status":"active_now","status_label":"Active now","start_date_key":"2026-08-07","end_date_key":"2026-08-10","schedule_windows":[{"start":"2026-08-07T17:00:00-06:00","end":"2026-08-10T08:00:00-06:00"}],"details":"Program or Service: Emergency Department | Bed or Space Reduction: No Locum available to cover the weekend. VEP will be available and nursing staff remain on site. Inpatients and Residents in Continuing Care will be cared for by local Physician August 7 (5pm) - August 10 (8 am). | Reason: Due to clinical personnel shortage | Start Date: August 7, 2026 | Anticipated End Date: August 10, 2026","source_url":"https://www.albertahealthservices.ca/br/Page17594.aspx"},{"service":"Emergency Department","service_layer":"ed","reduction":"No onsite Emergency physician. VEP (Virtual Emergency Physician) available, nursing staff remain on site.","reason":"Due to clinical personnel shortage","start":"August 7, 2026","end":"August 10, 2026","status":"active_now","status_label":"Active now","start_date_key":"2026-08-07","end_date_key":"2026-08-10","schedule_windows":[{"start":"2026-08-07T00:00:00-06:00","end":"2026-08-11T00:00:00-06:00"}],"details":"Program or Service: Emergency Department | Bed or Space Reduction: No onsite Emergency physician. VEP (Virtual Emergency Physician) available, nursing staff remain on site. | Reason: Due to clinical personnel shortage | Start Date: August 7, 2026 | Anticipated End Date: August 10, 2026","source_url":"https://www.albertahealthservices.ca/br/Page17594.aspx"}],"disruption_count":2,"active_now_count":2,"scheduled_count":0},{"name":"viking","display_name":"Viking","facility_name":"Viking Health Centre","community":"","lat":53.0975,"lng":-111.7747,"disruptions":[{"service":"Obstetrics - all services","service_layer":"ob","reduction":"No Obstetrics services.","reason":"Due to clinical personnel shortage","start":"June 29, 2026","end":"August 10, 2026","status":"active_now","status_label":"Active now","start_date_key":"2026-06-29","end_date_key":"2026-08-10","schedule_windows":[{"start":"2026-06-29T00:00:00-06:00","end":"2026-08-11T00:00:00-06:00"}],"details":"Program or Service: Obstetrics - all services | Bed or Space Reduction: No Obstetrics services. | Reason: Due to clinical personnel shortage | Start Date: June 29, 2026 | Anticipated End Date: August 10, 2026","source_url":"https://www.albertahealthservices.ca/br/Page17594.aspx"}],"disruption_count":1,"active_now_count":1,"scheduled_count":0},{"name":"westlock","display_name":"Westlock","facility_name":"Westlock Healthcare Centre","community":"","lat":54.1539,"lng":-113.8497,"disruptions":[{"service":"Obstetrics","service_layer":"ob","reduction":"No obstetrics services including c-section","reason":"Due to clinical personnel shortage","start":"December 13, 2022","end":"December 1, 2026","status":"active_now","status_label":"Active now","start_date_key":"2022-12-13","end_date_key":"2026-12-01","schedule_windows":[{"start":"2022-12-13T00:00:00-07:00","end":"2026-12-02T00:00:00-07:00"}],"details":"Program or Service: Obstetrics | Bed or Space Reduction: No obstetrics services including c-section | Reason: Due to clinical personnel shortage | Start Date: December 13, 2022 | Anticipated End Date: December 1, 2026","source_url":"https://www.albertahealthservices.ca/br/Page17594.aspx"}],"disruption_count":1,"active_now_count":1,"scheduled_count":0}],"active_disruption_count":13,"active_site_count":12,"active_now_disruption_count":8,"scheduled_disruption_count":5,"active_now_site_count":7,"scheduled_site_count":5};
+    const map = L.map('map', { zoomControl:true }).setView([54.0, -114.5], 6);
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { attribution:'&copy; OpenStreetMap, &copy; CARTO' }).addTo(map);
+    const markers = new Map();
+    const esc = (value) => String(value ?? '').replace(/[&<>'"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch]));
+    const serviceSelect = document.getElementById('serviceSelect');
+    const statusSelect = document.getElementById('statusSelect');
+    const LIVE_TIME_ZONE = 'America/Edmonton';
+    const dateKey = (instant) => { const parts = new Intl.DateTimeFormat('en-CA', {timeZone:LIVE_TIME_ZONE,year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(instant); const get = type => parts.find(part => part.type === type).value; return `${get('year')}-${get('month')}-${get('day')}`; };
+    function runtimeStatus(item, now) {
+      const windows = (item.schedule_windows || []).map(window => ({start:new Date(window.start),end:new Date(window.end)}));
+      if (windows.length) { if (windows.some(window => window.start <= now && now < window.end)) return 'active_now'; if (windows.some(window => window.start > now)) return 'scheduled'; return null; }
+      const today = dateKey(now); if (item.start_date_key && today < item.start_date_key) return 'scheduled'; if (item.end_date_key && today > item.end_date_key) return null; return 'active_now';
+    }
+    function statusLabel(status) { return status === 'active_now' ? 'Active now' : 'Scheduled / recurring'; }
+    function currentItems(site, now = new Date()) { return site.disruptions.map(item => ({...item, status:runtimeStatus(item, now)})).filter(item => item.status); }
+    function selectedItems(site, now = new Date()) { const status = statusSelect.value; const service = serviceSelect.value; return currentItems(site, now).filter(item => (!status || status === 'all' || item.status === status) && (!service || service === 'all' || item.service_layer === service)); }
+    function matches(site, now = new Date()) { const q = document.getElementById('search').value.trim().toLowerCase(); const items = selectedItems(site, now); const hay = [site.display_name,site.community,...items.map(item => item.service+' '+item.details)].join(' ').toLowerCase(); return items.length > 0 && (!q || hay.includes(q)); }
+    function popup(site, now = new Date()) { const items = currentItems(site, now); return `<div class="popup-title">${esc(site.display_name)}</div><div class="popup-stat">${esc(site.community)} · ${items.length} notice(s)</div>${items.map(item => `<div style="margin-top:7px"><b>${esc(statusLabel(item.status))}</b><br>${esc(item.service)}<br>${esc(item.details)}</div>`).join('')}`; }
+    function markerStyle(site, now = new Date()) { const items = currentItems(site, now); const hasNow = items.some(item => item.status === 'active_now'); const hasScheduled = items.some(item => item.status === 'scheduled'); const color = hasNow && hasScheduled ? '#7A3E9D' : hasNow ? '#B42318' : '#C8871A'; return { radius:Math.min(18,6+items.length*2), color:'#0F2347', fillColor:color, fillOpacity:.78, weight:2 }; }
+    function updateSummary(now = new Date()) { const items = LIVE_DATA.sites.flatMap(site => currentItems(site, now)); const active = items.filter(item => item.status === 'active_now').length; const scheduled = items.filter(item => item.status === 'scheduled').length; const sites = LIVE_DATA.sites.filter(site => currentItems(site, now).length).length; document.getElementById('summaryStats').innerHTML = `<strong>${active}</strong> active now · <strong>${scheduled}</strong> scheduled / recurring · <strong>${sites}</strong> sites shown`; }
+    function render() {
+      const now = new Date(); updateSummary(now); const list = document.getElementById('list'); const resultCount = document.getElementById('resultCount'); const bounds = []; list.innerHTML = ''; let siteCount = 0; let itemCount = 0;
+      LIVE_DATA.sites.forEach(site => { const items = selectedItems(site, now); const visible = matches(site, now); const marker = markers.get(site.name); if (marker) { marker.setStyle(markerStyle(site, now)).setPopupContent(popup(site, now)); if (visible) marker.addTo(map); else map.removeLayer(marker); } if (!visible) return; siteCount += 1; itemCount += items.length; bounds.push([site.lat,site.lng]); const section = document.createElement('section'); section.className='site'; section.innerHTML = `<div class="site-name">${esc(site.display_name)}</div><div class="community">${esc(site.community)} · ${items.length} matching notice(s)</div>${items.map(item => `<div class="live-card ${item.status === 'scheduled' ? 'scheduled' : ''}"><div class="live-status ${item.status === 'scheduled' ? 'scheduled' : ''}">${esc(statusLabel(item.status))}</div><div class="service">${esc(item.service)}</div>${item.reduction ? `<div class="details">${esc(item.reduction)}</div>` : ''}${item.reason ? `<div class="details">${esc(item.reason)}</div>` : ''}${item.start || item.end ? `<div class="details">${esc(item.start || 'current')}${item.end ? ' – ' + esc(item.end) : ''}</div>` : ''}<a href="${esc(item.source_url)}" target="_blank" rel="noopener">Source notice</a></div>`).join('')}`; section.addEventListener('click', () => { map.setView([site.lat,site.lng], Math.max(map.getZoom(),8)); }); list.appendChild(section); });
+      resultCount.textContent = `${itemCount} notice(s) at ${siteCount} site(s)`; if (!list.children.length) list.innerHTML = '<div class="empty-state">No disruptions match this filter.</div>'; if (bounds.length) map.fitBounds(bounds, { padding:[30,30], maxZoom:8 });
+    }
+    LIVE_DATA.sites.forEach(site => { const marker = L.circleMarker([site.lat,site.lng], markerStyle(site)).bindPopup(popup(site)); markers.set(site.name, marker); });
+    document.getElementById('search').addEventListener('input', render); serviceSelect.addEventListener('change', render); statusSelect.addEventListener('change', render); render(); setInterval(render, 60000);
+  </script>
+</body>
+</html>
