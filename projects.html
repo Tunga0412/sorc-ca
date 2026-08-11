@@ -133,7 +133,7 @@
       font-size: 1.4rem;
       font-weight: 400;
       color: var(--navy);
-      margin-bottom: 2rem;
+      margin-bottom: 1.5rem;
     }
 
     /* ── Project cards ───────────────────────────────────────────── */
@@ -388,6 +388,7 @@
     }
     .dropdown-menu a:hover { background: rgba(59,130,196,0.08); }
     .has-dropdown:hover .dropdown-menu,
+    .has-dropdown:focus-within .dropdown-menu,
     .has-dropdown.open .dropdown-menu { display: block; }
     @media (max-width: 600px) {
       .dropdown-menu {
@@ -432,7 +433,6 @@
 
   <div class="section">
 
-    <div class="subsection-label">Ongoing</div>
     <div class="subsection-title">Current Projects</div>
 
     <div class="project-list">
@@ -527,7 +527,7 @@
 
         <div class="abstract-section">
           <div class="abstract-heading">Results</div>
-          <div class="abstract-text">We identified 656 records and included 12 records reporting 22 patients. Exposures were primarily onasemnogene abeparvovec (17/22) and fordadistrogene movaparvovec (3/22). Symptom onset clustered within the 5 to 10 days post-infusion window. Renal-predominant features were common (among cases with reporting: hypertension 15/17, oliguria/anuria 13/17, proteinuria 15/16, hematuria 9/9). Schistocytes were present in 16/16 cases, and thrombocytopenia was severe (median 17&times;10&sup3;/&micro;L). ADAMTS13 activity was reported in 9/22, and none were severely deficient. Most patients received corticosteroids; PLEX was used in 6/17 cases and C5 inhibitors in 10/21 cases. ICU admission occurred in 8/10 cases, renal replacement therapy in 7/22, and mortality in 2/22.</div>
+          <div class="abstract-text">We identified 656 records and included 12 records reporting 22 patients. Exposures were primarily onasemnogene abeparvovec (17/22) and fordadistrogene movaparvovec (3/22). Symptom onset clustered within the 5 to 10 days post-infusion window. Renal-predominant features were common (among cases with reporting: hypertension 15/17, oliguria/anuria 13/17, proteinuria 15/16, hematuria 9/9). Schistocytes were present in 16/16 cases, and thrombocytopenia was severe (median 17&times;10&sup3;/&micro;L). ADAMTS13 activity was reported in 9/22, and none were severely deficient. Most patients received corticosteroids. PLEX was used in 6/17 cases and C5 inhibitors in 10/21 cases. ICU admission occurred in 8/10 cases, renal replacement therapy in 7/22, and mortality in 2/22.</div>
         </div>
 
         <div class="abstract-section">
@@ -728,3 +728,4 @@ document.addEventListener('click', e => {
 
 </body>
 </html>
+
