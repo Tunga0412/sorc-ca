@@ -441,6 +441,7 @@
     }
     .dropdown-menu a:hover { background: rgba(59,130,196,0.08); }
     .has-dropdown:hover .dropdown-menu,
+    .has-dropdown:focus-within .dropdown-menu,
     .has-dropdown.open .dropdown-menu { display: block; }
     @media (max-width: 600px) {
       .dropdown-menu { min-width: 200px; padding: 0.25rem 0; }
@@ -586,7 +587,7 @@
             <td>Beta v0.1</td>
             <td>May 10, 2026</td>
             <td>Mar 31, 2026</td>
-            <td>Initial public release; Emergency Department layer</td>
+            <td>Initial public release. Emergency Department layer</td>
           </tr>
         </tbody>
       </table>
@@ -595,14 +596,14 @@
   </div>
 
   <div class="section">
-    <div class="subsection-label" style="margin-top: 1rem;">Tool</div>
-    <div class="subsection-title">SORCTracks Tool</div>
+    <div class="subsection-label">Tool</div>
+    <div class="subsection-title">SORCTracks</div>
 
     <div class="caution-box">
       <div class="caution-box-title">Interpretive Cautions</div>
       <ul>
         <li>This is a public-record reconstruction, not an operational gold standard. Some disruptions may not have been publicly posted, archived consistently, or timed defensibly from available source material.</li>
-        <li>SORCTracks is not real-time. It reflects archived public postings through the data-through date listed above and is updated monthly. It is not an Alberta Health Services product and is not affiliated with AHS.</li>
+        <li>SORCTracks is not real-time. It reflects archived public postings through the data-through date listed above and is updated monthly on the first of the month. It is not an Alberta Health Services product and is not affiliated with AHS.</li>
         <li>SORCTracks Live uses the current Mountain Time to display which disruptions are active at this moment, distinguishing them from disruptions that are scheduled or recurrent but not currently active. The underlying data is refreshed daily from AHS public postings. Disruptions posted or removed between daily scrapes will not be reflected until the next update.</li>
         <li>Estimated hours reflect publicly reconstructable disruption intervals. Unioned hours represent unique site-level disruption time after overlapping intervals are merged, and should not be treated as a precise operational measure.</li>
         <li>When all analyzed services are selected, hours are summed across service layers. Overlaps between different services at the same site are not removed in this view. The total reflects service-hours, not a union across service types.</li>
@@ -622,7 +623,7 @@
     <div style="display: flex; flex-direction: column; gap: 1.25rem; margin-bottom: 1.75rem; max-width: 760px;">
       <div style="padding: 1.25rem 1.5rem; border: 1px solid var(--rule); background: white;">
         <div style="font-size: 0.68rem; color: var(--blue); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 0.6rem;">Visualization Tool</div>
-        <p style="font-size: 0.875rem; color: var(--mid); line-height: 1.8;">Tung A. SORCTracks: A visualization of temporary health service disruptions across Alberta [Internet]. Version 1.4. Edmonton: Systematic Outcomes Research Collaborative; 2026 Aug 9 [cited YYYY Mon DD]. Available from: https://sorc.ca/sorctracks.html</p>
+        <p style="font-size: 0.875rem; color: var(--mid); line-height: 1.8;">Tung A. SORCTracks: A visualization of temporary health service disruptions across Alberta [Internet]. Version 1.4. Edmonton: Systematic Outcomes Research Collaborative; 2026 Aug 9 [accessed 2026 Aug 11]. Available from: https://sorc.ca/sorctracks.html</p>
       </div>
     </div>
 
@@ -773,3 +774,4 @@
 
 </body>
 </html>
+
