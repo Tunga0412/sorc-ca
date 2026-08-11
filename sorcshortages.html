@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="SORCShortages is a research tool for exploring Canadian drug shortage and discontinuation reports from Health Product Shortages Canada.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://sorc.ca/sorcshortages.html">
+  <title>SORCShortages | Canadian Drug Shortage and Discontinuation Reports</title>
+
+  <meta property="og:title" content="SORCShortages | Canadian Drug Shortage and Discontinuation Reports">
+  <meta property="og:description" content="A research tool for exploring Canadian drug shortage and discontinuation reports by duration, status, product, and time.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://sorc.ca/sorcshortages.html">
+  <meta property="og:site_name" content="Systematic Outcomes Research Collaborative">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "SORCShortages Tool",
+    "description": "A research tool for exploring Canadian drug shortage and discontinuation reports from Health Product Shortages Canada.",
+    "creator": {
+      "@type": "Organization",
+      "name": "Systematic Outcomes Research Collaborative",
+      "url": "https://sorc.ca"
+    },
+    "url": "https://sorc.ca/sorcshortages.html",
+    "applicationCategory": "ResearchApplication",
+    "operatingSystem": "Web browser",
+    "keywords": [
+      "Health Product Shortages Canada",
+      "Canadian drug shortages",
+      "drug shortage Canada",
+      "medication shortage",
+      "drug discontinuation Canada",
+      "Health Canada shortage reporting",
+      "SORCShortages"
+    ],
+    "publisher": {
+      "@type": "Organization",
+      "name": "Systematic Outcomes Research Collaborative",
+      "url": "https://sorc.ca"
+    }
+  }
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Lato:wght@300;400&display=swap" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:  #0F2347;
+      --navy2: #162E5A;
+      --blue:  #3B82C4;
+      --bg:    #F8F9FC;
+      --text:  #0F2347;
+      --mid:   #1B3A6B;
+      --muted: #5A6A85;
+      --rule:  #D0D8E8;
+    }
+
+    body {
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 3rem; height: 56px;
+      background: rgba(248,249,252,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .nav-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 700; font-size: 1.35rem;
+      color: var(--navy); text-decoration: none; letter-spacing: 0.02em;
+    }
+
+    .nav-links { display: flex; list-style: none; gap: 2rem; align-items: center; }
+
+    .nav-links a {
+      font-weight: 400; font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--mid); text-decoration: none; transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--blue); }
+    .nav-links a.active { color: var(--blue); }
+
+    @media (max-width: 600px) {
+      nav { padding: 0 1.25rem; }
+      .nav-links { gap: 1.25rem; }
+      .nav-logo { font-size: 1.15rem; }
+      .nav-links a { font-size: 0.72rem; letter-spacing: 0.06em; }
+    }
+
+    .has-dropdown { position: relative; }
+    .dropdown-toggle::after {
+      content: ''; display: inline-block;
+      margin-left: 0.35rem; border: 4px solid transparent;
+      border-top-color: currentColor; vertical-align: middle;
+      position: relative; top: 2px;
+    }
+    .dropdown-menu {
+      display: none; position: absolute; top: 100%; left: 0;
+      background: white; border: 1px solid var(--rule);
+      box-shadow: 0 4px 16px rgba(15,35,71,0.08);
+      min-width: 220px; padding: 0.35rem 0; list-style: none; z-index: 200;
+    }
+    .dropdown-menu li { display: block; }
+    .dropdown-menu a {
+      display: block; padding: 0.6rem 1.25rem;
+      font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--mid); text-decoration: none; transition: background 0.15s;
+    }
+    .dropdown-menu a:hover { background: rgba(59,130,196,0.08); }
+    .has-dropdown:hover .dropdown-menu,
+    .has-dropdown:focus-within .dropdown-menu,
+    .has-dropdown.open .dropdown-menu { display: block; }
+    @media (max-width: 600px) {
+      .dropdown-menu { min-width: 200px; padding: 0.25rem 0; }
+      .dropdown-menu a { padding: 0.5rem 1rem; font-size: 0.7rem; }
+    }
+
+    .page-header {
+      max-width: 860px; margin: 0 auto;
+      padding: 100px 2rem 2.5rem;
+    }
+
+    .section-label {
+      font-size: 0.68rem; letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--blue); margin-bottom: 0.75rem;
+    }
+
+    h1.page-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 600; font-size: 2.4rem; line-height: 1.2;
+      color: var(--navy); margin-bottom: 1.25rem;
+    }
+
+    .hero-rule {
+      height: 2px; width: 48px;
+      background: var(--blue); margin-bottom: 1.5rem;
+    }
+
+    .page-intro {
+      font-size: 0.95rem; color: var(--mid);
+      line-height: 1.85; max-width: 720px;
+    }
+
+    /* Version history */
+    .changelog-table {
+      width: 100%; max-width: 680px;
+      border-collapse: collapse; margin-top: 0.5rem;
+      table-layout: fixed;
+    }
+
+    .changelog-table th {
+      font-family: 'Lato', sans-serif; font-weight: 400;
+      font-size: 0.68rem; letter-spacing: 0.15em; text-transform: uppercase;
+      color: var(--blue); text-align: left;
+      padding: 0.5rem 1.5rem 0.5rem 0;
+      border-bottom: 1px solid var(--rule);
+      white-space: nowrap;
+    }
+
+    .changelog-table td {
+      font-size: 0.82rem; color: var(--mid);
+      padding: 0.65rem 1.5rem 0.65rem 0;
+      border-bottom: 1px solid var(--rule);
+      vertical-align: top;
+    }
+
+    .changelog-table td:not(:last-child) { white-space: nowrap; }
+
+    /* Main tool section */
+    .section {
+      max-width: 1200px; margin: 0 auto;
+      padding: 0 2rem 3rem;
+    }
+
+    .subsection-label {
+      font-size: 0.68rem; letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 0.4rem;
+    }
+
+    .subsection-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 600; font-size: 1.35rem;
+      color: var(--navy); margin-bottom: 1.25rem;
+    }
+
+    /* Cautions box */
+    .caution-box {
+      background: white; border-left: 3px solid var(--navy);
+      padding: 1.25rem 1.5rem; margin-bottom: 1.5rem;
+      max-width: 860px;
+    }
+
+    .caution-box-title {
+      font-size: 0.68rem; letter-spacing: 0.15em; text-transform: uppercase;
+      color: var(--navy); margin-bottom: 0.75rem;
+    }
+
+    .caution-box ul { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0.6rem; }
+
+    .caution-box li {
+      font-size: 0.875rem; color: var(--mid);
+      line-height: 1.65; padding-left: 1rem; position: relative;
+    }
+
+    .caution-box li::before {
+      content: ''; position: absolute; left: 0; top: 0.55em;
+      width: 4px; height: 4px; border-radius: 50%;
+      background: var(--blue);
+    }
+
+    /* Tool embed: the HTML file remains a separate, independently updateable asset. */
+    .map-embed-wrap {
+      border: 1px solid var(--rule); background: white; margin-bottom: 2.5rem;
+    }
+    .map-embed { width: 100%; height: 850px; border: 0; display: block; }
+    @media (max-width: 900px) { .map-embed { height: 700px; } }
+    @media (max-width: 600px) { .map-embed { height: 1650px; } }
+
+    /* Supporting content */
+    .tool-content {
+      max-width: 860px;
+    }
+
+    .tool-content-section {
+      padding: 1.75rem 0;
+      border-top: 1px solid var(--rule);
+    }
+
+    .tool-content-section h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 600; font-size: 1.2rem;
+      color: var(--navy); margin-bottom: 0.9rem;
+    }
+
+    .tool-content-section p {
+      font-size: 0.875rem; color: var(--mid);
+      line-height: 1.8; margin-bottom: 0.75rem;
+    }
+
+    .tool-content-section p:last-child { margin-bottom: 0; }
+
+    .inline-link {
+      color: var(--blue); text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.2s;
+    }
+    .inline-link:hover { border-bottom-color: var(--blue); }
+
+    footer {
+      border-top: 1px solid var(--rule);
+      padding: 1.25rem 2rem;
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 0.75rem; color: var(--muted);
+    }
+
+    @media (max-width: 600px) {
+      h1.page-title { font-size: 1.8rem; }
+      .section { padding: 0 1rem 3rem; }
+      footer { flex-direction: column; gap: 0.5rem; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a class="nav-logo" href="index.html">SORC</a>
+    <ul class="nav-links">
+      <li><a href="index.html">Research</a></li>
+      <li class="has-dropdown">
+        <a href="projects.html" class="dropdown-toggle active">Projects</a>
+        <ul class="dropdown-menu">
+          <li><a href="projects.html">Ongoing Projects</a></li>
+          <li><a href="sorctracks.html">SORCTracks</a></li>
+          <li><a href="sorcshortages.html">SORCShortages</a></li>
+          <li><a href="jip.html">Junior Investigator Program</a></li>
+        </ul>
+      </li>
+      <li><a href="about.html">About</a></li>
+    </ul>
+  </nav>
+
+  <div class="page-header">
+    <div class="section-label">SORCShortages</div>
+    <h1 class="page-title">SORCShortages: A View of Canadian Drug Shortage and Discontinuation Reports</h1>
+    <div class="hero-rule"></div>
+
+    <p class="page-intro">SORCShortages organizes Canadian drug shortage and discontinuation reports for research and public understanding.</p>
+
+    <p class="page-intro" style="margin-top: 1rem;">The tool draws from <a href="https://healthproductshortages.ca/" class="inline-link" target="_blank" rel="noopener">Health Product Shortages Canada</a>. It organizes individual notices into comparable episodes so users can examine affected products, duration, repeated reports, and patterns over time.</p>
+
+    <p class="page-intro" style="margin-top: 1rem;">The source site is designed for individual notices, not cross-report comparison. SORCShortages adds search, comparison, and documented episode definitions. It is updated monthly on the first of the month and is not an operational supply-chain system.</p>
+
+    <div style="margin-top: 2rem;">
+      <div class="section-label" style="margin-bottom: 0.6rem;">Version History</div>
+      <table class="changelog-table">
+        <colgroup>
+          <col style="width: 100px;">
+          <col style="width: 110px;">
+          <col style="width: 130px;">
+          <col>
+        </colgroup>
+        <thead>
+          <tr>
+            <th>Version</th>
+            <th>Released</th>
+            <th>Snapshot through</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Version 1.0</td>
+            <td>Aug 11, 2026</td>
+            <td>Aug 10, 2026</td>
+            <td>Initial public release of the tool</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="subsection-label">Tool</div>
+    <div class="subsection-title">SORCShortages Tool</div>
+
+    <div class="caution-box">
+      <div class="caution-box-title">Interpretive Cautions</div>
+      <ul>
+        <li>These are reported episodes, not a census of unmet patient need, patient harm, or local inventory status. A report does not confirm that every patient or facility experienced an interruption.</li>
+        <li>Reports are mandatory and intentionally over-inclusive. The regulatory system is designed to capture anticipated shortages early; a report does not confirm that a shortage occurred.</li>
+        <li>Ongoing episodes are right-censored at the snapshot date. Estimated end dates shown in source fields are not treated as observed resolution dates.</li>
+        <li>The pattern chart begins in March 2017, the start of the mandatory reporting era. Earlier records remain searchable, but the chart is not comparable to pre-reporting-era data.</li>
+        <li>SORCShortages is not affiliated with Health Canada or Health Product Shortages Canada.</li>
+        <li>This tool supports research and public understanding. It is not intended for clinical or operational decision-making.</li>
+      </ul>
+    </div>
+
+    <div class="map-embed-wrap">
+      <iframe src="sorcshortages_tool.html" class="map-embed" title="SORCShortages Tool"></iframe>
+    </div>
+
+    <div class="tool-content">
+      <div class="tool-content-section">
+        <div class="subsection-label">Citation</div>
+        <div class="subsection-title">How to Cite</div>
+        <div style="padding: 1.25rem 1.5rem; border: 1px solid var(--rule); background: white; margin-bottom: 1rem;">
+          <div style="font-size: 0.68rem; color: var(--blue); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 0.6rem;">Tool</div>
+          <p style="font-size: 0.875rem; color: var(--mid); line-height: 1.8;">Tung A. SORCShortages: A view of Canadian drug shortage and discontinuation reports [Internet]. Version 1.0. Edmonton: Systematic Outcomes Research Collaborative; 2026 Aug 11 [accessed 2026 Aug 11]. Available from: https://sorc.ca/sorcshortages.html</p>
+        </div>
+        <p style="font-size: 0.875rem; color: var(--mid); line-height: 1.8;">Source: <a href="https://healthproductshortages.ca/" class="inline-link" target="_blank" rel="noopener">Health Product Shortages Canada</a>, Ottawa: Health Canada.</p>
+      </div>
+
+      <div class="tool-content-section">
+        <div class="subsection-label">Methodology</div>
+        <div class="subsection-title">Data and Episode Construction</div>
+
+        <p><strong>Source.</strong> The tool currently includes 29,456 reports: 26,015 shortages and 3,441 discontinuations, through the August 10, 2026 snapshot.</p>
+
+        <p><strong>Episode construction.</strong> Each report is treated as one episode. Start date uses the actual start date when available, otherwise the anticipated start date. End date uses the observed end date when available. Active status is evaluated against the snapshot date; anticipated reports with a future start date are not counted as active. Ongoing episodes are right-censored at the snapshot date. Estimated end dates are not used as observed ends.</p>
+
+        <p><strong>Report types.</strong> Shortage and discontinuation are as classified in the source and are kept separate throughout. They are not combined in duration statistics or episode counts.</p>
+
+        <p><strong>Tier 3.</strong> Reported directly from the source; not inferred or reclassified by SORCShortages.</p>
+
+        <p><strong>Pattern series.</strong> The active episode series begins March 2017, the start of the mandatory reporting era. Pre-2017 records remain searchable. Episodes with intervals overlapping the reporting-era window are included in the series even if their start date precedes 2017.</p>
+
+        <p><strong>Quality handling.</strong> Six source date conflicts and one unrecoverable calendar-date issue are retained and flagged rather than silently corrected. Avoidance dates preceding anticipated starts are treated as an expected lifecycle pattern. Missing optional product fields remain missing.</p>
+
+        <p><strong>Update schedule.</strong> The tool is updated monthly on the first of the month from a dated source snapshot.</p>
+
+        <p>For media or research inquiries, contact <a href="mailto:info@sorc.ca" class="inline-link">info@sorc.ca</a>. SORCShortages is independent and is not affiliated with Health Canada or Health Product Shortages Canada.</p>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-left">© 2026 Systematic Outcomes Research Collaborative</div>
+    <div class="footer-right">
+      <a href="standards.html" style="color: var(--muted); text-decoration: none; margin-right: 1.5rem;">Standards</a>sorc.ca — Evidence, systematically.
+    </div>
+  </footer>
+
+  <script>
+    document.querySelectorAll('.has-dropdown > .dropdown-toggle').forEach(toggle => {
+      toggle.setAttribute('aria-haspopup', 'true');
+      toggle.setAttribute('aria-expanded', 'false');
+      toggle.addEventListener('click', e => {
+        if (window.matchMedia('(max-width: 768px)').matches) {
+          e.preventDefault();
+          const li = toggle.closest('.has-dropdown');
+          const open = li.classList.toggle('open');
+          toggle.setAttribute('aria-expanded', String(open));
+        }
+      });
+    });
+    document.addEventListener('click', e => {
+      if (!e.target.closest('.has-dropdown')) {
+        document.querySelectorAll('.has-dropdown.open').forEach(el => {
+          el.classList.remove('open');
+          el.querySelector('.dropdown-toggle')?.setAttribute('aria-expanded', 'false');
+        });
+      }
+    });
+  </script>
+
+</body>
+</html>
+

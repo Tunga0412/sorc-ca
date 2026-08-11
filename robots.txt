@@ -1,5 +1,8 @@
 User-agent: *
 Allow: /
 Disallow: /sorctracks_tool.html
+Disallow: /sorcshortages_tool.html
+Disallow: /sorctracks_live.html
 
 Sitemap: https://sorc.ca/sitemap.xml
+
