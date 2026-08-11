@@ -158,8 +158,9 @@
     }
 
     .page-header {
-      max-width: 1100px; margin: 0 auto;
-      padding: 120px 3rem 4rem;
+      padding: 120px 3rem 64px;
+      max-width: 1100px;
+      margin: 0 auto;
     }
 
     .section-label {
@@ -217,8 +218,9 @@
 
     /* Main tool section */
     .section {
-      max-width: 1100px; margin: 0 auto;
-      padding: 0 3rem 4.5rem;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 3rem 72px;
     }
 
     .subsection-label {
@@ -324,10 +326,9 @@
       letter-spacing: 0.05em;
     }
 
-    @media (max-width: 600px) {
-      h1.page-title { font-size: 1.8rem; }
-      .section { padding: 0 1rem 3rem; }
-      footer { flex-direction: column; gap: 0.5rem; text-align: center; }
+    @media (max-width: 800px) {
+      nav, .page-header, .section { padding-left: 1.5rem; padding-right: 1.5rem; }
+      footer { flex-direction: column; gap: 0.5rem; padding: 1.5rem; }
     }
   </style>
 </head>
@@ -357,9 +358,7 @@
 
     <p class="page-intro">SORCShortages organizes Canadian drug shortage and discontinuation reports for research and public understanding.</p>
 
-    <p class="page-intro" style="margin-top: 1rem;">The tool draws from <a href="https://healthproductshortages.ca/" class="inline-link" target="_blank" rel="noopener">Health Product Shortages Canada</a>. It organizes individual notices into comparable episodes so users can examine affected products, duration, repeated reports, and patterns over time.</p>
-
-    <p class="page-intro" style="margin-top: 1rem;">The source site is designed for individual notices, not cross-report comparison. SORCShortages adds search, comparison, and documented episode definitions. It is updated monthly on the first of the month and is not an operational supply-chain system.</p>
+    <p class="page-intro" style="margin-top: 1rem;">The tool draws from <a href="https://healthproductshortages.ca/" class="inline-link" target="_blank" rel="noopener">Health Product Shortages Canada</a> and organizes its individual notices into comparable episodes for searching, comparison, and pattern analysis. It is updated monthly on the first of the month and is not an operational supply-chain system.</p>
 
     <div style="margin-top: 2rem;">
       <div class="section-label" style="margin-bottom: 0.6rem;">Version History</div>
@@ -383,7 +382,7 @@
             <td>Version 1.0</td>
             <td>Aug 11, 2026</td>
             <td>Aug 10, 2026</td>
-            <td>Initial public release of the tool</td>
+            <td>Initial public release</td>
           </tr>
         </tbody>
       </table>
@@ -413,7 +412,7 @@
         <div class="subsection-title">How to Cite</div>
         <div style="padding: 1.25rem 1.5rem; border: 1px solid var(--rule); background: white; margin-bottom: 1rem;">
           <div style="font-size: 0.68rem; color: var(--blue); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 0.6rem;">Visualization Tool</div>
-          <p style="font-size: 0.875rem; color: var(--mid); line-height: 1.8;">Tung A. SORCShortages: A view of Canadian drug shortage and discontinuation reports [Internet]. Version 1.0. Edmonton: Systematic Outcomes Research Collaborative; 2026 Aug 11 [accessed 2026 Aug 11]. Available from: https://sorc.ca/sorcshortages.html</p>
+          <p style="font-size: 0.875rem; color: var(--mid); line-height: 1.8;">Tung A. SORCShortages: A view of Canadian drug shortage and discontinuation reports [Internet]. Version 1.0. Edmonton: Systematic Outcomes Research Collaborative; 2026 Aug 11 [cited YYYY Mon DD]. Available from: https://sorc.ca/sorcshortages.html</p>
         </div>
         <p style="font-size: 0.875rem; color: var(--mid); line-height: 1.8;">Source: <a href="https://healthproductshortages.ca/" class="inline-link" target="_blank" rel="noopener">Health Product Shortages Canada</a>, Ottawa: Health Canada.</p>
       </div>
@@ -436,7 +435,7 @@
 
         <p><strong>Update schedule.</strong> The tool is updated monthly on the first of the month from a dated source snapshot.</p>
 
-        <p>For media or research inquiries, contact <a href="mailto:info@sorc.ca" class="inline-link">info@sorc.ca</a>. SORCShortages is independent and is not affiliated with Health Canada or Health Product Shortages Canada.</p>
+        <p>For media or research inquiries, contact <a href="mailto:info@sorc.ca" class="inline-link">info@sorc.ca</a>.</p>
       </div>
     </div>
   </div>
