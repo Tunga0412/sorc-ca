@@ -82,15 +82,28 @@
 
     .nav-logo {
       font-family: 'Cormorant Garamond', serif;
-      font-weight: 700; font-size: 1.35rem;
-      color: var(--navy); text-decoration: none; letter-spacing: 0.02em;
+      font-weight: 700;
+      font-size: 1.35rem;
+      color: var(--navy);
+      letter-spacing: -0.02em;
+      text-decoration: none;
     }
 
-    .nav-links { display: flex; list-style: none; gap: 2rem; align-items: center; }
+    .nav-links {
+      display: flex;
+      gap: 2.5rem;
+      list-style: none;
+    }
 
     .nav-links a {
-      font-weight: 400; font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase;
-      color: var(--mid); text-decoration: none; transition: color 0.2s;
+      font-family: 'Lato', sans-serif;
+      font-weight: 400;
+      font-size: 0.8rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--mid);
+      text-decoration: none;
+      transition: color 0.2s;
     }
 
     .nav-links a:hover { color: var(--blue); }
@@ -142,16 +155,20 @@
       color: var(--blue); margin-bottom: 1.25rem;
     }
 
-    h1.page-title {
+    .page-title {
       font-family: 'Cormorant Garamond', serif;
       font-size: clamp(2rem, 4vw, 3rem);
-      font-weight: 400; line-height: 1.2;
-      color: var(--navy); margin-bottom: 1.5rem;
+      font-weight: 400;
+      color: var(--navy);
+      line-height: 1.2;
     }
 
     .hero-rule {
-      height: 2px; width: 48px;
-      background: var(--blue); margin-bottom: 1.5rem;
+      width: 60px;
+      height: 2px;
+      background: var(--blue);
+      margin: 1.75rem 0;
+      opacity: 0.6;
     }
 
     .page-intro {
@@ -226,8 +243,12 @@
     }
 
     .caution-box li::before {
-      content: '\00B7'; position: absolute; left: 0;
+      content: '\00B7';
+      position: absolute;
+      left: 0;
       color: var(--blue);
+      font-size: 1.1rem;
+      line-height: 1.55;
     }
 
     /* Tool embed: the HTML file remains a separate, independently updateable asset. */
@@ -269,10 +290,13 @@
     .inline-link:hover { border-bottom-color: var(--blue); }
 
     footer {
-      max-width: 1100px; margin: 0 auto;
       border-top: 1px solid var(--rule);
       padding: 2rem 3rem;
-      display: flex; justify-content: space-between; align-items: center;
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
 
     .footer-left {
@@ -284,6 +308,7 @@
     .footer-right {
       font-size: 0.75rem;
       color: var(--muted);
+      letter-spacing: 0.05em;
     }
 
     @media (max-width: 600px) {
@@ -354,7 +379,7 @@
 
   <div class="section">
     <div class="subsection-label">Tool</div>
-    <div class="subsection-title">SORCShortages Tool</div>
+    <div class="subsection-title">SORCShortages</div>
 
     <div class="caution-box">
       <div class="caution-box-title">Interpretive Cautions</div>
@@ -377,7 +402,7 @@
         <div class="subsection-label">Citation</div>
         <div class="subsection-title">How to Cite</div>
         <div style="padding: 1.25rem 1.5rem; border: 1px solid var(--rule); background: white; margin-bottom: 1rem;">
-          <div style="font-size: 0.68rem; color: var(--blue); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 0.6rem;">Tool</div>
+          <div style="font-size: 0.68rem; color: var(--blue); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 0.6rem;">Visualization Tool</div>
           <p style="font-size: 0.875rem; color: var(--mid); line-height: 1.8;">Tung A. SORCShortages: A view of Canadian drug shortage and discontinuation reports [Internet]. Version 1.0. Edmonton: Systematic Outcomes Research Collaborative; 2026 Aug 11 [accessed 2026 Aug 11]. Available from: https://sorc.ca/sorcshortages.html</p>
         </div>
         <p style="font-size: 0.875rem; color: var(--mid); line-height: 1.8;">Source: <a href="https://healthproductshortages.ca/" class="inline-link" target="_blank" rel="noopener">Health Product Shortages Canada</a>, Ottawa: Health Canada.</p>
