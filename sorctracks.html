@@ -176,6 +176,12 @@
 
     .changelog-table tr:last-child td { border-bottom: none; }
 
+    .changelog-wrap {
+      max-width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
     .changelog-toggle {
       margin-top: 0.6rem;
       background: none;
@@ -524,7 +530,7 @@
     <p class="page-intro" style="margin-top: 1rem;">The historical tool covers all analyzed service layers (Emergency Department, Obstetrics, Acute Care, Surgery/Operative Capability, and Other Services) and includes a searchable reference layer of AHS locations. Version 1.4 adds SORCTracks Live, a separate daily-refreshed display of current AHS public postings that uses current Mountain Time to distinguish notices active now from scheduled or recurring notices.</p>
     <p class="page-intro" style="margin-top: 1rem;">SORCTracks Archive is not a real-time operational dashboard. SORCTracks Live shows the latest daily snapshot of current AHS postings. It is not an operational dashboard and may not reflect changes between scrapes. Neither product is an AHS product or intended for clinical or operational decision-making.</p>
 
-    <div style="margin-top: 2rem;">
+      <div class="changelog-wrap" style="margin-top: 2rem;">
       <div class="section-label" style="margin-bottom: 0.6rem;">Version History</div>
       <table class="changelog-table">
         <colgroup>
@@ -750,7 +756,7 @@
   <footer>
     <div class="footer-left">© 2026 Systematic Outcomes Research Collaborative</div>
     <div class="footer-right">
-      <a href="methods.html" style="color: var(--muted); text-decoration: none; margin-right: 1.5rem;">Methods</a><a href="standards.html" style="color: var(--muted); text-decoration: none; margin-right: 1.5rem;">Standards</a>sorc.ca — Evidence, systematically.
+      <a href="methods.html" style="color: var(--muted); text-decoration: none; margin-right: 1.5rem;">Methods</a><a href="standards.html" style="color: var(--muted); text-decoration: none; margin-right: 1.5rem;">Standards</a>sorc.ca · Evidence, systematically.
     </div>
   </footer>
 
