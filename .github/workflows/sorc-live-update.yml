@@ -1,6 +1,11 @@
 name: SORCTracks Live update
 
 on:
+  push:
+    paths:
+      - "automation/**"
+      - ".github/workflows/sorc-live-update.yml"
+      - "sorctracks_tool.html"
   schedule:
     - cron: "31 2 * * *"
   workflow_dispatch:
