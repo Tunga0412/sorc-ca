@@ -410,6 +410,12 @@ if (typeof window.Chart === 'undefined') {
   window.Chart = function() {
     return { options: { plugins: { legend: { display: false } } }, destroy: function(){}, update: function(){} };
   };
+  window.addEventListener('load', () => {
+    if (window.Chart && window.Chart.version) {
+      window.__sorcChartUnavailable = false;
+      if (typeof renderHome === 'function') renderHome();
+    }
+  }, { once: true });
 }
 /* RELEASE_HARDENING_BOOTSTRAP_END */
 </script>
@@ -2443,6 +2449,15 @@ window.setTimeout(() => {
     if (typeof renderHome === 'function') renderHome();
   });
 }, 0);
+function repaintSORCTracksCharts() {
+  if (typeof renderHome !== 'function' || window.__sorcChartUnavailable) return;
+  renderHome();
+  if (typeof activeChart !== 'undefined' && activeChart && typeof activeChart.resize === 'function') {
+    activeChart.resize();
+  }
+}
+window.setTimeout(repaintSORCTracksCharts, 250);
+window.addEventListener('pageshow', () => window.setTimeout(repaintSORCTracksCharts, 0), { once: true });
 /* HOUR_FRAMEWORKS_RUNTIME_END */
 </script>
 </body>
