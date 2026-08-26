@@ -14,11 +14,14 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: Check public tools
+        id: public-health
+        continue-on-error: true
         env:
           HISTORICAL_URL: https://sorc.ca/sorctracks_tool.html
           LIVE_URL: https://sorc.ca/sorctracks_live.html
         run: |
-          python - <<'PY'
+          set -o pipefail
+          python - <<'PY' 2>&1 | tee health-check.log
           import datetime as dt
           import json
           import sys
@@ -95,3 +98,103 @@ jobs:
               raise SystemExit(1)
           print("SORC public health check passed")
           PY
+
+      - name: Open or update failure issue
+        if: steps.public-health.outcome == 'failure'
+        continue-on-error: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          from urllib.request import Request, urlopen
+
+          token = os.environ["GITHUB_TOKEN"]
+          repo = os.environ["GITHUB_REPOSITORY"]
+          api_root = f"https://api.github.com/repos/{repo}"
+          title = "SORC automation health check failure"
+
+          def api(method, path, payload=None):
+              data = json.dumps(payload).encode("utf-8") if payload is not None else None
+              request = Request(
+                  api_root + path,
+                  data=data,
+                  method=method,
+                  headers={
+                      "Accept": "application/vnd.github+json",
+                      "Authorization": f"Bearer {token}",
+                      "Content-Type": "application/json",
+                      "User-Agent": "SORC public health check/1.0",
+                  },
+              )
+              with urlopen(request, timeout=30) as response:
+                  return json.loads(response.read().decode("utf-8"))
+
+          issues = api("GET", "/issues?state=open&per_page=100")
+          existing = next(
+              (
+                  issue
+                  for issue in issues
+                  if issue.get("title") == title and "pull_request" not in issue
+              ),
+              None,
+          )
+          log = Path("health-check.log").read_text(encoding="utf-8", errors="replace")[-6000:]
+          body = (
+              "The scheduled SORC public health check failed.\n\n"
+              f"Workflow: {os.environ['GITHUB_RUN_URL']}\n\n"
+              "Latest output:\n\n"
+              f"{log}\n"
+          )
+          if existing:
+              api("PATCH", f"/issues/{existing['number']}", {"body": body})
+          else:
+              api("POST", "/issues", {"title": title, "body": body})
+          PY
+
+      - name: Close resolved failure issue
+        if: steps.public-health.outcome == 'success'
+        continue-on-error: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from urllib.request import Request, urlopen
+
+          token = os.environ["GITHUB_TOKEN"]
+          repo = os.environ["GITHUB_REPOSITORY"]
+          api_root = f"https://api.github.com/repos/{repo}"
+          title = "SORC automation health check failure"
+
+          def api(method, path, payload=None):
+              data = json.dumps(payload).encode("utf-8") if payload is not None else None
+              request = Request(
+                  api_root + path,
+                  data=data,
+                  method=method,
+                  headers={
+                      "Accept": "application/vnd.github+json",
+                      "Authorization": f"Bearer {token}",
+                      "Content-Type": "application/json",
+                      "User-Agent": "SORC public health check/1.0",
+                  },
+              )
+              with urlopen(request, timeout=30) as response:
+                  return json.loads(response.read().decode("utf-8"))
+
+          issues = api("GET", "/issues?state=open&per_page=100")
+          for issue in issues:
+              if issue.get("title") == title and "pull_request" not in issue:
+                  api("PATCH", f"/issues/{issue['number']}", {"state": "closed"})
+          PY
+
+      - name: Preserve health failure status
+        if: steps.public-health.outcome == 'failure'
+        run: exit 1
