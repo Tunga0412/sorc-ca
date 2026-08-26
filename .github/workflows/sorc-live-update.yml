@@ -9,6 +9,7 @@ on:
       - "automation/health_check.py"
       - "automation/run_live_update.py"
       - "automation/requirements.txt"
+      - "automation/requirements.lock.txt"
       - ".github/workflows/sorc-live-update.yml"
       - "sorctracks_tool.html"
   schedule:
