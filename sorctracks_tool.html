@@ -2441,15 +2441,27 @@ renderHome = function() {
   hourFrameworkOriginalRenderHome();
   arrangeProvinceHome();
 };
+function forceSORCTracksChartPaint() {
+  if (typeof Chart === 'undefined' || !Chart.getChart) return;
+  document.querySelectorAll('canvas').forEach((canvas) => {
+    const chart = Chart.getChart(canvas);
+    if (!chart) return;
+    if (typeof chart.resize === 'function') chart.resize();
+    if (typeof chart.draw === 'function') chart.draw();
+  });
+}
 updateMarkers();
 updateLegend();
 renderHome();
+forceSORCTracksChartPaint();
 window.requestAnimationFrame(() => {
   if (typeof renderHome === 'function') renderHome();
+  forceSORCTracksChartPaint();
 });
 function repaintSORCTracksCharts() {
   if (typeof renderHome !== 'function' || window.__sorcChartUnavailable) return;
   renderHome();
+  forceSORCTracksChartPaint();
   if (typeof activeChart !== 'undefined' && activeChart && typeof activeChart.resize === 'function') {
     activeChart.resize();
   }
