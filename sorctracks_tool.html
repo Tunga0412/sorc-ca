@@ -937,8 +937,8 @@ function yearCount(site) {
 const mapRuntimeAvailable = typeof L !== 'undefined' && typeof L.map === 'function';
 const map = mapRuntimeAvailable ? L.map('map', { zoomControl: true }).setView([54.0, -114.5], 6) : null;
 if (map) {
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-    attribution: '&copy; OpenStreetMap, &copy; CARTO',
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap contributors',
     maxZoom: 18
   }).addTo(map);
 } else {
