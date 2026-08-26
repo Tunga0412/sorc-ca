@@ -63,8 +63,19 @@ jobs:
               exit 0
             fi
             if [ "$attempt" -lt 3 ]; then
-              echo "Push was not fast-forwardable. Rebasing on the latest main and retrying."
-              git pull --rebase origin main
+              echo "Push was not fast-forwardable. Rebuilding from the latest main and retrying."
+              git rebase --abort || true
+              git fetch origin main
+              git reset --hard origin/main
+              python automation/run_live_update.py
+              python automation/health_check.py --historical-url "$GITHUB_WORKSPACE/sorctracks_tool.html" --live-url "$GITHUB_WORKSPACE/sorctracks_live.html" --max-live-age-hours 48 --output automation/live-health.json
+              git add sorctracks_live.html
+              git diff --cached --check
+              if git diff --cached --quiet; then
+                echo "Another run already published the same Live output"
+                exit 0
+              fi
+              git commit -m "Automated SORCTracks Live update"
             fi
           done
           exit 1
