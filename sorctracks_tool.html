@@ -135,11 +135,6 @@
       margin-bottom: 0.55rem;
       position: relative;
     }
-    .chart-wrap canvas {
-      width: 100% !important;
-      height: 100% !important;
-      display: block;
-    }
     .chart-caption {
       font-size: 0.69rem;
       color: var(--muted);
@@ -415,157 +410,6 @@ if (typeof window.Chart === 'undefined') {
   window.Chart = function() {
     return { options: { plugins: { legend: { display: false } } }, destroy: function(){}, update: function(){} };
   };
-  window.addEventListener('load', () => {
-    if (window.Chart && window.Chart.version) {
-      window.__sorcChartUnavailable = false;
-      if (typeof renderHome === 'function') renderHome();
-    }
-  }, { once: true });
-}
-
-function SorcFirefoxSvgChart(ctx, config) {
-  this.canvas = ctx && ctx.canvas ? ctx.canvas : null;
-  this.config = config || {};
-  this.options = this.config.options || {};
-  this.svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-  this.svg.classList.add('sorc-firefox-svg-chart');
-  this.svg.setAttribute('role', 'img');
-  if (this.canvas) {
-    this.svg.setAttribute('aria-label', this.canvas.getAttribute('aria-label') || '');
-    this.canvas.style.display = 'none';
-    this.canvas.parentNode.insertBefore(this.svg, this.canvas);
-    SorcFirefoxSvgChart.instances.set(this.canvas, this);
-  }
-  this.draw();
-}
-SorcFirefoxSvgChart.instances = new WeakMap();
-SorcFirefoxSvgChart.getChart = canvas => SorcFirefoxSvgChart.instances.get(canvas) || null;
-SorcFirefoxSvgChart.prototype._text = function(value, x, y, attrs) {
-  const node = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-  node.textContent = value;
-  node.setAttribute('x', x);
-  node.setAttribute('y', y);
-  Object.entries(attrs || {}).forEach(([key, val]) => node.setAttribute(key, val));
-  this.svg.appendChild(node);
-  return node;
-};
-SorcFirefoxSvgChart.prototype._line = function(x1, y1, x2, y2, attrs) {
-  const node = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-  Object.entries({ x1, y1, x2, y2, ...(attrs || {}) }).forEach(([key, val]) => node.setAttribute(key, val));
-  this.svg.appendChild(node);
-};
-SorcFirefoxSvgChart.prototype._rect = function(x, y, width, height, fill) {
-  const node = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-  Object.entries({ x, y, width, height, fill }).forEach(([key, val]) => node.setAttribute(key, val));
-  this.svg.appendChild(node);
-};
-SorcFirefoxSvgChart.prototype._circle = function(cx, cy, r, fill, stroke) {
-  const node = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-  Object.entries({ cx, cy, r, fill, stroke: stroke || fill, 'stroke-width': 1 }).forEach(([key, val]) => node.setAttribute(key, val));
-  this.svg.appendChild(node);
-};
-SorcFirefoxSvgChart.prototype._size = function() {
-  const parent = this.canvas && this.canvas.parentElement;
-  const rect = parent ? parent.getBoundingClientRect() : null;
-  const width = Math.max(240, Math.round((rect && rect.width) || 320));
-  const height = Math.max(110, Math.round((rect && rect.height) || 150));
-  this.svg.setAttribute('viewBox', '0 0 ' + width + ' ' + height);
-  this.svg.setAttribute('width', '100%');
-  this.svg.setAttribute('height', '100%');
-  return { width, height };
-};
-SorcFirefoxSvgChart.prototype._value = function(value) {
-  const number = Number(value) || 0;
-  return Math.abs(number) >= 1000 ? Math.round(number / 1000) + 'k' : Math.round(number);
-};
-SorcFirefoxSvgChart.prototype.draw = function() {
-  if (!this.svg) return;
-  while (this.svg.firstChild) this.svg.removeChild(this.svg.firstChild);
-  const size = this._size();
-  const width = size.width;
-  const height = size.height;
-  const left = 34;
-  const right = 5;
-  const top = 8;
-  const bottom = 26;
-  const plotWidth = Math.max(1, width - left - right);
-  const plotHeight = Math.max(1, height - top - bottom);
-  const data = this.config.data || {};
-  const datasets = Array.isArray(data.datasets) ? data.datasets : [];
-  const labels = Array.isArray(data.labels) ? data.labels : [];
-  const font = { 'font-family': 'Lato, Arial, sans-serif', 'font-size': '8', fill: '#5A6A85' };
-  if (this.config.type === 'scatter') {
-    const points = datasets.flatMap(dataset => Array.isArray(dataset.data) ? dataset.data : []);
-    const xValues = points.map(point => Number(point.x) || 0);
-    const yValues = points.map(point => Number(point.y) || 0);
-    const xMax = Math.max(1, Number(this.options.scales && this.options.scales.x && this.options.scales.x.suggestedMax) || Math.max(...xValues, 1) * 1.08);
-    const yMax = Math.max(1, Math.max(...yValues, 1) * 1.08);
-    for (let i = 0; i <= 3; i++) {
-      const y = top + plotHeight * (1 - i / 3);
-      this._line(left, y, width - right, y, { stroke: 'rgba(15,35,71,0.10)', 'stroke-width': 1 });
-      this._text(this._value(yMax * i / 3), left - 4, y + 3, { ...font, 'text-anchor': 'end' });
-    }
-    for (let i = 0; i <= 3; i++) {
-      const x = left + plotWidth * i / 3;
-      this._line(x, top, x, height - bottom, { stroke: 'rgba(15,35,71,0.06)', 'stroke-width': 1 });
-      this._text(this._value(xMax * i / 3), x, height - 10, { ...font, 'text-anchor': 'middle' });
-    }
-    points.forEach(point => {
-      const x = left + plotWidth * (Number(point.x) || 0) / xMax;
-      const y = top + plotHeight * (1 - (Number(point.y) || 0) / yMax);
-      this._circle(x, y, 4, '#3b82c4', '#1B3A6B');
-    });
-    this._text('Estimated drive time (min)', left + plotWidth / 2, height - 1, { ...font, 'text-anchor': 'middle' });
-    return;
-  }
-  const values = labels.map((_, index) => datasets.map(dataset => Number(dataset.data && dataset.data[index]) || 0));
-  const stacked = Boolean(this.options.scales && ((this.options.scales.x && this.options.scales.x.stacked) || (this.options.scales.y && this.options.scales.y.stacked)));
-  const totals = values.map(row => stacked ? row.reduce((sum, value) => sum + Math.max(0, value), 0) : Math.max(0, ...row));
-  const maxValue = Math.max(1, ...totals) * 1.08;
-  for (let i = 0; i <= 3; i++) {
-    const y = top + plotHeight * (1 - i / 3);
-    this._line(left, y, width - right, y, { stroke: 'rgba(15,35,71,0.10)', 'stroke-width': 1 });
-    this._text(this._value(maxValue * i / 3), left - 4, y + 3, { ...font, 'text-anchor': 'end' });
-  }
-  const step = plotWidth / Math.max(1, labels.length);
-  const groupWidth = step * 0.82;
-  labels.forEach((label, index) => {
-    const row = values[index] || [];
-    let cursor = height - bottom;
-    const colors = datasets.map((dataset, datasetIndex) => {
-      const color = dataset.backgroundColor;
-      return Array.isArray(color) ? color[index] : (color || ['#3b82c4', '#d98942', '#7b6ba8', '#5d9b72', '#bd6b76'][datasetIndex % 5]);
-    });
-    if (stacked) {
-      row.forEach((value, datasetIndex) => {
-        const barHeight = plotHeight * Math.max(0, value) / maxValue;
-        cursor -= barHeight;
-        this._rect(left + index * step + (step - groupWidth) / 2, cursor, groupWidth, barHeight, colors[datasetIndex]);
-      });
-    } else {
-      const barWidth = groupWidth / Math.max(1, datasets.length);
-      row.forEach((value, datasetIndex) => {
-        const barHeight = plotHeight * Math.max(0, value) / maxValue;
-        this._rect(left + index * step + (step - groupWidth) / 2 + datasetIndex * barWidth, height - bottom - barHeight, Math.max(1, barWidth - 0.5), barHeight, colors[datasetIndex]);
-      });
-    }
-    const showLabel = labels.length <= 12 || index === 0 || index === labels.length - 1 || String(label).endsWith('-01');
-    if (showLabel) this._text(String(label).replace(/^\d{4}-/, ''), left + index * step + step / 2, height - 10, { ...font, 'text-anchor': 'middle' });
-  });
-};
-SorcFirefoxSvgChart.prototype.resize = function() { this.draw(); };
-SorcFirefoxSvgChart.prototype.update = function() { this.draw(); };
-SorcFirefoxSvgChart.prototype.destroy = function() {
-  if (this.canvas) {
-    SorcFirefoxSvgChart.instances.delete(this.canvas);
-    this.canvas.style.display = '';
-  }
-  if (this.svg && this.svg.parentNode) this.svg.parentNode.removeChild(this.svg);
-  this.svg = null;
-};
-const sorcUseFirefoxSvgCharts = /Firefox\/\d/i.test(navigator.userAgent);
-if (sorcUseFirefoxSvgCharts && window.Chart && window.Chart.version) {
-  window.Chart = SorcFirefoxSvgChart;
 }
 
 /* RELEASE_HARDENING_BOOTSTRAP_END */
@@ -1404,7 +1248,7 @@ function renderHome() {
       type: 'bar',
       data: { labels: months, datasets: datasets },
       options: {
-        responsive: false,
+        responsive: true,
         maintainAspectRatio: false,
         animation: false,
         plugins: {
@@ -1547,7 +1391,7 @@ function showSite(site) {
       datasets: datasets
     },
     options: {
-      responsive: false,
+      responsive: true,
       maintainAspectRatio: false,
       animation: false,
       plugins: {
@@ -2094,7 +1938,7 @@ function renderProvinceBreakdownChart(canvas, mode) {
     type: 'bar',
     data: { labels: months, datasets: datasets },
     options: {
-      responsive: false,
+      responsive: true,
       maintainAspectRatio: false,
       animation: false,
       plugins: {
@@ -2221,7 +2065,7 @@ function renderProvinceGeographicChart(canvas) {
     },
     plugins: [referenceGuides],
     options: {
-      responsive: false,
+      responsive: true,
       maintainAspectRatio: false,
       animation: false,
       plugins: {
@@ -2274,7 +2118,7 @@ function renderSiteBreakdownChart(canvas, months, datasets, mode) {
     type: 'bar',
     data: { labels: months, datasets: datasets },
     options: {
-      responsive: false,
+      responsive: true,
       maintainAspectRatio: false,
       animation: false,
       plugins: {
@@ -2592,33 +2436,11 @@ renderHome = function() {
   hourFrameworkOriginalRenderHome();
   arrangeProvinceHome();
 };
-function forceSORCTracksChartPaint() {
-  if (typeof Chart === 'undefined' || !Chart.getChart) return;
-  document.querySelectorAll('canvas').forEach((canvas) => {
-    const chart = Chart.getChart(canvas);
-    if (!chart) return;
-    if (typeof chart.resize === 'function') chart.resize();
-    if (typeof chart.draw === 'function') chart.draw();
-  });
-}
-updateMarkers();
-updateLegend();
-renderHome();
-forceSORCTracksChartPaint();
-window.requestAnimationFrame(() => {
-  if (typeof renderHome === 'function') renderHome();
-  forceSORCTracksChartPaint();
-});
-function repaintSORCTracksCharts() {
-  if (typeof renderHome !== 'function' || window.__sorcChartUnavailable) return;
+window.setTimeout(() => {
+  updateMarkers();
+  updateLegend();
   renderHome();
-  forceSORCTracksChartPaint();
-  if (typeof activeChart !== 'undefined' && activeChart && typeof activeChart.resize === 'function') {
-    activeChart.resize();
-  }
-}
-window.setTimeout(repaintSORCTracksCharts, 250);
-window.addEventListener('pageshow', () => window.setTimeout(repaintSORCTracksCharts, 0), { once: true });
+}, 0);
 /* HOUR_FRAMEWORKS_RUNTIME_END */
 </script>
 </body>
