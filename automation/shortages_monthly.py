@@ -38,7 +38,7 @@ def load_existing_dataset(path: Path) -> dict:
     if not path.exists():
         return {}
     text = path.read_text(encoding="utf-8")
-    match = re.search(r"window\\.SORC_DATA\\s*=\\s*(\\{.*\\})\\s*;?\\s*$", text, re.S)
+    match = re.search(r"window\.SORC_DATA\s*=\s*(\{.*\})\s*;?\s*$", text, re.S)
     if not match:
         raise ShortagesApiError(f"Could not parse the existing dataset at {path}")
     return json.loads(match.group(1))
