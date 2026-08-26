@@ -27,10 +27,10 @@ The hosting pages load the tools through relative iframe paths. Keep the tool fi
 ## Update schedule
 
 - SORCTracks historical data: monthly catch-up publication after the previous calendar month is complete
-- SORCShortages: versioned data with independent health monitoring
+- SORCShortages: monthly through the hosted workflow, with independent health monitoring
 - SORCTracks Live: daily through the hosted workflow
 
-The hosted Live workflow generates a candidate from the current AHS public page, runs the Live parser and health checks, and commits the result only after validation. The independent public health workflow checks SORCTracks and SORCShortages every six hours for missing data, stale outputs, fixture data, and known map errors.
+The hosted Live workflow generates a candidate from the current AHS public page, runs the Live parser and health checks, and commits the result only after validation. The Shortages workflow uses the documented Health Product Shortages Canada API, with the account email and password stored as the GitHub Actions secrets `SORCSHORTAGES_API_EMAIL` and `SORCSHORTAGES_API_PASSWORD`. The independent public health workflow checks SORCTracks and SORCShortages every six hours for missing data, stale outputs, fixture data, and known map errors.
 
 The local updater remains the fallback for historical SORCTracks releases until the historical source corpus and baseline files are moved into durable hosted storage.
 
