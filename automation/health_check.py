@@ -98,7 +98,7 @@ def check_pages(historical_url: str, live_url: str, max_live_age_hours: float) -
     try:
         historical_html, historical_status = _read_page(historical_url)
         failures.extend(_check_common("Historical page", historical_html, historical_status))
-        if "vendor/chart.umd.js" not in historical_html:
+        if "vendor/sorc-charts-v1.js" not in historical_html:
             failures.append("Historical page is missing the versioned chart library asset")
         historical_data = _constant(historical_html, "DATA")
         if not isinstance(historical_data, dict) or not historical_data.get("sites"):
