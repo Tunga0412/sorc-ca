@@ -1,4 +1,4 @@
-"""Monthly SORCShortages refresh from the public Health Canada export."""
+"""Monthly SORCShortages refresh from the Health Canada source."""
 
 from __future__ import annotations
 
@@ -10,9 +10,15 @@ from pathlib import Path
 import re
 import tempfile
 
-from sorcshortages.api import PublicExportClient, ShortagesApiError, write_snapshot
+from sorcshortages.api import (
+    PublicExportClient,
+    ShortagesApiClient,
+    ShortagesApiError,
+    write_snapshot,
+)
 from sorcshortages.cli import write_browser_dataset
 from sorcshortages.pipeline import build_consolidated
+from sorcshortages.schema import infer_report_type
 
 
 def month_ranges(start_date: date, end_date: date):
@@ -32,6 +38,13 @@ def report_id(row: dict[str, str]) -> str | None:
         if value not in (None, ""):
             return str(value).strip()
     return None
+
+
+def add_source_row(rows: dict[tuple[str, str], dict], row: dict, kind: str) -> None:
+    identifier = report_id(row)
+    if not identifier:
+        raise ShortagesApiError(f"{kind} source row has no report ID")
+    rows[(kind, identifier)] = row
 
 
 def load_existing_dataset(path: Path) -> dict:
@@ -71,22 +84,25 @@ def validate_candidate(result: dict, source_count: int, existing: dict, minimum_
         raise ShortagesApiError("Candidate is missing monthly shortage series")
 
 
-def main() -> None:
-    parser = argparse.ArgumentParser(description="Refresh the SORCShortages published dataset")
-    parser.add_argument("--start-date", default="2016-01-01", help="first date-created window to request")
-    parser.add_argument("--end-date", default=date.today().isoformat(), help="last date-created window to request")
-    parser.add_argument("--output", type=Path, default=Path("data/consolidated.json"))
-    parser.add_argument("--minimum-records", type=int, default=20000)
-    parser.add_argument("--minimum-retention", type=float, default=0.75)
-    args = parser.parse_args()
+def collect_api_rows() -> tuple[dict[tuple[str, str], dict], str]:
+    email = os.getenv("SORCSHORTAGES_API_EMAIL")
+    password = os.getenv("SORCSHORTAGES_API_PASSWORD")
+    if not email or not password:
+        raise ShortagesApiError(
+            "API source selected but SORCSHORTAGES_API_EMAIL and SORCSHORTAGES_API_PASSWORD are not set"
+        )
+    all_rows = ShortagesApiClient(email, password).fetch_all()
+    rows: dict[tuple[str, str], dict] = {}
+    for row in all_rows:
+        kind = infer_report_type(row)
+        add_source_row(rows, row, kind)
+    print(f"API source returned {len(rows)} unique reports", flush=True)
+    return rows, "Health Product Shortages Canada public API"
 
-    start_date = date.fromisoformat(args.start_date)
-    end_date = date.fromisoformat(args.end_date)
-    if start_date > end_date:
-        raise SystemExit("--start-date cannot be later than --end-date")
 
+def collect_public_export_rows(start_date: date, end_date: date) -> tuple[dict[tuple[str, str], dict], str]:
     client = PublicExportClient()
-    source_rows: dict[tuple[str, str], dict[str, str]] = {}
+    rows: dict[tuple[str, str], dict] = {}
     expected_total = 0
     for window_start, window_end in month_ranges(start_date, end_date):
         total, export = client.fetch_range(window_start.isoformat(), window_end.isoformat())
@@ -97,27 +113,43 @@ def main() -> None:
                 f"Export window {window_start} to {window_end} reported {total} rows but returned {len(window_rows)}"
             )
         for row in export["shortages"]:
-            identifier = report_id(row)
-            if not identifier:
-                raise ShortagesApiError(f"Shortage export row has no report ID in window {window_start}")
-            source_rows[("shortage", identifier)] = row
+            add_source_row(rows, row, "Shortage")
         for row in export["discontinuations"]:
-            identifier = report_id(row)
-            if not identifier:
-                raise ShortagesApiError(f"Discontinuation export row has no report ID in window {window_start}")
-            source_rows[("discontinuation", identifier)] = row
+            add_source_row(rows, row, "Discontinuation")
         print(
             f"{window_start.isoformat()} to {window_end.isoformat()}: "
-            f"{total} reports, {len(source_rows)} unique so far",
+            f"{total} reports, {len(rows)} unique so far",
             flush=True,
         )
-
-    if not source_rows or len(source_rows) < args.minimum_records:
-        raise ShortagesApiError(f"Public export returned only {len(source_rows)} unique reports")
-    if len(source_rows) < round(expected_total * 0.995):
+    if not rows or len(rows) < round(expected_total * 0.995):
         raise ShortagesApiError(
-            f"Deduplication removed too many rows: {expected_total} exported, {len(source_rows)} unique"
+            f"Public export returned {len(rows)} unique reports from {expected_total} reported rows"
         )
+    return rows, "Health Product Shortages Canada public CSV export"
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description="Refresh the SORCShortages published dataset")
+    parser.add_argument("--source", choices=("api", "public-export"), default="api")
+    parser.add_argument("--start-date", default="2016-01-01", help="first date-created window for public-export mode")
+    parser.add_argument("--end-date", default=date.today().isoformat(), help="last date-created window for public-export mode")
+    parser.add_argument("--output", type=Path, default=Path("data/consolidated.json"))
+    parser.add_argument("--minimum-records", type=int, default=20000)
+    parser.add_argument("--minimum-retention", type=float, default=0.75)
+    args = parser.parse_args()
+
+    start_date = date.fromisoformat(args.start_date)
+    end_date = date.fromisoformat(args.end_date)
+    if start_date > end_date:
+        raise SystemExit("--start-date cannot be later than --end-date")
+
+    if args.source == "api":
+        source_rows, source_label = collect_api_rows()
+    else:
+        source_rows, source_label = collect_public_export_rows(start_date, end_date)
+
+    if len(source_rows) < args.minimum_records:
+        raise ShortagesApiError(f"Source returned only {len(source_rows)} unique reports")
 
     snapshot_date = date.today().isoformat()
     with tempfile.TemporaryDirectory(prefix="sorcshortages-") as temp_dir:
@@ -128,7 +160,7 @@ def main() -> None:
             snapshot_date=snapshot_date,
             shortages=[row for (kind, _), row in source_rows.items() if kind == "shortage"],
             discontinuations=[row for (kind, _), row in source_rows.items() if kind == "discontinuation"],
-            source="Health Product Shortages Canada public CSV export",
+            source=source_label,
         )
         candidate_json = temp_root / "consolidated.json"
         result = build_consolidated(snapshots, candidate_json)
