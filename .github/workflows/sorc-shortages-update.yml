@@ -22,6 +22,9 @@ jobs:
   update-shortages:
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    env:
+      SORCSHORTAGES_API_EMAIL: ${{ secrets.SORCSHORTAGES_API_EMAIL }}
+      SORCSHORTAGES_API_PASSWORD: ${{ secrets.SORCSHORTAGES_API_PASSWORD }}
     steps:
       - name: Check out current public site
         uses: actions/checkout@v4
