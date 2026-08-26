@@ -370,7 +370,7 @@
 
     <p class="page-intro">SORCShortages organizes Canadian drug shortage and discontinuation reports for research and public understanding.</p>
 
-    <p class="page-intro" style="margin-top: 1rem;">The tool draws from <a href="https://healthproductshortages.ca/" class="inline-link" target="_blank" rel="noopener">Health Product Shortages Canada</a> and organizes its individual notices into comparable episodes for searching, comparison, and pattern analysis. It uses dated source snapshots and is maintained separately from the hosted SORCTracks workflows. It is not an operational supply-chain system.</p>
+    <p class="page-intro" style="margin-top: 1rem;">The tool draws from <a href="https://healthproductshortages.ca/" class="inline-link" target="_blank" rel="noopener">Health Product Shortages Canada</a> and organizes its individual notices into comparable episodes for searching, comparison, and pattern analysis. It uses dated source snapshots and is refreshed monthly on the first of the month. It is maintained separately from the hosted SORCTracks workflows. It is not an operational supply-chain system.</p>
 
     <div class="changelog-wrap" style="margin-top: 2rem;">
       <div class="section-label" style="margin-bottom: 0.6rem;">Version History</div>
@@ -433,7 +433,7 @@
         <div class="subsection-label">Methodology</div>
         <div class="subsection-title">Data and Episode Construction</div>
 
-        <p><strong>Source.</strong> The tool currently includes 29,456 reports: 26,015 shortages and 3,441 discontinuations, through the August 10, 2026 snapshot.</p>
+        <p><strong>Source.</strong> The current release includes the reports available in the latest dated source snapshot. The embedded dashboard displays the current report counts and snapshot date.</p>
 
         <p><strong>Episode construction.</strong> Each report is treated as one episode. Start date uses the actual start date when available, otherwise the anticipated start date. End date uses the observed end date when available. Active status is evaluated against the snapshot date. Anticipated reports with a future start date are not counted as active. Ongoing episodes are right-censored at the snapshot date. Estimated end dates are not used as observed ends.</p>
 
@@ -445,7 +445,7 @@
 
         <p><strong>Quality handling.</strong> Six source date conflicts and one unrecoverable calendar-date issue are retained and flagged rather than silently corrected. Avoidance dates preceding anticipated starts are treated as an expected lifecycle pattern. Missing optional product fields remain missing.</p>
 
-        <p><strong>Update schedule.</strong> Each release uses a dated source snapshot. SORCShortages is maintained separately from the hosted SORCTracks workflows.</p>
+        <p><strong>Update schedule.</strong> The dataset is refreshed monthly on the first of the month from the public Health Product Shortages Canada export. SORCShortages is maintained separately from the hosted SORCTracks workflows.</p>
 
         <p>For media or research inquiries, contact <a href="mailto:info@sorc.ca" class="inline-link">info@sorc.ca</a>.</p>
       </div>
