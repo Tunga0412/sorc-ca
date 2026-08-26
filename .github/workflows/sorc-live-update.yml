@@ -3,7 +3,12 @@ name: SORCTracks Live update
 on:
   push:
     paths:
-      - "automation/**"
+      - "automation/live_tool.py"
+      - "automation/html_patcher.py"
+      - "automation/ahs_scrape_v84_patched.py"
+      - "automation/health_check.py"
+      - "automation/run_live_update.py"
+      - "automation/requirements.txt"
       - ".github/workflows/sorc-live-update.yml"
       - "sorctracks_tool.html"
   schedule:
