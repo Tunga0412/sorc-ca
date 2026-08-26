@@ -58,7 +58,16 @@ jobs:
               if len(html) < 1000:
                   failures.append(f"{label} is unexpectedly small")
               lowered = html.lower()
-              for marker in ("api key required", "error loading map", "uncaught typeerror"):
+              for marker in (
+                  "api key required",
+                  "error loading map",
+                  "uncaught typeerror",
+                  "mapbox",
+                  "tiles.stadiamaps.com",
+                  "api_key=",
+                  "apikey=",
+                  "access_token=",
+              ):
                   if marker in lowered:
                       failures.append(f"{label} contains failure marker: {marker}")
 
@@ -125,6 +134,9 @@ jobs:
                           failures.append(f"Live page is {age_hours:.1f} hours old")
               if not any(marker in html for marker in ("basemaps.cartocdn.com", "tile.openstreetmap.org")):
                   failures.append("Live page is missing a supported map tile provider")
+              for marker in ("tile.openstreetmap.org", "basemaps.cartocdn.com", "backupTiles", "tileerror"):
+                  if marker not in html:
+                      failures.append(f"Live page is missing keyless map fallback marker: {marker}")
           except Exception as exc:
               failures.append(f"Live check failed: {exc}")
 
