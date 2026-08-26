@@ -17,6 +17,14 @@ sys.path.insert(0, str(ROOT))
 import live_tool
 
 
+def _normalise_html(path: Path) -> None:
+    """Remove physical line-end whitespace from generated HTML."""
+    text = path.read_text(encoding="utf-8")
+    normalised = "\n".join(line.rstrip() for line in text.splitlines()) + "\n"
+    if normalised != text:
+        path.write_text(normalised, encoding="utf-8", newline="\n")
+
+
 def _validate_candidate(path: Path) -> None:
     text = path.read_text(encoding="utf-8")
     if len(text.encode("utf-8")) < 1000:
@@ -43,6 +51,7 @@ def main() -> int:
     candidate = args.output.with_name(args.output.name + ".candidate")
     try:
         result = live_tool.build_live_page(args.template, args.base_script, candidate, as_of=args.as_of)
+        _normalise_html(candidate)
         _validate_candidate(candidate)
         os.replace(candidate, args.output)
         result["output"] = str(args.output)
