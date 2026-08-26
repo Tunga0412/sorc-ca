@@ -25,6 +25,10 @@ ERROR_MARKERS = (
     "uncaught typeerror",
     "sample fixture data",
 )
+MAP_TILE_MARKERS = (
+    "basemaps.cartocdn.com",
+    "tile.openstreetmap.org",
+)
 
 
 def _now_utc() -> datetime:
@@ -116,8 +120,8 @@ def check_pages(historical_url: str, live_url: str, max_live_age_hours: float) -
                     failures.append(
                         f"Live page is {age_hours:.1f} hours old, exceeding {max_live_age_hours:.1f} hours"
                     )
-        if "tile.openstreetmap.org" not in live_html:
-            failures.append("Live page does not contain the configured map tile provider")
+        if not any(marker in live_html for marker in MAP_TILE_MARKERS):
+            failures.append("Live page does not contain a supported map tile provider")
     except Exception as exc:
         failures.append(f"Live page check failed: {exc}")
 
