@@ -30,7 +30,10 @@ jobs:
 
           HISTORICAL_URL = "https://sorc.ca/sorctracks_tool.html"
           LIVE_URL = "https://sorc.ca/sorctracks_live.html"
+          SHORTAGES_URL = "https://sorc.ca/sorcshortages_tool.html"
+          SHORTAGES_DATA_URL = "https://sorc.ca/data/consolidated.js"
           MAX_LIVE_AGE_HOURS = 48
+          MAX_SHORTAGES_AGE_DAYS = 45
           failures = []
 
           def fetch(url):
@@ -67,6 +70,37 @@ jobs:
                   failures.append("Historical DATA has no sites")
           except Exception as exc:
               failures.append(f"Historical check failed: {exc}")
+
+          try:
+              status, html = fetch(SHORTAGES_URL)
+              common("SORCShortages page", status, html)
+              if "data/consolidated.js" not in html:
+                  failures.append("SORCShortages page does not reference its bundled data")
+              data_status, data_source = fetch(SHORTAGES_DATA_URL)
+              common("SORCShortages data", data_status, data_source)
+              marker = "window.SORC_DATA = "
+              start = data_source.find(marker)
+              if start < 0:
+                  raise ValueError("missing window.SORC_DATA")
+              decoder = json.JSONDecoder()
+              data = decoder.raw_decode(data_source[start + len(marker):])[0]
+              if not isinstance(data, dict) or not data.get("records"):
+                  failures.append("SORCShortages data has no records")
+              else:
+                  if not data.get("latest_snapshot"):
+                      failures.append("SORCShortages data has no latest_snapshot")
+                  generated_at = data.get("generated_at")
+                  if not generated_at:
+                      failures.append("SORCShortages data has no generated_at timestamp")
+                  else:
+                      timestamp = dt.datetime.fromisoformat(str(generated_at).replace("Z", "+00:00"))
+                      if timestamp.tzinfo is None:
+                          timestamp = timestamp.replace(tzinfo=dt.timezone.utc)
+                      age_days = (dt.datetime.now(dt.timezone.utc) - timestamp.astimezone(dt.timezone.utc)).total_seconds() / 86400
+                      if age_days > MAX_SHORTAGES_AGE_DAYS:
+                          failures.append(f"SORCShortages data is {age_days:.1f} days old")
+          except Exception as exc:
+              failures.append(f"SORCShortages check failed: {exc}")
 
           try:
               status, html = fetch(LIVE_URL)
