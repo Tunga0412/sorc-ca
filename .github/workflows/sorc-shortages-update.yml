@@ -40,7 +40,13 @@ jobs:
         env:
           SORCSHORTAGES_API_EMAIL: ${{ secrets.SORCSHORTAGES_API_EMAIL }}
           SORCSHORTAGES_API_PASSWORD: ${{ secrets.SORCSHORTAGES_API_PASSWORD }}
-        run: python -m automation.shortages_monthly --source api
+        run: |
+          if python -m automation.shortages_monthly --source api; then
+            echo "SORCShortages API source succeeded"
+          else
+            echo "SORCShortages API source failed. Retrying with the public export."
+            python -m automation.shortages_monthly --source public-export
+          fi
 
       - name: Validate published files
         run: |
@@ -51,6 +57,8 @@ jobs:
           text = Path("data/consolidated.js").read_text(encoding="utf-8")
           assert text.startswith("window.SORC_DATA = ")
           payload = json.loads(text[len("window.SORC_DATA = "):].rstrip().rstrip(";"))
+          json_payload = json.loads(Path("data/consolidated.json").read_text(encoding="utf-8"))
+          assert payload == json_payload, "consolidated.json and consolidated.js differ"
           assert payload["records"]
           assert payload["summary"]["shortages"] > 0
           assert payload["summary"]["discontinuations"] > 0
@@ -73,8 +81,24 @@ jobs:
               exit 0
             fi
             if [ "$attempt" -lt 3 ]; then
-              echo "Push was not fast-forwardable. Rebasing on the latest main and retrying."
-              git pull --rebase origin main
+              echo "Push was not fast-forwardable. Rebuilding from the latest main and retrying."
+              git rebase --abort || true
+              git fetch origin main
+              git reset --hard origin/main
+              if python -m automation.shortages_monthly --source api; then
+                echo "SORCShortages API source succeeded on retry"
+              else
+                echo "SORCShortages API source failed on retry. Using the public export."
+                python -m automation.shortages_monthly --source public-export
+              fi
+              python -m json.tool data/consolidated.json >/dev/null
+              git add data/consolidated.json data/consolidated.js
+              git diff --cached --check
+              if git diff --cached --quiet; then
+                echo "Another run already published the same SORCShortages dataset"
+                exit 0
+              fi
+              git commit -m "Automated SORCShortages monthly update"
             fi
           done
           exit 1
