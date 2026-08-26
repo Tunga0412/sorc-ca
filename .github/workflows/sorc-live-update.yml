@@ -68,3 +68,54 @@ jobs:
             fi
           done
           exit 1
+
+      - name: Verify deployed Live map
+        env:
+          LIVE_URL: https://sorc.ca/sorctracks_live.html
+        run: |
+          python - <<'PY'
+          import time
+          import urllib.request
+
+          url = "https://sorc.ca/sorctracks_live.html"
+          required = (
+              "tile.openstreetmap.org",
+              "basemaps.cartocdn.com",
+              "backupTiles",
+              "tileerror",
+          )
+          forbidden = (
+              "api key required",
+              "mapbox",
+              "tiles.stadiamaps.com",
+              "api_key=",
+              "apikey=",
+              "access_token=",
+          )
+
+          for attempt in range(1, 19):
+              try:
+                  check_url = f"{url}?deployment_health_check={int(time.time())}"
+                  request = urllib.request.Request(
+                      check_url,
+                      headers={"User-Agent": "SORCTracks deployment health check/1.0"},
+                  )
+                  with urllib.request.urlopen(request, timeout=30) as response:
+                      html = response.read().decode("utf-8", errors="replace")
+                  lowered = html.lower()
+                  missing = [marker for marker in required if marker not in html]
+                  present_forbidden = [marker for marker in forbidden if marker in lowered]
+                  if response.status == 200 and not missing and not present_forbidden:
+                      print("Deployed Live map passed the keyless-provider check")
+                      break
+                  print(
+                      f"Attempt {attempt}: waiting for GitHub Pages deployment "
+                      f"(missing={missing}, forbidden={present_forbidden})"
+                  )
+              except Exception as exc:
+                  print(f"Attempt {attempt}: waiting for GitHub Pages deployment ({exc})")
+              if attempt < 18:
+                  time.sleep(10)
+          else:
+              raise SystemExit("Deployed Live page did not pass the keyless-provider check")
+          PY
