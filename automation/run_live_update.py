@@ -45,6 +45,7 @@ def main() -> int:
         result = live_tool.build_live_page(args.template, args.base_script, candidate, as_of=args.as_of)
         _validate_candidate(candidate)
         os.replace(candidate, args.output)
+        result["output"] = str(args.output)
         print(json.dumps({"status": "success", **result}, indent=2))
         return 0
     finally:
