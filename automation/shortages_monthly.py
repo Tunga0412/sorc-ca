@@ -8,7 +8,6 @@ import json
 import os
 from pathlib import Path
 import re
-import shutil
 import tempfile
 
 from sorcshortages.api import PublicExportClient, ShortagesApiError, write_snapshot
