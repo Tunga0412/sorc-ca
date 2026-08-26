@@ -2441,14 +2441,12 @@ renderHome = function() {
   hourFrameworkOriginalRenderHome();
   arrangeProvinceHome();
 };
-window.setTimeout(() => {
-  updateMarkers();
-  updateLegend();
-  renderHome();
-  window.requestAnimationFrame(() => {
-    if (typeof renderHome === 'function') renderHome();
-  });
-}, 0);
+updateMarkers();
+updateLegend();
+renderHome();
+window.requestAnimationFrame(() => {
+  if (typeof renderHome === 'function') renderHome();
+});
 function repaintSORCTracksCharts() {
   if (typeof renderHome !== 'function' || window.__sorcChartUnavailable) return;
   renderHome();
