@@ -4,15 +4,19 @@ from __future__ import annotations
 
 import csv
 from datetime import date
+from http.cookiejar import CookieJar
 import io
+import re
 import json
 from pathlib import Path
 import time
 from typing import Any
 from urllib.error import HTTPError, URLError
 from urllib.parse import urlencode
-from urllib.request import Request, urlopen
+from urllib.request import HTTPCookieProcessor, Request, build_opener, urlopen
 from zipfile import ZipFile
+
+from bs4 import BeautifulSoup
 
 
 BASE_URL = "https://healthproductshortages.ca/api/v1"
