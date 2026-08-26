@@ -9,7 +9,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: sorc-historical-publisher
+  group: sorc-publisher
   cancel-in-progress: false
 
 env:
@@ -28,10 +28,10 @@ jobs:
         with:
           python-version: "3.13"
           cache: pip
-          cache-dependency-path: automation/requirements.txt
+          cache-dependency-path: automation/requirements.lock.txt
 
       - name: Install pinned historical dependencies
-        run: python -m pip install -r automation/requirements.txt
+        run: python -m pip install -r automation/requirements.lock.txt
 
       - name: Download versioned historical input bundle
         run: |
