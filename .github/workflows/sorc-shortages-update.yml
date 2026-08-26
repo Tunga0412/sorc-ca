@@ -37,7 +37,10 @@ jobs:
         run: python -m pip install -r automation/requirements.lock.txt
 
       - name: Build and validate Shortages candidate
-        run: python -m automation.shortages_monthly
+        env:
+          SORCSHORTAGES_API_EMAIL: ${{ secrets.SORCSHORTAGES_API_EMAIL }}
+          SORCSHORTAGES_API_PASSWORD: ${{ secrets.SORCSHORTAGES_API_PASSWORD }}
+        run: python -m automation.shortages_monthly --source api
 
       - name: Validate published files
         run: |
