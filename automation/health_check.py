@@ -24,10 +24,21 @@ ERROR_MARKERS = (
     "error loading map",
     "uncaught typeerror",
     "sample fixture data",
+    "mapbox",
+    "tiles.stadiamaps.com",
+    "api_key=",
+    "apikey=",
+    "access_token=",
 )
 MAP_TILE_MARKERS = (
     "basemaps.cartocdn.com",
     "tile.openstreetmap.org",
+)
+LIVE_TILE_HARDENING_MARKERS = (
+    "tile.openstreetmap.org",
+    "basemaps.cartocdn.com",
+    "backupTiles",
+    "tileerror",
 )
 
 
@@ -122,6 +133,9 @@ def check_pages(historical_url: str, live_url: str, max_live_age_hours: float) -
                     )
         if not any(marker in live_html for marker in MAP_TILE_MARKERS):
             failures.append("Live page does not contain a supported map tile provider")
+        for marker in LIVE_TILE_HARDENING_MARKERS:
+            if marker not in live_html:
+                failures.append(f"Live page is missing keyless map fallback marker: {marker}")
     except Exception as exc:
         failures.append(f"Live page check failed: {exc}")
 
