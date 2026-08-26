@@ -26,3 +26,15 @@ The historical bundle is intentionally versioned. This preserves reproducibility
 ## Dependency updates
 
 automation/requirements.lock.txt is the tested hosted environment lock. Update it deliberately, run both publisher workflows, and retain the direct requirements file as the review-oriented dependency list.
+
+
+## SORCShortages monthly update
+
+The monthly Shortages workflow uses the documented Health Product Shortages Canada API. Configure these repository secrets before the first successful run:
+
+- `SORCSHORTAGES_API_EMAIL`
+- `SORCSHORTAGES_API_PASSWORD`
+
+The workflow pulls the complete report stream, rebuilds the existing episode model, validates report counts, report types, date metadata, and monthly series, then commits the two data files only after validation. A failed pull leaves the last accepted dataset in place.
+
+The source account has a 90-day password reset requirement. The API secret must therefore be rotated before expiry. The public health workflow will continue to identify a stale Shortages dataset if a monthly run stops succeeding.
