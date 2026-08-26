@@ -4,21 +4,21 @@ This folder contains the deployable SORC webpages and the separately maintained 
 
 ## Main pages
 
-- `index.html` — research and publications landing page
-- `about.html` — SORC members and approach
-- `projects.html` — ongoing projects
-- `jip.html` — Junior Investigator Program
-- `standards.html` — authorship and collaboration standards
-- `sorctracks.html` — SORCTracks hosting page
-- `methods.html` — SORCTracks methods
-- `sorcshortages.html` — SORCShortages hosting page
+- `index.html` - research and publications landing page
+- `about.html` - SORC members and approach
+- `projects.html` - ongoing projects
+- `jip.html` - Junior Investigator Program
+- `standards.html` - authorship and collaboration standards
+- `sorctracks.html` - SORCTracks hosting page
+- `methods.html` - SORCTracks methods
+- `sorcshortages.html` - SORCShortages hosting page
 
 ## Tool files
 
-- `sorctracks_tool.html` — SORCTracks interactive tool
-- `sorctracks_live.html` — SORCTracks Live page with the current AHS public snapshot
-- `sorcshortages_tool.html` — SORCShortages interactive tool
-- `data/consolidated.js` and `data/consolidated.json` — SORCShortages tool data
+- `sorctracks_tool.html` - SORCTracks interactive tool
+- `sorctracks_live.html` - SORCTracks Live page with the current AHS public snapshot
+- `sorcshortages_tool.html` - SORCShortages interactive tool
+- `data/consolidated.js` and `data/consolidated.json` - SORCShortages tool data
 
 The hosting pages load the tools through relative iframe paths. Keep the tool files and the `data` folder in this same directory when deploying.
 
@@ -26,9 +26,11 @@ The hosting pages load the tools through relative iframe paths. Keep the tool fi
 
 ## Update schedule
 
-- SORCTracks: monthly, on the first of the month
-- SORCShortages: monthly, on the first of the month
-- SORCTracks Live: daily
+- SORCTracks historical data: monthly catch-up publication after the previous calendar month is complete
+- SORCShortages: maintained separately
+- SORCTracks Live: daily through the hosted workflow
 
-For the monthly SORCShortages update, replace the dated data files and the standalone `sorcshortages_tool.html` as needed. The hosting page does not need to be edited for a routine data refresh. SORCTracks Live is maintained separately from the monthly SORCTracks release.
+The hosted Live workflow generates a candidate from the current AHS public page, runs the Live parser and health checks, and commits the result only after validation. The independent public health workflow checks both tools every six hours for missing data, stale Live output, fixture data, and known map errors.
+
+The local updater remains the fallback for historical SORCTracks releases until the historical source corpus and baseline files are moved into durable hosted storage.
 
