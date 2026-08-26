@@ -135,6 +135,11 @@
       margin-bottom: 0.55rem;
       position: relative;
     }
+    .chart-wrap canvas {
+      width: 100% !important;
+      height: 100% !important;
+      display: block;
+    }
     .chart-caption {
       font-size: 0.69rem;
       color: var(--muted);
@@ -1253,7 +1258,7 @@ function renderHome() {
       type: 'bar',
       data: { labels: months, datasets: datasets },
       options: {
-        responsive: true,
+        responsive: false,
         maintainAspectRatio: false,
         animation: false,
         plugins: {
@@ -1396,7 +1401,7 @@ function showSite(site) {
       datasets: datasets
     },
     options: {
-      responsive: true,
+      responsive: false,
       maintainAspectRatio: false,
       animation: false,
       plugins: {
@@ -1943,7 +1948,7 @@ function renderProvinceBreakdownChart(canvas, mode) {
     type: 'bar',
     data: { labels: months, datasets: datasets },
     options: {
-      responsive: true,
+      responsive: false,
       maintainAspectRatio: false,
       animation: false,
       plugins: {
@@ -2070,7 +2075,7 @@ function renderProvinceGeographicChart(canvas) {
     },
     plugins: [referenceGuides],
     options: {
-      responsive: true,
+      responsive: false,
       maintainAspectRatio: false,
       animation: false,
       plugins: {
@@ -2123,7 +2128,7 @@ function renderSiteBreakdownChart(canvas, months, datasets, mode) {
     type: 'bar',
     data: { labels: months, datasets: datasets },
     options: {
-      responsive: true,
+      responsive: false,
       maintainAspectRatio: false,
       animation: false,
       plugins: {
