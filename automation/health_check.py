@@ -98,8 +98,12 @@ def check_pages(historical_url: str, live_url: str, max_live_age_hours: float) -
     try:
         historical_html, historical_status = _read_page(historical_url)
         failures.extend(_check_common("Historical page", historical_html, historical_status))
-        if "vendor/sorc-charts-v1.js" not in historical_html:
-            failures.append("Historical page is missing the versioned chart library asset")
+        chart_markers = (
+            "vendor/sorc-charts-v1.js",
+            "cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js",
+        )
+        if not any(marker in historical_html for marker in chart_markers):
+            failures.append("Historical page is missing a supported Chart.js runtime asset")
         historical_data = _constant(historical_html, "DATA")
         if not isinstance(historical_data, dict) or not historical_data.get("sites"):
             failures.append("Historical page DATA has no sites")
