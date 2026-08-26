@@ -563,7 +563,7 @@ SorcFirefoxSvgChart.prototype.destroy = function() {
   if (this.svg && this.svg.parentNode) this.svg.parentNode.removeChild(this.svg);
   this.svg = null;
 };
-const sorcUseFirefoxSvgCharts = /Firefox\/\d/i.test(navigator.userAgent);
+const sorcUseFirefoxSvgCharts = /Firefox\/\d/i.test(navigator.userAgent) || new URLSearchParams(location.search).has('sorc-svg-test');
 if (sorcUseFirefoxSvgCharts && window.Chart && window.Chart.version) {
   window.Chart = SorcFirefoxSvgChart;
 }
