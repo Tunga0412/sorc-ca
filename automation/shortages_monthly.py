@@ -71,7 +71,8 @@ def validate_candidate(result: dict, source_count: int, existing: dict, minimum_
     types = {record.get("type") for record in records}
     if not {"shortage", "discontinuation"}.issubset(types):
         raise ShortagesApiError(f"Candidate is missing one report type: {sorted(types)}")
-    old_total = int((existing.get("summary") or {}).get("total_reports") or 0)
+    old_summary = existing.get("summary") or {}
+    old_total = int(old_summary.get("total_reports") or 0)
     if old_total and len(records) < round(old_total * minimum_retention):
         raise ShortagesApiError(
             f"Candidate dropped from {old_total} to {len(records)} records, below the {minimum_retention:.0%} retention floor"
@@ -79,6 +80,14 @@ def validate_candidate(result: dict, source_count: int, existing: dict, minimum_
     summary = result.get("summary") or {}
     if summary.get("shortages", 0) <= 0 or summary.get("discontinuations", 0) <= 0:
         raise ShortagesApiError("Candidate summary does not contain both report types")
+    for label in ("shortages", "discontinuations"):
+        old_count = int(old_summary.get(label) or 0)
+        new_count = int(summary.get(label) or 0)
+        if old_count and new_count < round(old_count * minimum_retention):
+            raise ShortagesApiError(
+                f"Candidate {label} count dropped from {old_count} to {new_count}, "
+                f"below the {minimum_retention:.0%} retention floor"
+            )
     series = result.get("series") or {}
     if not series.get("active_shortages") or not series.get("new_shortages"):
         raise ShortagesApiError("Candidate is missing monthly shortage series")
