@@ -57,4 +57,13 @@ jobs:
             exit 0
           fi
           git commit -m "Automated SORCTracks Live update"
-          git push
+          for attempt in 1 2 3; do
+            if git push origin HEAD:main; then
+              exit 0
+            fi
+            if [ "$attempt" -lt 3 ]; then
+              echo "Push was not fast-forwardable. Rebasing on the latest main and retrying."
+              git pull --rebase origin main
+            fi
+          done
+          exit 1
