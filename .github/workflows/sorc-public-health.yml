@@ -85,8 +85,8 @@ jobs:
                           failures.append("Live generated_at is in the future")
                       elif age_hours > MAX_LIVE_AGE_HOURS:
                           failures.append(f"Live page is {age_hours:.1f} hours old")
-              if "tile.openstreetmap.org" not in html:
-                  failures.append("Live page is missing the configured map tile provider")
+              if not any(marker in html for marker in ("basemaps.cartocdn.com", "tile.openstreetmap.org")):
+                  failures.append("Live page is missing a supported map tile provider")
           except Exception as exc:
               failures.append(f"Live check failed: {exc}")
 
