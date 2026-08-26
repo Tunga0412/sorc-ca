@@ -74,6 +74,8 @@ jobs:
           try:
               status, html = fetch(HISTORICAL_URL)
               common("Historical page", status, html)
+              if "vendor/chart.umd.js" not in html:
+                  failures.append("Historical page is missing the versioned chart library asset")
               data = constant(html, "DATA")
               if not isinstance(data, dict) or not data.get("sites"):
                   failures.append("Historical DATA has no sites")
