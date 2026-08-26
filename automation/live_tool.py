@@ -543,7 +543,11 @@ def render_live_html(data: dict, template_path: Path | None = None) -> str:
   <script>
     const LIVE_DATA = {_js_json(data)};
     const map = L.map('map', {{ zoomControl:true }}).setView([54.0, -114.5], 6);
-    L.tileLayer('https://{{s}}.basemaps.cartocdn.com/light_all/{{z}}/{{x}}/{{y}}{{r}}.png', {{ attribution:'&copy; OpenStreetMap, &copy; CARTO' }}).addTo(map);
+    const tileOptions = {{ attribution:'&copy; OpenStreetMap contributors', maxZoom:19 }};
+    const primaryTiles = L.tileLayer('https://{{s}}.tile.openstreetmap.org/{{z}}/{{x}}/{{y}}.png', tileOptions).addTo(map);
+    const backupTiles = L.tileLayer('https://{{s}}.basemaps.cartocdn.com/light_all/{{z}}/{{x}}/{{y}}{{r}}.png', {{ attribution:'&copy; OpenStreetMap, &copy; CARTO', maxZoom:18 }});
+    let backupActivated = false;
+    primaryTiles.on('tileerror', () => {{ if (!backupActivated) {{ backupActivated = true; backupTiles.addTo(map); }} }});
     const markers = new Map();
     const esc = (value) => String(value ?? '').replace(/[&<>'"]/g, ch => ({{'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}}[ch]));
     const serviceSelect = document.getElementById('serviceSelect');
