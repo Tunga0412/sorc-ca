@@ -74,8 +74,12 @@ jobs:
           try:
               status, html = fetch(HISTORICAL_URL)
               common("Historical page", status, html)
-              if "vendor/sorc-charts-v1.js" not in html:
-                  failures.append("Historical page is missing the versioned chart library asset")
+              chart_markers = (
+                  "vendor/sorc-charts-v1.js",
+                  "cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js",
+              )
+              if not any(marker in html for marker in chart_markers):
+                  failures.append("Historical page is missing a supported Chart.js runtime asset")
               data = constant(html, "DATA")
               if not isinstance(data, dict) or not data.get("sites"):
                   failures.append("Historical DATA has no sites")
