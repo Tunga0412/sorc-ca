@@ -2439,6 +2439,9 @@ window.setTimeout(() => {
   updateMarkers();
   updateLegend();
   renderHome();
+  window.requestAnimationFrame(() => {
+    if (typeof renderHome === 'function') renderHome();
+  });
 }, 0);
 /* HOUR_FRAMEWORKS_RUNTIME_END */
 </script>
