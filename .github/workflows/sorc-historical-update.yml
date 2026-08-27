@@ -19,6 +19,8 @@ jobs:
   update-historical:
     runs-on: ubuntu-latest
     timeout-minutes: 90
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Check out current public site
         uses: actions/checkout@v4
