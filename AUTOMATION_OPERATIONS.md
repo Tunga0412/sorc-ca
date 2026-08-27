@@ -5,7 +5,7 @@ The hosted workflows are intended to keep SORCTracks Live and the historical too
 ## Normal operation
 
 - Live updates run daily from the current AHS public disruption page.
-- Historical updates run daily and publish only when the previous completed month is due.
+- Historical updates run monthly on the first day of each month.
 - Public health checks run every six hours.
 - A failed health check opens or updates the GitHub issue titled "SORC automation health check failure". When the public pages recover, the issue is closed automatically.
 
