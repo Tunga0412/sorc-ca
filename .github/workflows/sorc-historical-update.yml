@@ -2,7 +2,7 @@ name: SORCTracks historical update
 
 on:
   schedule:
-    - cron: "47 3 * * *"
+    - cron: "47 3 1 * *"
   workflow_dispatch:
 
 permissions:
