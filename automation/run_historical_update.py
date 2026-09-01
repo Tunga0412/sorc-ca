@@ -315,7 +315,7 @@ def _augment_hour_framework_inputs_for_rescues(v84_output_dir, rescue_summary, l
         raise RuntimeError("Hour-framework totals do not match SERVICE_YEAR_SUMMARY: " + " | ".join(details))
 '''
         source = source.replace("\ndef _build_hour_frameworks(", "\n" + validation_helper + "\ndef _build_hour_frameworks(", 1)
-    validation_marker = "    _validate_staged_hour_framework_html(staging_html, hour_frameworks[\\"html_data\\\"], log_fn)"
+    validation_marker = '    _validate_staged_hour_framework_html(staging_html, hour_frameworks["html_data"], log_fn)'
     validation_call = "    _validate_hour_framework_totals(staging_html, service_year_summary)\n" + validation_marker
     if validation_marker in source and "    _validate_hour_framework_totals(staging_html, service_year_summary)\n" not in source:
         source = source.replace(validation_marker, validation_call, 1)
