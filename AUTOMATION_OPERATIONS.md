@@ -23,6 +23,8 @@ Keep at least one additional repository maintainer with access to GitHub Actions
 
 The historical bundle is intentionally versioned. This preserves reproducibility, but it is not self-refreshing. Parser changes, manual decisions, routing data, and source baselines require a deliberate bundle refresh.
 
+The hosted wrapper seeds the runner-local baseline from the checked-out accepted historical publication on every run, so a fresh runner does not require a manually prepared cache. It also applies a narrow compatibility repair for known omissions in older pinned bundles before importing them. These safeguards do not replace deliberate bundle refreshes when the parser, source assumptions, or routing data change.
+
 ## Dependency updates
 
 automation/requirements.lock.txt is the tested hosted environment lock. Update it deliberately, run both publisher workflows, and retain the direct requirements file as the review-oriented dependency list.
