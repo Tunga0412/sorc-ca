@@ -155,6 +155,41 @@ def _patch_html_patcher_rescue_counts(bundle: Path) -> None:
         patch_path.write_text(source, encoding="utf-8")
         print("Patched HTML builder to preserve merged ED episode denominators.")
 
+def _patch_pipeline_rescue_hours_metadata(bundle: Path) -> None:
+    """Expose recovered ED hours to the legacy cross-layer QA pass."""
+    patch_path = bundle / "pipeline.py"
+    if not patch_path.exists():
+        return
+    source = patch_path.read_text(encoding="utf-8")
+    marker = "    qa_report = cross_layer_release_qa.run_qa(new_output_dir, updater_root=Path(__file__).resolve().parent)"
+    replacement = "    rescue_hours_meta = new_output_dir / \"ed_rescue_hours.json\"\n"
+    replacement += "    rescue_hours_meta.write_text(json.dumps({\"total_hours\": round(sum(sum(months.values()) for months in rescued_by_site.values()), 2)}), encoding=\"utf-8\")\n"
+    replacement += marker
+    if marker in source and "ed_rescue_hours.json" not in source:
+        patch_path.write_text(source.replace(marker, replacement, 1), encoding="utf-8")
+        print("Patched pipeline to expose recovered ED hours to release QA.")
+
+def _patch_cross_layer_rescue_hours_qa(bundle: Path) -> None:
+    """Include recovered ED hours in the legacy source-hour comparison."""
+    patch_path = bundle / "cross_layer_release_qa.py"
+    if not patch_path.exists():
+        return
+    source = patch_path.read_text(encoding="utf-8")
+    old_start = "    baseline = updater_root / \"cache\" / \"_last_known_good_baseline.html\"\n\n    checks = []"
+    new_start = "    baseline = updater_root / \"cache\" / \"_last_known_good_baseline.html\"\n    rescue_hours = 0.0\n    rescue_meta = run_dir / \"ed_rescue_hours.json\"\n    if rescue_meta.exists():\n        try:\n            rescue_hours = float((json.loads(rescue_meta.read_text(encoding=\"utf-8\")) or {}).get(\"total_hours\") or 0.0)\n        except (OSError, TypeError, ValueError, json.JSONDecodeError):\n            rescue_hours = 0.0\n\n    checks = []"
+    old_check = "            source_hour_totals[service_id] = metrics.source_hours\n            _add(checks, f\"{service_id}_hours_match_year_summary\", abs(float(service_block[\"all\"][\"hours\"]) - metrics.source_hours) < 0.02, metrics.source_hours, service_block[\"all\"][\"hours\"])"
+    new_check = "            expected_source_hours = metrics.source_hours + (rescue_hours if service_id == \"ed\" else 0.0)\n            source_hour_totals[service_id] = expected_source_hours\n            _add(checks, f\"{service_id}_hours_match_year_summary\", abs(float(service_block[\"all\"][\"hours\"]) - expected_source_hours) < 0.02, expected_source_hours, service_block[\"all\"][\"hours\"])"
+    changed = False
+    if old_start in source and "rescue_hours = 0.0" not in source:
+        source = source.replace(old_start, new_start, 1)
+        changed = True
+    if old_check in source:
+        source = source.replace(old_check, new_check, 1)
+        changed = True
+    if changed:
+        patch_path.write_text(source, encoding="utf-8")
+        print("Patched cross-layer QA to include recovered ED hours.")
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--bundle-dir", type=Path, required=True)
@@ -170,6 +205,8 @@ def main() -> int:
     _ensure_zero_hour_parser(bundle, repo_root)
     _patch_pipeline_release_gate(bundle)
     _patch_html_patcher_rescue_counts(bundle)
+    _patch_pipeline_rescue_hours_metadata(bundle)
+    _patch_cross_layer_rescue_hours_qa(bundle)
     sys.path.insert(0, str(bundle))
     import github_api
     import html_patcher
