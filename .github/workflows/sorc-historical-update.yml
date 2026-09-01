@@ -7,6 +7,7 @@ on:
 
 permissions:
   contents: write
+  issues: write
 
 concurrency:
   group: sorc-publisher
@@ -45,7 +46,102 @@ jobs:
           echo "BUNDLE_DIR=$bundle_dir" >> "$GITHUB_ENV"
 
       - name: Generate and publish accepted historical candidate
+        id: publish
         run: python automation/run_historical_update.py --bundle-dir "$BUNDLE_DIR" --repo-root "$GITHUB_WORKSPACE"
+
+      - name: Open or update failure issue
+        if: failure()
+        continue-on-error: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from urllib.request import Request, urlopen
+
+          token = os.environ["GITHUB_TOKEN"]
+          repo = os.environ["GITHUB_REPOSITORY"]
+          api_root = f"https://api.github.com/repos/{repo}"
+          title = "SORCTracks historical update failure"
+
+          def api(method, path, payload=None):
+              data = json.dumps(payload).encode("utf-8") if payload is not None else None
+              request = Request(
+                  api_root + path,
+                  data=data,
+                  method=method,
+                  headers={
+                      "Accept": "application/vnd.github+json",
+                      "Authorization": f"Bearer {token}",
+                      "Content-Type": "application/json",
+                      "User-Agent": "SORC historical updater/1.0",
+                  },
+              )
+              with urlopen(request, timeout=30) as response:
+                  return json.loads(response.read().decode("utf-8"))
+
+          issues = api("GET", "/issues?state=open&per_page=100")
+          existing = next(
+              (
+                  issue
+                  for issue in issues
+                  if issue.get("title") == title and "pull_request" not in issue
+              ),
+              None,
+          )
+          body = (
+              "The scheduled SORCTracks historical update failed.\n\n"
+              f"Workflow: {os.environ['GITHUB_RUN_URL']}\n\n"
+              "The previous accepted historical publication was retained. "
+              "Review the failed run before changing the published file.\n"
+          )
+          if existing:
+              api("PATCH", f"/issues/{existing['number']}", {"body": body})
+          else:
+              api("POST", "/issues", {"title": title, "body": body})
+          PY
+
+      - name: Close resolved failure issue
+        if: steps.publish.outcome == 'success'
+        continue-on-error: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from urllib.request import Request, urlopen
+
+          token = os.environ["GITHUB_TOKEN"]
+          repo = os.environ["GITHUB_REPOSITORY"]
+          api_root = f"https://api.github.com/repos/{repo}"
+          title = "SORCTracks historical update failure"
+
+          def api(method, path, payload=None):
+              data = json.dumps(payload).encode("utf-8") if payload is not None else None
+              request = Request(
+                  api_root + path,
+                  data=data,
+                  method=method,
+                  headers={
+                      "Accept": "application/vnd.github+json",
+                      "Authorization": f"Bearer {token}",
+                      "Content-Type": "application/json",
+                      "User-Agent": "SORC historical updater/1.0",
+                  },
+              )
+              with urlopen(request, timeout=30) as response:
+                  return json.loads(response.read().decode("utf-8"))
+
+          issues = api("GET", "/issues?state=open&per_page=100")
+          for issue in issues:
+              if issue.get("title") == title and "pull_request" not in issue:
+                  api("PATCH", f"/issues/{issue['number']}", {"state": "closed"})
+          PY
 
       - name: Archive historical QA outputs
         if: always()
