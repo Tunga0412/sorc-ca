@@ -159,6 +159,31 @@ def _patch_html_patcher_rescue_counts(bundle: Path) -> None:
         print("Patched HTML builder to preserve merged ED episode denominators.")
 
 
+def _patch_hour_framework_sidecar_reader(bundle: Path) -> None:
+    """Load recovered ED intervals into the bundle's hour classifier."""
+    patch_path = bundle / "build_ed_hour_categorization_analysis.py"
+    if not patch_path.exists():
+        return
+    source = patch_path.read_text(encoding="utf-8")
+    marker = '        frame = frame[frame["end"] > frame["start"]].copy()\n'
+    if "ed_rescue_intervals.json" in source or marker not in source:
+        return
+    injection = '''        rescue_path = INPUT_DIR / "ed_rescue_intervals.json"
+        if rescue_path.exists():
+            rescue_rows = pd.DataFrame(json.loads(rescue_path.read_text(encoding="utf-8")))
+            rescue_rows["analysis_year"] = pd.to_numeric(rescue_rows["analysis_year"], errors="coerce")
+            rescue_rows = rescue_rows[rescue_rows["analysis_year"].eq(year)].copy()
+            if not rescue_rows.empty:
+                rescue_rows["site"] = rescue_rows["site_best"].map(canonical_site)
+                rescue_rows["start"] = pd.to_datetime(rescue_rows["interval_start_clipped"], format="mixed")
+                rescue_rows["end"] = pd.to_datetime(rescue_rows["interval_end_clipped"], format="mixed")
+                rescue_rows = rescue_rows[rescue_rows["end"] > rescue_rows["start"]].copy()
+                if not rescue_rows.empty:
+                    frame = pd.concat([frame, rescue_rows.reindex(columns=frame.columns)], ignore_index=True)
+'''
+    patch_path.write_text(source.replace(marker, marker + injection, 1), encoding="utf-8")
+    print("Patched hour classifier to consume recovered ED interval sidecar.")
+
 def _patch_pipeline_framework_rescue_inputs(bundle: Path) -> None:
     """Feed recovered ED intervals into the independent hour-framework rebuild."""
     patch_path = bundle / "pipeline.py"
@@ -173,6 +198,7 @@ def _augment_hour_framework_inputs_for_rescues(v84_output_dir, rescue_summary, l
     if not rescue_summary:
         return
     import re as _re
+    import json as _json
     import pandas as _pd
     root = Path(v84_output_dir)
     rows = []
@@ -203,8 +229,10 @@ def _augment_hour_framework_inputs_for_rescues(v84_output_dir, rescue_summary, l
         return
 
     rescue_frame = _pd.DataFrame(rows)
-    added = 0
-    for path in sorted(root.glob("v84_*_ahs_archive_ed_intervals_active.csv")):
+    added = len(rescue_frame)
+    (root / "ed_rescue_intervals.json").write_text(_json.dumps(rows), encoding="utf-8")
+    # The hour-analysis script consumes this sidecar directly, so do not mutate its source CSVs.
+    for path in ():
         match = _re.search(r"v84_(\d{4})_ahs_archive_ed_intervals_active\.csv$", path.name)
         if not match:
             continue
@@ -374,6 +402,7 @@ def main() -> int:
     _patch_pipeline_release_gate(bundle)
     _patch_html_patcher_rescue_counts(bundle)
     _patch_pipeline_rescue_hours_metadata(bundle)
+    _patch_hour_framework_sidecar_reader(bundle)
     _patch_pipeline_framework_rescue_inputs(bundle)
     _patch_cross_layer_rescue_hours_qa(bundle)
     sys.path.insert(0, str(bundle))
