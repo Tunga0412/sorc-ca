@@ -124,6 +124,18 @@ def _ensure_zero_hour_parser(bundle: Path, repo_root: Path) -> None:
     bundled.write_bytes(fallback.read_bytes())
     print(f"Loaded zero_hour_parser fallback into bundle: {bundled}")
 
+def _patch_pipeline_release_gate(bundle: Path) -> None:
+    """Allow notices without explicit hours to remain audit-only."""
+    pipeline_path = bundle / "pipeline.py"
+    if not pipeline_path.exists():
+        return
+    source = pipeline_path.read_text(encoding="utf-8")
+    old = 'if entry.get("status") in {"rescued", "future_interval_not_counted"}:'
+    new = 'if entry.get("status") in {"rescued", "future_interval_not_counted", "no_explicit_hours"}:'
+    if old in source and new not in source:
+        pipeline_path.write_text(source.replace(old, new, 1), encoding="utf-8")
+        print("Patched historical release gate for notices without explicit hours.")
+
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
@@ -138,6 +150,7 @@ def main() -> int:
 
     _repair_bundle_compatibility(bundle)
     _ensure_zero_hour_parser(bundle, repo_root)
+    _patch_pipeline_release_gate(bundle)
     sys.path.insert(0, str(bundle))
     import github_api
     import html_patcher
