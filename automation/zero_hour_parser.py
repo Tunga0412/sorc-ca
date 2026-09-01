@@ -98,9 +98,9 @@ def _parse_date_label(value, default_year):
     """Parse a notice date label into a date."""
     if not isinstance(value, str) or not value.strip():
         return None
-    cleaned = re.sub(r"\\s+", " ", value.strip().replace(",", ""))
+    cleaned = re.sub(r"\s+", " ", value.strip().replace(",", ""))
     match = re.match(
-        rf"^({MONTH_NAMES})\\s+(\\d{{1,2}})(?:\\s+(20\\d{{2}}))?$",
+        rf"^({MONTH_NAMES})\s+(\d{{1,2}})(?:\s+(20\d{{2}}))?$",
         cleaned,
         re.IGNORECASE,
     )
