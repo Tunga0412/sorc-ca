@@ -28,6 +28,30 @@ MONTHS = {
 }
 MONTH_NAMES = "|".join(MONTHS.keys())
 
+# Times written as 24-hour clock values, such as 2000 or 08:00.
+COMPACT_TIME_PATTERN = re.compile(r"\b\d{3,4}(?::\d{2})?\b")
+EXPLICIT_TIME_PATTERN = re.compile(
+    r"\b(?:\d{3,4}(?::\d{2})?|\d{1,2}(?::\d{2})?\s*(?:a\.?m\.?|p\.?m\.?)\b)",
+    re.IGNORECASE,
+)
+WEEKLY_CLOSURE_PATTERN = re.compile(
+    r"(?P<days>(?:Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)"
+    r"(?:\s*,\s*(?:Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday))*)"
+    r"\s+ED\s+will\s+be\s+closed\s+from\s+"
+    r"(?P<start>\d{3,4}(?::\d{2})?)\s+to\s+"
+    r"(?P<end>\d{3,4}(?::\d{2})?)",
+    re.IGNORECASE,
+)
+WEEKDAY_NUMBERS = {
+    "monday": 0,
+    "tuesday": 1,
+    "wednesday": 2,
+    "thursday": 3,
+    "friday": 4,
+    "saturday": 5,
+    "sunday": 6,
+}
+
 # "April 9 (4 pm) - April 10 (8 am)"
 CROSS_DAY_PATTERN = re.compile(
     rf"\b({MONTH_NAMES})\s+(\d{{1,2}})\s*\(\s*(\d{{1,2}})(?::(\d{{2}}))?\s*(a\.?m\.?|p\.?m\.?)\s*\)"
@@ -45,6 +69,80 @@ SAME_DAY_PATTERN = re.compile(
 )
 
 # "April 25 (8 am) - April 27 (8 am)" multi-day with parens - same as cross-day pattern
+
+
+
+def _parse_clock_time(value):
+    """Parse a 24-hour value such as 2000, 0800, or 20:00."""
+    value = str(value).strip()
+    if ":" in value:
+        hour_text, minute_text = value.split(":", 1)
+        hour = int(hour_text)
+        minute = int(minute_text)
+    else:
+        digits = value
+        if len(digits) == 3:
+            hour = int(digits[0])
+            minute = int(digits[1:])
+        elif len(digits) == 4:
+            hour = int(digits[:2])
+            minute = int(digits[2:])
+        else:
+            raise ValueError(f"Unsupported 24-hour time: {value}")
+    if hour > 23 or minute > 59:
+        raise ValueError(f"Invalid 24-hour time: {value}")
+    return hour, minute
+
+
+def _parse_date_label(value, default_year):
+    """Parse a notice date label into a date."""
+    if not isinstance(value, str) or not value.strip():
+        return None
+    cleaned = re.sub(r"\\s+", " ", value.strip().replace(",", ""))
+    match = re.match(
+        rf"^({MONTH_NAMES})\\s+(\\d{{1,2}})(?:\\s+(20\\d{{2}}))?$",
+        cleaned,
+        re.IGNORECASE,
+    )
+    if not match:
+        return None
+    year = int(match.group(3) or default_year)
+    try:
+        return date(year, MONTHS[match.group(1).lower()], int(match.group(2)))
+    except ValueError:
+        return None
+
+
+def parse_weekly_closure_intervals(text, start_date_text, end_date_text, default_year):
+    """Expand an explicitly stated weekly closure schedule into intervals."""
+    if not isinstance(text, str) or not text:
+        return []
+    match = WEEKLY_CLOSURE_PATTERN.search(text)
+    if not match:
+        return []
+    start_date = _parse_date_label(start_date_text, default_year)
+    end_date = _parse_date_label(end_date_text, default_year)
+    if start_date is None or end_date is None or end_date < start_date:
+        return []
+    start_hour, start_minute = _parse_clock_time(match.group("start"))
+    end_hour, end_minute = _parse_clock_time(match.group("end"))
+    weekday_names = re.findall(
+        r"Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday",
+        match.group("days"),
+        re.IGNORECASE,
+    )
+    weekdays = {WEEKDAY_NUMBERS[name.lower()] for name in weekday_names}
+    intervals = []
+    cursor = start_date
+    while cursor <= end_date:
+        if cursor.weekday() in weekdays:
+            start = datetime(cursor.year, cursor.month, cursor.day, start_hour, start_minute)
+            end = datetime(cursor.year, cursor.month, cursor.day, end_hour, end_minute)
+            if end <= start:
+                end += timedelta(days=1)
+            intervals.append((start, end))
+        cursor += timedelta(days=1)
+    return intervals
 
 
 def _to_hour24(hour, minute, ampm):
@@ -213,7 +311,9 @@ def rescue_zero_hour_episodes(zero_hours_df, alias_map, as_of_date=None):
 
         intervals = parse_intervals(text, year)
         if not intervals:
-            entry["status"] = "no_intervals_found"
+            intervals = parse_weekly_closure_intervals(text, start_text, row.get("anticipated_end_date_text"), year)
+        if not intervals:
+            entry["status"] = "no_intervals_found" if EXPLICIT_TIME_PATTERN.search(text) else "no_explicit_hours"
             summary.append(entry)
             continue
 
