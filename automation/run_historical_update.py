@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import ast
 import json
 import os
 import sys
@@ -56,6 +57,49 @@ def _portable_config(bundle: Path, repo_root: Path) -> dict:
     return config
 
 
+def _repair_bundle_compatibility(bundle: Path) -> None:
+    """Repair known omissions in older pinned bundles before importing them."""
+    repaired = []
+    for path in bundle.rglob("*.py"):
+        try:
+            source = path.read_text(encoding="utf-8")
+            tree = ast.parse(source, filename=str(path))
+        except (OSError, SyntaxError):
+            continue
+        imported_names = set()
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Import):
+                imported_names.update(alias.name.split(".")[0] for alias in node.names)
+            elif isinstance(node, ast.ImportFrom) and node.module:
+                imported_names.add(node.module.split(".")[0])
+        if "os" in imported_names:
+            continue
+        if "os." not in source and "os[" not in source and "os(" not in source:
+            continue
+        path.write_text("import os\\n" + source, encoding="utf-8")
+        repaired.append(str(path.relative_to(bundle)))
+    if repaired:
+        print(f"Applied compatibility imports to: {', '.join(repaired)}")
+
+
+def _seed_baseline_from_checkout(repo_root: Path, html_patcher) -> None:
+    """Seed the runner-local baseline from the checked-out known-good publication."""
+    source = repo_root / "sorctracks_tool.html"
+    if not source.exists() or source.stat().st_size < 1000:
+        raise RuntimeError(f"Checked-out historical HTML is missing or unexpectedly small: {source}")
+    try:
+        data = html_patcher.parse_existing_data(source)
+        range_info = html_patcher.compute_data_range_info(data)
+    except Exception as exc:
+        raise RuntimeError(f"Checked-out historical HTML could not be parsed: {exc}") from exc
+    if not range_info.get("latest_ym"):
+        raise RuntimeError("Checked-out historical HTML has no recognized data range")
+    baseline = repo_root / ".historical_cache" / "_last_known_good_baseline.html"
+    baseline.parent.mkdir(parents=True, exist_ok=True)
+    baseline.write_bytes(source.read_bytes())
+    print(f"Seeded historical baseline from checkout: {baseline} ({range_info.get('latest_ym')})")
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--bundle-dir", type=Path, required=True)
@@ -67,6 +111,7 @@ def main() -> int:
     if not (bundle / "config.sanitized.json").exists():
         raise FileNotFoundError(f"Historical bundle is missing config.sanitized.json: {bundle}")
 
+    _repair_bundle_compatibility(bundle)
     sys.path.insert(0, str(bundle))
     import github_api
     import html_patcher
@@ -74,6 +119,7 @@ def main() -> int:
     import pipeline
 
     config = _portable_config(bundle, repo_root)
+    _seed_baseline_from_checkout(repo_root, html_patcher)
     expected_cutoff = pipeline._public_analysis_end(config)
     current_data = html_patcher.parse_existing_data(repo_root / "sorctracks_tool.html")
     current_ym = html_patcher.compute_data_range_info(current_data).get("latest_ym")
