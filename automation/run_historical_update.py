@@ -76,7 +76,7 @@ def _repair_bundle_compatibility(bundle: Path) -> None:
             continue
         if "os." not in source and "os[" not in source and "os(" not in source:
             continue
-        path.write_text("import os\\n" + source, encoding="utf-8")
+        path.write_text("import os\n" + source, encoding="utf-8")
         repaired.append(str(path.relative_to(bundle)))
     if repaired:
         print(f"Applied compatibility imports to: {', '.join(repaired)}")
