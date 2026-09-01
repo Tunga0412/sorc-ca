@@ -137,6 +137,24 @@ def _patch_pipeline_release_gate(bundle: Path) -> None:
         print("Patched historical release gate for notices without explicit hours.")
 
 
+def _patch_html_patcher_rescue_counts(bundle: Path) -> None:
+    """Keep rescued zero-hour rows from inflating already-merged episode denominators."""
+    patch_path = bundle / "html_patcher.py"
+    if not patch_path.exists():
+        return
+    source = patch_path.read_text(encoding="utf-8")
+    old_total = "                total_episodes = int(distinct_episode_count_by_site.get(site_id) or 0) + rescued_eps"
+    new_total = "                total_episodes = int(distinct_episode_count_by_site.get(site_id) or 0)"
+    if old_total in source:
+        source = source.replace(old_total, new_total, 1)
+    old_years = "            for y, n in (rescued_episode_year_by_site.get(site_id) or {}).items():\n                year_breakdown[str(y)] = int(year_breakdown.get(str(y), 0)) + int(n)"
+    new_years = "            if site_id not in distinct_episode_count_by_site_year:\n                for y, n in (rescued_episode_year_by_site.get(site_id) or {}).items():\n                    year_breakdown[str(y)] = int(year_breakdown.get(str(y), 0)) + int(n)"
+    if old_years in source:
+        source = source.replace(old_years, new_years, 1)
+    if source != patch_path.read_text(encoding="utf-8"):
+        patch_path.write_text(source, encoding="utf-8")
+        print("Patched HTML builder to preserve merged ED episode denominators.")
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--bundle-dir", type=Path, required=True)
@@ -151,6 +169,7 @@ def main() -> int:
     _repair_bundle_compatibility(bundle)
     _ensure_zero_hour_parser(bundle, repo_root)
     _patch_pipeline_release_gate(bundle)
+    _patch_html_patcher_rescue_counts(bundle)
     sys.path.insert(0, str(bundle))
     import github_api
     import html_patcher
