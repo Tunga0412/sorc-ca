@@ -191,8 +191,8 @@ def _augment_hour_framework_inputs_for_rescues(v84_output_dir, rescue_summary, l
             rows.append({
                 "analysis_year": year,
                 "site_best": site,
-                "interval_start_clipped": start.isoformat(),
-                "interval_end_clipped": end.isoformat(),
+                "interval_start_clipped": start.strftime("%Y-%m-%d %H:%M:%S"),
+                "interval_end_clipped": end.strftime("%Y-%m-%d %H:%M:%S"),
                 "interval_method": "zero_hour_rescue_explicit_interval",
                 "bed_or_space_reduction_text": "Recovered explicit interval from zero-hour notice.",
                 "schedule_state_episode_key": source_key,
