@@ -181,7 +181,12 @@ def _patch_hour_framework_sidecar_reader(bundle: Path) -> None:
                 if not rescue_rows.empty:
                     frame = pd.concat([frame, rescue_rows.reindex(columns=frame.columns)], ignore_index=True)
 '''
-    patch_path.write_text(source.replace(marker, marker + injection, 1), encoding="utf-8")
+    patched = source.replace(marker, marker + injection, 1)
+    old_raise = '        raise RuntimeError("Classified hour totals do not reconcile to the official ED totals.")'
+    new_raise = '        failed_checks = checks.loc[~checks["passed"]].to_dict("records")\\n        raise RuntimeError("Classified hour totals do not reconcile to the official ED totals: " + json.dumps(failed_checks, default=str))'
+    if old_raise in patched:
+        patched = patched.replace(old_raise, new_raise, 1)
+    patch_path.write_text(patched, encoding="utf-8")
     print("Patched hour classifier to consume recovered ED interval sidecar.")
 
 def _patch_pipeline_framework_rescue_inputs(bundle: Path) -> None:
