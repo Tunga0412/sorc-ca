@@ -149,10 +149,12 @@ jobs:
         with:
           name: sorctracks-historical-run-${{ github.run_number }}
           if-no-files-found: ignore
+          include-hidden-files: true
           retention-days: 30
           path: |
             .historical_cache/**/release_manifest.json
             .historical_cache/**/cross_layer_qa_failures.csv
             .historical_cache/**/cross_layer_qa_warnings.csv
             .historical_cache/**/latest_completed_month_review_*.csv
+            .historical_cache/**/ed_zero_hour_in_window_release_blocking_review.csv
 
