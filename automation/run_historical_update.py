@@ -267,7 +267,7 @@ def _augment_hour_framework_inputs_for_rescues(v84_output_dir, rescue_summary, l
         source = source.replace("\ndef _build_hour_frameworks(", "\n" + helper + "\ndef _build_hour_frameworks(", 1)
     call_marker = "    hour_frameworks = _build_hour_frameworks(v84_output_dir, new_output_dir, public_analysis_end, log_fn)"
     call = "    _augment_hour_framework_inputs_for_rescues(v84_output_dir, rescue_summary, log_fn)\n" + call_marker
-    if call_marker in source and "_augment_hour_framework_inputs_for_rescues(v84_output_dir, rescue_summary, log_fn)" not in source:
+    if call_marker in source and "    _augment_hour_framework_inputs_for_rescues(v84_output_dir, rescue_summary, log_fn)\n" not in source:
         source = source.replace(call_marker, call, 1)
     if source != patch_path.read_text(encoding="utf-8"):
         patch_path.write_text(source, encoding="utf-8")
