@@ -223,7 +223,7 @@ def _augment_hour_framework_inputs_for_rescues(v84_output_dir, rescue_summary, l
         ]
         if additions.empty:
             continue
-        existing = _pd.concat([existing, additions[existing.columns]], ignore_index=True)
+        existing = _pd.concat([existing, additions.reindex(columns=existing.columns)], ignore_index=True)
         existing.to_csv(path, index=False)
         added += len(additions)
 
@@ -269,6 +269,56 @@ def _augment_hour_framework_inputs_for_rescues(v84_output_dir, rescue_summary, l
     call = "    _augment_hour_framework_inputs_for_rescues(v84_output_dir, rescue_summary, log_fn)\n" + call_marker
     if call_marker in source and "    _augment_hour_framework_inputs_for_rescues(v84_output_dir, rescue_summary, log_fn)\n" not in source:
         source = source.replace(call_marker, call, 1)
+    validation_helper_marker = "def _validate_hour_framework_totals("
+    if validation_helper_marker not in source:
+        validation_helper = '''def _validate_hour_framework_totals(staging_html, service_year_summary):
+    """Fail closed when HOUR_FRAMEWORKS diverges from service-layer totals."""
+    text = Path(staging_html).read_text(encoding="utf-8")
+    marker = "const HOUR_FRAMEWORKS = "
+    start = text.find(marker)
+    if start < 0:
+        raise RuntimeError("Missing HOUR_FRAMEWORKS block; staged HTML was not released.")
+    try:
+        actual, _ = json.JSONDecoder().raw_decode(text[start + len(marker):])
+    except json.JSONDecodeError as exc:
+        raise RuntimeError("HOUR_FRAMEWORKS block is invalid; staged HTML was not released.") from exc
+    observed = {
+        str(row.get("service_layer") or "").strip().lower(): float(row.get("total_hours") or 0)
+        for row in (actual.get("time_overall_summary") or [])
+    }
+    expected_map = {
+        "all": "all_analyzed_services",
+        "ed": "ed",
+        "ob": "obstetrics",
+        "acute": "acute care",
+        "surgery": "surgery/or",
+        "other": "other services",
+    }
+    missing = []
+    mismatches = []
+    for service_id, framework_label in expected_map.items():
+        expected_block = (service_year_summary.get(service_id) or {}).get("all") or {}
+        if not expected_block:
+            continue
+        expected = float(expected_block.get("hours") or 0)
+        observed_value = observed.get(framework_label)
+        if observed_value is None:
+            missing.append(framework_label)
+        elif abs(observed_value - expected) >= 0.02:
+            mismatches.append(f"{service_id}: expected {expected:.4f}, observed {observed_value:.4f}")
+    if missing or mismatches:
+        details = []
+        if missing:
+            details.append("missing " + ", ".join(missing))
+        if mismatches:
+            details.append("mismatches " + "; ".join(mismatches))
+        raise RuntimeError("Hour-framework totals do not match SERVICE_YEAR_SUMMARY: " + " | ".join(details))
+'''
+        source = source.replace("\ndef _build_hour_frameworks(", "\n" + validation_helper + "\ndef _build_hour_frameworks(", 1)
+    validation_marker = "    _validate_staged_hour_framework_html(staging_html, hour_frameworks[\\"html_data\\\"], log_fn)"
+    validation_call = "    _validate_hour_framework_totals(staging_html, service_year_summary)\n" + validation_marker
+    if validation_marker in source and "    _validate_hour_framework_totals(staging_html, service_year_summary)\n" not in source:
+        source = source.replace(validation_marker, validation_call, 1)
     if source != patch_path.read_text(encoding="utf-8"):
         patch_path.write_text(source, encoding="utf-8")
         print("Patched hour-framework inputs to include recovered ED intervals.")
