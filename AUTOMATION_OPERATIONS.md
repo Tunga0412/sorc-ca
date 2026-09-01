@@ -7,15 +7,16 @@ The hosted workflows are intended to keep SORCTracks Live and the historical too
 - Live updates run daily from the current AHS public disruption page.
 - Historical updates run monthly on the first day of each month.
 - Public health checks run every six hours.
-- A failed health check opens or updates the GitHub issue titled "SORC automation health check failure". When the public pages recover, the issue is closed automatically.
+- A failed historical publisher opens or updates the GitHub issue titled "SORCTracks historical update failure". A failed public health check opens or updates the GitHub issue titled "SORC automation health check failure". When the relevant checks recover, the issues are closed automatically.
 
 ## If a workflow fails
 
 1. Open the failed workflow run and read the failed step.
 2. Check the health-check failure issue for the latest observed error.
-3. Do not publish a candidate manually unless the source and output have been reviewed.
-4. If AHS changed its page structure, update the parser and run the Live workflow manually before relying on the next schedule.
-5. If the historical input assumptions changed, create a new sanitized historical bundle, publish it as a versioned release asset, and update BUNDLE_URL in .github/workflows/sorc-historical-update.yml.
+3. Confirm that the previous accepted publication remains in place. A failed run does not replace it.
+4. Do not publish a candidate manually unless the source and output have been reviewed.
+5. If AHS changed its page structure, update the parser and run the Live workflow manually before relying on the next schedule.
+6. If the historical input assumptions changed, create a new sanitized historical bundle, publish it as a versioned release asset, and update BUNDLE_URL in .github/workflows/sorc-historical-update.yml.
 
 ## Ownership and recovery
 
