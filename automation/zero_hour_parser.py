@@ -333,6 +333,10 @@ def rescue_zero_hour_episodes(zero_hours_df, alias_map, as_of_date=None):
         entry["rescued_breakdown"] = {k: round(v, 2) for k, v in sorted(buckets.items())}
         entry["status"] = "rescued"
         entry["counted_interval_count"] = len(intervals)
+        entry["rescued_intervals"] = [
+            {"start": start.isoformat(), "end": end.isoformat()}
+            for start, end in intervals
+        ]
 
         if canonical not in rescued:
             rescued[canonical] = {}
