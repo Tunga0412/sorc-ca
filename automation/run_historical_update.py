@@ -76,7 +76,21 @@ def _repair_bundle_compatibility(bundle: Path) -> None:
             continue
         if "os." not in source and "os[" not in source and "os(" not in source:
             continue
-        path.write_text("import os\n" + source, encoding="utf-8")
+        lines = source.splitlines(keepends=True)
+        insert_line = 0
+        for node in tree.body:
+            is_docstring = (
+                isinstance(node, ast.Expr)
+                and isinstance(getattr(node, "value", None), ast.Constant)
+                and isinstance(node.value.value, str)
+            )
+            is_future_import = isinstance(node, ast.ImportFrom) and node.module == "__future__"
+            if is_docstring or is_future_import:
+                insert_line = node.end_lineno or insert_line
+                continue
+            break
+        lines.insert(insert_line, "import os\n")
+        path.write_text("".join(lines), encoding="utf-8")
         repaired.append(str(path.relative_to(bundle)))
     if repaired:
         print(f"Applied compatibility imports to: {', '.join(repaired)}")
