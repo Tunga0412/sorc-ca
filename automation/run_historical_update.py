@@ -266,7 +266,7 @@ def _augment_hour_framework_inputs_for_rescues(v84_output_dir, rescue_summary, l
         if hour_column is not None and "analysis_year" in summary.columns:
             by_year = rescue_frame.assign(hours=( _pd.to_datetime(rescue_frame["interval_end_clipped"]) - _pd.to_datetime(rescue_frame["interval_start_clipped"]) ).dt.total_seconds() / 3600).groupby("analysis_year")["hours"].sum()
             for year, hours in by_year.items():
-                mask = summary["analysis_year"].eq(int(year))
+                mask = _pd.to_numeric(summary["analysis_year"], errors="coerce").eq(int(year))
                 if mask.any():
                     summary.loc[mask, hour_column] = summary.loc[mask, hour_column].astype(float) + float(hours)
             summary.to_csv(year_summary_path, index=False)
@@ -281,7 +281,7 @@ def _augment_hour_framework_inputs_for_rescues(v84_output_dir, rescue_summary, l
             ).dt.total_seconds() / 3600
             by_site_year = rescue_frame.groupby(["analysis_year", "site_best"])["hours"].sum()
             for (year, site), hours in by_site_year.items():
-                mask = panel["analysis_year"].eq(int(year)) & panel["site_best"].astype(str).str.lower().eq(str(site).lower())
+                mask = _pd.to_numeric(panel["analysis_year"], errors="coerce").eq(int(year)) & panel["site_best"].astype(str).str.lower().eq(str(site).lower())
                 if mask.any():
                     panel.loc[mask, "unioned_closure_hours"] = panel.loc[mask, "unioned_closure_hours"].astype(float) + float(hours)
                 else:
