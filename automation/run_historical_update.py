@@ -113,6 +113,17 @@ def _seed_baseline_from_checkout(repo_root: Path, html_patcher) -> None:
     baseline.write_bytes(source.read_bytes())
     print(f"Seeded historical baseline from checkout: {baseline} ({range_info.get('latest_ym')})")
 
+def _ensure_zero_hour_parser(bundle: Path, repo_root: Path) -> None:
+    """Provide the parser omitted from older pinned bundles."""
+    bundled = bundle / "zero_hour_parser.py"
+    if bundled.exists():
+        return
+    fallback = repo_root / "automation" / "zero_hour_parser.py"
+    if not fallback.exists() or fallback.stat().st_size < 1000:
+        raise RuntimeError(f"Missing zero_hour_parser fallback: {fallback}")
+    bundled.write_bytes(fallback.read_bytes())
+    print(f"Loaded zero_hour_parser fallback into bundle: {bundled}")
+
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
@@ -126,6 +137,7 @@ def main() -> int:
         raise FileNotFoundError(f"Historical bundle is missing config.sanitized.json: {bundle}")
 
     _repair_bundle_compatibility(bundle)
+    _ensure_zero_hour_parser(bundle, repo_root)
     sys.path.insert(0, str(bundle))
     import github_api
     import html_patcher
