@@ -7,6 +7,7 @@ on:
 
 permissions:
   contents: read
+  actions: read
   issues: write
 
 jobs:
@@ -20,11 +21,14 @@ jobs:
         env:
           HISTORICAL_URL: https://sorc.ca/sorctracks_tool.html
           LIVE_URL: https://sorc.ca/sorctracks_live.html
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
         run: |
           set -o pipefail
           python - <<'PY' 2>&1 | tee health-check.log
           import datetime as dt
           import json
+          import os
           import sys
           import urllib.request
 
@@ -145,6 +149,46 @@ jobs:
                       failures.append(f"Live page is missing keyless map fallback marker: {marker}")
           except Exception as exc:
               failures.append(f"Live check failed: {exc}")
+
+          try:
+              workflow_token = os.environ.get("GITHUB_TOKEN")
+              repository = os.environ.get("GITHUB_REPOSITORY")
+              if not workflow_token or not repository:
+                  raise ValueError("GitHub Actions token or repository context is unavailable")
+              request = urllib.request.Request(
+                  f"https://api.github.com/repos/{repository}/actions/workflows/sorc-historical-update.yml/runs?per_page=20",
+                  headers={
+                      "Accept": "application/vnd.github+json",
+                      "Authorization": f"Bearer {workflow_token}",
+                      "User-Agent": "SORC public health check/1.0",
+                  },
+              )
+              with urllib.request.urlopen(request, timeout=45) as response:
+                  workflow_runs = json.loads(response.read().decode("utf-8")).get("workflow_runs", [])
+              now = dt.datetime.now(dt.timezone.utc)
+              month_start = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+              current_month_runs = [
+                  run
+                  for run in workflow_runs
+                  if run.get("created_at")
+                  and dt.datetime.fromisoformat(run["created_at"].replace("Z", "+00:00")) >= month_start
+              ]
+              if current_month_runs:
+                  latest_run = max(current_month_runs, key=lambda run: run.get("created_at", ""))
+                  run_url = latest_run.get("html_url", "the workflow run")
+                  run_status = latest_run.get("status")
+                  run_conclusion = latest_run.get("conclusion")
+                  if run_status != "completed":
+                      created_at = dt.datetime.fromisoformat(latest_run["created_at"].replace("Z", "+00:00"))
+                      age_hours = (now - created_at.astimezone(dt.timezone.utc)).total_seconds() / 3600
+                      if age_hours > 6:
+                          failures.append(f"Historical workflow is still {run_status} after {age_hours:.1f} hours: {run_url}")
+                  elif run_conclusion != "success":
+                      failures.append(f"Historical workflow concluded {run_conclusion}: {run_url}")
+              elif now >= month_start + dt.timedelta(hours=12):
+                  failures.append("No SORCTracks historical workflow run has started this month")
+          except Exception as exc:
+              failures.append(f"Historical workflow monitoring failed: {exc}")
 
           if failures:
               print("\n".join(failures), file=sys.stderr)
