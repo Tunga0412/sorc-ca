@@ -116,13 +116,16 @@ def _seed_baseline_from_checkout(repo_root: Path, html_patcher) -> None:
 def _ensure_zero_hour_parser(bundle: Path, repo_root: Path) -> None:
     """Provide the parser omitted from older pinned bundles."""
     bundled = bundle / "zero_hour_parser.py"
+    fallback = repo_root / "automation" / "zero_hour_parser.py"
+    if fallback.exists() and fallback.stat().st_size >= 1000:
+        fallback_bytes = fallback.read_bytes()
+        if not bundled.exists() or bundled.read_bytes() != fallback_bytes:
+            bundled.write_bytes(fallback_bytes)
+            print(f"Loaded current zero_hour_parser fallback into bundle: {bundled}")
+            return
     if bundled.exists():
         return
-    fallback = repo_root / "automation" / "zero_hour_parser.py"
-    if not fallback.exists() or fallback.stat().st_size < 1000:
-        raise RuntimeError(f"Missing zero_hour_parser fallback: {fallback}")
-    bundled.write_bytes(fallback.read_bytes())
-    print(f"Loaded zero_hour_parser fallback into bundle: {bundled}")
+    raise RuntimeError(f"Missing zero_hour_parser fallback: {fallback}")
 
 def _patch_pipeline_release_gate(bundle: Path) -> None:
     """Allow notices without explicit hours to remain audit-only."""
@@ -154,6 +157,121 @@ def _patch_html_patcher_rescue_counts(bundle: Path) -> None:
     if source != patch_path.read_text(encoding="utf-8"):
         patch_path.write_text(source, encoding="utf-8")
         print("Patched HTML builder to preserve merged ED episode denominators.")
+
+
+def _patch_pipeline_framework_rescue_inputs(bundle: Path) -> None:
+    """Feed recovered ED intervals into the independent hour-framework rebuild."""
+    patch_path = bundle / "pipeline.py"
+    if not patch_path.exists():
+        return
+    source = patch_path.read_text(encoding="utf-8")
+    helper_marker = "def _augment_hour_framework_inputs_for_rescues("
+    if helper_marker not in source:
+        helper = '''
+def _augment_hour_framework_inputs_for_rescues(v84_output_dir, rescue_summary, log_fn):
+    """Append recovered zero-hour intervals to the framework's validated inputs."""
+    if not rescue_summary:
+        return
+    import re as _re
+    import pandas as _pd
+    root = Path(v84_output_dir)
+    rows = []
+    for entry_index, entry in enumerate(rescue_summary):
+        if entry.get("status") != "rescued":
+            continue
+        site = str(entry.get("site") or "").strip().lower()
+        intervals = entry.get("rescued_intervals") or []
+        for interval_index, interval in enumerate(intervals):
+            start = _pd.to_datetime(interval.get("start"), errors="coerce")
+            end = _pd.to_datetime(interval.get("end"), errors="coerce")
+            if _pd.isna(start) or _pd.isna(end) or end <= start:
+                continue
+            year = int(start.year)
+            source_key = f"zero_hour_rescue|{site}|{year}|{entry_index}"
+            rows.append({
+                "analysis_year": year,
+                "site_best": site,
+                "interval_start_clipped": start.isoformat(),
+                "interval_end_clipped": end.isoformat(),
+                "interval_method": "zero_hour_rescue_explicit_interval",
+                "bed_or_space_reduction_text": "Recovered explicit interval from zero-hour notice.",
+                "schedule_state_episode_key": source_key,
+                "is_manual_add": False,
+                "manual_add_id": "",
+            })
+    if not rows:
+        return
+
+    rescue_frame = _pd.DataFrame(rows)
+    added = 0
+    for path in sorted(root.glob("v84_*_ahs_archive_ed_intervals_active.csv")):
+        match = _re.search(r"v84_(\d{4})_ahs_archive_ed_intervals_active\.csv$", path.name)
+        if not match:
+            continue
+        year = int(match.group(1))
+        additions = rescue_frame[rescue_frame["analysis_year"].eq(year)].copy()
+        if additions.empty:
+            continue
+        existing = _pd.read_csv(path)
+        for column in additions.columns:
+            if column not in existing.columns:
+                existing[column] = "" if column not in {"analysis_year", "is_manual_add"} else (False if column == "is_manual_add" else year)
+        key_columns = ["site_best", "interval_start_clipped", "interval_end_clipped"]
+        existing_keys = set(map(tuple, existing[key_columns].astype(str).itertuples(index=False, name=None)))
+        additions = additions[
+            ~additions[key_columns].astype(str).apply(tuple, axis=1).isin(existing_keys)
+        ]
+        if additions.empty:
+            continue
+        existing = _pd.concat([existing, additions[existing.columns]], ignore_index=True)
+        existing.to_csv(path, index=False)
+        added += len(additions)
+
+    year_summary_path = root / "v84_ahs_archive_year_summary.csv"
+    if year_summary_path.exists():
+        summary = _pd.read_csv(year_summary_path)
+        hour_column = next(
+            (column for column in ("all_method_unioned_closure_hours", "unioned_ed_disruption_hours")
+             if column in summary.columns),
+            None,
+        )
+        if hour_column is not None and "analysis_year" in summary.columns:
+            by_year = rescue_frame.assign(hours=( _pd.to_datetime(rescue_frame["interval_end_clipped"]) - _pd.to_datetime(rescue_frame["interval_start_clipped"]) ).dt.total_seconds() / 3600).groupby("analysis_year")["hours"].sum()
+            for year, hours in by_year.items():
+                mask = summary["analysis_year"].eq(int(year))
+                if mask.any():
+                    summary.loc[mask, hour_column] = summary.loc[mask, hour_column].astype(float) + float(hours)
+            summary.to_csv(year_summary_path, index=False)
+
+    site_year_path = root / "v84_ahs_archive_site_year_panel.csv"
+    if site_year_path.exists():
+        panel = _pd.read_csv(site_year_path)
+        if {"analysis_year", "site_best", "unioned_closure_hours"}.issubset(panel.columns):
+            rescue_frame["hours"] = (
+                _pd.to_datetime(rescue_frame["interval_end_clipped"])
+                - _pd.to_datetime(rescue_frame["interval_start_clipped"])
+            ).dt.total_seconds() / 3600
+            by_site_year = rescue_frame.groupby(["analysis_year", "site_best"])["hours"].sum()
+            for (year, site), hours in by_site_year.items():
+                mask = panel["analysis_year"].eq(int(year)) & panel["site_best"].astype(str).str.lower().eq(str(site).lower())
+                if mask.any():
+                    panel.loc[mask, "unioned_closure_hours"] = panel.loc[mask, "unioned_closure_hours"].astype(float) + float(hours)
+                else:
+                    new_row = {column: "" for column in panel.columns}
+                    new_row.update({"analysis_year": int(year), "site_best": site, "unioned_closure_hours": float(hours)})
+                    panel = _pd.concat([panel, _pd.DataFrame([new_row])], ignore_index=True)
+            panel.to_csv(site_year_path, index=False)
+
+    log_fn(f"  hour-framework inputs: added {added} recovered ED interval(s) and reconciled official ED totals.")
+'''
+        source = source.replace("\ndef _build_hour_frameworks(", "\n" + helper + "\ndef _build_hour_frameworks(", 1)
+    call_marker = "    hour_frameworks = _build_hour_frameworks(v84_output_dir, new_output_dir, public_analysis_end, log_fn)"
+    call = "    _augment_hour_framework_inputs_for_rescues(v84_output_dir, rescue_summary, log_fn)\n" + call_marker
+    if call_marker in source and "_augment_hour_framework_inputs_for_rescues(v84_output_dir, rescue_summary, log_fn)" not in source:
+        source = source.replace(call_marker, call, 1)
+    if source != patch_path.read_text(encoding="utf-8"):
+        patch_path.write_text(source, encoding="utf-8")
+        print("Patched hour-framework inputs to include recovered ED intervals.")
 
 def _patch_pipeline_rescue_hours_metadata(bundle: Path) -> None:
     """Expose recovered ED hours to the legacy cross-layer QA pass."""
@@ -206,6 +324,7 @@ def main() -> int:
     _patch_pipeline_release_gate(bundle)
     _patch_html_patcher_rescue_counts(bundle)
     _patch_pipeline_rescue_hours_metadata(bundle)
+    _patch_pipeline_framework_rescue_inputs(bundle)
     _patch_cross_layer_rescue_hours_qa(bundle)
     sys.path.insert(0, str(bundle))
     import github_api
