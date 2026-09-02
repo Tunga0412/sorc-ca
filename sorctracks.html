@@ -481,7 +481,7 @@
   "@context": "https://schema.org",
   "@type": "Dataset",
   "name": "SORCTracks: Alberta Health Service Disruption Dataset",
-  "description": "A public-record reconstruction of temporary health service disruptions across Alberta, derived from publicly archived Alberta Health Services postings. Covers all analyzed service layers (Emergency Department, Obstetrics, Acute Care, Surgery/Operative Capability, and Other Services) from August 2021 through July 2026.",
+  "description": "A public-record reconstruction of temporary health service disruptions across Alberta, derived from publicly archived Alberta Health Services postings. Covers all analyzed service layers (Emergency Department, Obstetrics, Acute Care, Surgery/Operative Capability, and Other Services) from August 2021 through August 2026.",
   "creator": {
     "@type": "Organization",
     "name": "Systematic Outcomes Research Collaborative",
@@ -489,7 +489,7 @@
   },
   "url": "https://sorc.ca/sorctracks.html",
   "license": "https://creativecommons.org/licenses/by/4.0/",
-  "temporalCoverage": "2021-08-01/2026-07-31",
+  "temporalCoverage": "2021-08-01/2026-08-31",
   "spatialCoverage": {
     "@type": "Place",
     "name": "Alberta, Canada"
@@ -544,14 +544,12 @@
         <colgroup>
           <col style="width: 90px;">
           <col style="width: 110px;">
-          <col style="width: 115px;">
           <col>
         </colgroup>
         <thead>
           <tr>
             <th>Version</th>
             <th>Released</th>
-            <th>Data through</th>
             <th>Notes</th>
           </tr>
         </thead>
@@ -559,55 +557,46 @@
           <tr>
             <td>Version 1.4</td>
             <td>Aug 9, 2026</td>
-            <td>Jul 31, 2026</td>
             <td>SORCTracks Live added. Displays currently active AHS service disruption postings, updated daily</td>
           </tr>
           <tr class="changelog-history" style="display:none;">
             <td>Version 1.3</td>
             <td>Aug 2, 2026</td>
-            <td>Jul 31, 2026</td>
             <td>July data refresh. Updated timing structure and time-of-week summaries, nearest-site data, and service-directory validation</td>
           </tr>
           <tr class="changelog-history" style="display:none;">
             <td>Version 1.2</td>
             <td>Jul 24, 2026</td>
-            <td>Jun 30, 2026</td>
             <td>Hour Breakdown panel added (timing structure and time of week). Site statistics updated to focus on disruption hours</td>
           </tr>
           <tr class="changelog-history" style="display:none;">
             <td>Version 1.1</td>
             <td>Jun 22, 2026</td>
-            <td>May 31, 2026</td>
             <td>UI overhaul. Nearby Sites feature added to visualize distance to nearest centre with selected service available</td>
           </tr>
           <tr class="changelog-history" style="display:none;">
             <td>Version 1.0</td>
             <td>Jun 16, 2026</td>
-            <td>May 31, 2026</td>
             <td>Official public launch. All analyzed service layers included</td>
           </tr>
           <tr class="changelog-history" style="display:none;">
             <td>Beta v0.4</td>
             <td>Jun 12, 2026</td>
-            <td>May 31, 2026</td>
             <td>Acute Care and Surgery/Operative Capability layers added</td>
           </tr>
           <tr class="changelog-history" style="display:none;">
             <td>Beta v0.3</td>
-            <td>May 31, 2026</td>
             <td>May 31, 2026</td>
             <td>Obstetrics layer added. Full manual review of all data through May 31, 2026. Parser upgrades for improved capture accuracy</td>
           </tr>
           <tr class="changelog-history" style="display:none;">
             <td>Beta v0.2</td>
             <td>May 18, 2026</td>
-            <td>May 12, 2026</td>
             <td>Parser upgrade. Corrected undercapture of 2026 Barrhead Healthcare Centre and 2023 Coronation Community Health Centre hours</td>
           </tr>
           <tr class="changelog-history" style="display:none;">
             <td>Beta v0.1</td>
             <td>May 10, 2026</td>
-            <td>Mar 31, 2026</td>
             <td>Initial public release. Emergency Department layer</td>
           </tr>
         </tbody>
@@ -621,7 +610,7 @@
       <div class="caution-box-title">Interpretive Cautions</div>
       <ul>
         <li>This is a public-record reconstruction, not an operational gold standard. Some disruptions may not have been publicly posted, archived consistently, or timed defensibly from available source material.</li>
-        <li>SORCTracks Archive reflects archived public postings through the data-through date listed above and is updated monthly on the first of the month. SORCTracks Live is refreshed daily from current AHS public postings. Neither product is an Alberta Health Services product or affiliated with AHS.</li>
+        <li>SORCTracks Archive reflects archived public postings and is updated monthly on the first of the month. SORCTracks Live is refreshed daily from current AHS public postings. Neither product is an Alberta Health Services product or affiliated with AHS.</li>
         <li>SORCTracks Live uses the current Mountain Time to display which disruptions are active at this moment, distinguishing them from disruptions that are scheduled or recurrent but not currently active. Disruptions posted or removed between daily scrapes will not be reflected until the next update.</li>
         <li>Estimated hours reflect publicly reconstructable disruption intervals. Unioned hours represent unique site-level disruption time after overlapping intervals are merged, and should not be treated as a precise operational measure.</li>
         <li>When all analyzed services are selected, hours are summed across service layers. Overlaps between different services at the same site are not removed in this view. The total reflects service-hours, not a union across service types.</li>
@@ -793,3 +782,4 @@
 
 </body>
 </html>
+
