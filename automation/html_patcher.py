@@ -5026,13 +5026,8 @@ def _apply_release_hardening(text):
         "'<button type=\"button\" class=\"site-detail-view-btn' + (dataActive ? ' active' : '') + '\" data-site-detail-view=\"data\" aria-pressed=\"' + dataActive + '\">Data</button>' +\n"
         "    '<button type=\"button\" class=\"site-detail-view-btn' + (nearbyActive ? ' active' : '') + '\" data-site-detail-view=\"nearby\" aria-pressed=\"' + nearbyActive + '\">Nearby Sites</button>' +",
     )
-    text = re.sub(
-        r'(<div class="total-stat" id="summaryStats"[^>]*>).*?(</div>)',
-        r'\1<strong>982,657</strong> service-hours <strong>80</strong> sites affected\2',
-        text,
-        count=1,
-        flags=re.DOTALL,
-    )
+    # Leave the numeric fallback to update_static_summary(). A fixed release
+    # value can silently disagree with the embedded YEAR_SUMMARY data.
     text = re.sub(
         r'(\s*<h1 class="sr-only">SORCTracks Alberta service disruption data</h1>){2,}',
         '\n    <h1 class="sr-only">SORCTracks Alberta service disruption data</h1>',
@@ -5172,10 +5167,9 @@ def write_new_html(current_html_path, new_data, output_path, update_date,
     if old_data_range and new_data_range:
         text = update_date_strings(text, old_data_range, new_data_range)
 
-    # Preserve a validated headline during classification-only rebuilds. A true
-    # data update still refreshes it because the annual summary changes.
-    existing_year_summary = parse_existing_year_summary(current_html_path) if preserve_existing_runtime else None
-    if year_summary is not None and (not preserve_existing_runtime or existing_year_summary != year_summary):
+    # Keep the no-JavaScript fallback synchronized with the embedded summary,
+    # including classification-only rebuilds.
+    if year_summary is not None:
         static_hour_label = "disruption hours"
         text = update_static_summary(text, year_summary, hour_label=static_hour_label)
 
