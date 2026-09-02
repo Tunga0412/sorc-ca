@@ -8,7 +8,8 @@ on:
       - "automation/requirements.lock.txt"
       - ".github/workflows/sorc-shortages-update.yml"
   schedule:
-    - cron: "17 4 1 * *"
+    # 03:17 MDT / 02:17 MST on the first Alberta calendar day of each month.
+    - cron: "17 9 1 * *"
   workflow_dispatch:
 
 permissions:
@@ -105,3 +106,4 @@ jobs:
             fi
           done
           exit 1
+
