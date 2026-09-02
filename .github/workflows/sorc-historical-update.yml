@@ -2,7 +2,8 @@ name: SORCTracks historical update
 
 on:
   schedule:
-    - cron: "47 3 1 * *"
+    # 02:47 MDT / 01:47 MST on the first Alberta calendar day of each month.
+    - cron: "47 8 1 * *"
   workflow_dispatch:
     inputs:
       force:
@@ -184,3 +185,4 @@ jobs:
             .historical_cache/**/cross_layer_qa_warnings.csv
             .historical_cache/**/latest_completed_month_review_*.csv
             .historical_cache/**/ed_zero_hour_in_window_release_blocking_review.csv
+
