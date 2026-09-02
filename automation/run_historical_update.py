@@ -116,286 +116,21 @@ def _seed_baseline_from_checkout(repo_root: Path, html_patcher) -> None:
 def _ensure_zero_hour_parser(bundle: Path, repo_root: Path) -> None:
     """Provide the parser omitted from older pinned bundles."""
     bundled = bundle / "zero_hour_parser.py"
-    fallback = repo_root / "automation" / "zero_hour_parser.py"
-    if fallback.exists() and fallback.stat().st_size >= 1000:
-        fallback_bytes = fallback.read_bytes()
-        if not bundled.exists() or bundled.read_bytes() != fallback_bytes:
-            bundled.write_bytes(fallback_bytes)
-            print(f"Loaded current zero_hour_parser fallback into bundle: {bundled}")
-            return
     if bundled.exists():
         return
-    raise RuntimeError(f"Missing zero_hour_parser fallback: {fallback}")
+    fallback = repo_root / "automation" / "zero_hour_parser.py"
+    if not fallback.exists() or fallback.stat().st_size < 1000:
+        raise RuntimeError(f"Missing zero_hour_parser fallback: {fallback}")
+    bundled.write_bytes(fallback.read_bytes())
+    print(f"Loaded zero_hour_parser fallback into bundle: {bundled}")
 
-def _patch_pipeline_release_gate(bundle: Path) -> None:
-    """Allow notices without explicit hours to remain audit-only."""
-    pipeline_path = bundle / "pipeline.py"
-    if not pipeline_path.exists():
-        return
-    source = pipeline_path.read_text(encoding="utf-8")
-    old = 'if entry.get("status") in {"rescued", "future_interval_not_counted"}:'
-    new = 'if entry.get("status") in {"rescued", "future_interval_not_counted", "no_explicit_hours"}:'
-    if old in source and new not in source:
-        pipeline_path.write_text(source.replace(old, new, 1), encoding="utf-8")
-        print("Patched historical release gate for notices without explicit hours.")
-
-
-def _patch_html_patcher_rescue_counts(bundle: Path) -> None:
-    """Keep rescued zero-hour rows from inflating already-merged episode denominators."""
-    patch_path = bundle / "html_patcher.py"
-    if not patch_path.exists():
-        return
-    source = patch_path.read_text(encoding="utf-8")
-    old_total = "                total_episodes = int(distinct_episode_count_by_site.get(site_id) or 0) + rescued_eps"
-    new_total = "                total_episodes = int(distinct_episode_count_by_site.get(site_id) or 0)"
-    if old_total in source:
-        source = source.replace(old_total, new_total, 1)
-    old_years = "            for y, n in (rescued_episode_year_by_site.get(site_id) or {}).items():\n                year_breakdown[str(y)] = int(year_breakdown.get(str(y), 0)) + int(n)"
-    new_years = "            if site_id not in distinct_episode_count_by_site_year:\n                for y, n in (rescued_episode_year_by_site.get(site_id) or {}).items():\n                    year_breakdown[str(y)] = int(year_breakdown.get(str(y), 0)) + int(n)"
-    if old_years in source:
-        source = source.replace(old_years, new_years, 1)
-    if source != patch_path.read_text(encoding="utf-8"):
-        patch_path.write_text(source, encoding="utf-8")
-        print("Patched HTML builder to preserve merged ED episode denominators.")
-
-
-def _patch_hour_framework_sidecar_reader(bundle: Path) -> None:
-    """Load recovered ED intervals into the bundle's hour classifier."""
-    patch_path = bundle / "build_ed_hour_categorization_analysis.py"
-    if not patch_path.exists():
-        return
-    source = patch_path.read_text(encoding="utf-8")
-    marker = '        frame = frame[frame["end"] > frame["start"]].copy()\n'
-    if "ed_rescue_intervals.json" in source or marker not in source:
-        return
-    injection = '''        rescue_path = INPUT_DIR / "ed_rescue_intervals.json"
-        if rescue_path.exists():
-            rescue_rows = pd.DataFrame(json.loads(rescue_path.read_text(encoding="utf-8")))
-            rescue_rows["analysis_year"] = pd.to_numeric(rescue_rows["analysis_year"], errors="coerce")
-            rescue_rows = rescue_rows[rescue_rows["analysis_year"].eq(year)].copy()
-            if not rescue_rows.empty:
-                rescue_rows["site"] = rescue_rows["site_best"].map(canonical_site)
-                rescue_rows["start"] = pd.to_datetime(rescue_rows["interval_start_clipped"], format="mixed")
-                rescue_rows["end"] = pd.to_datetime(rescue_rows["interval_end_clipped"], format="mixed")
-                rescue_rows = rescue_rows[rescue_rows["end"] > rescue_rows["start"]].copy()
-                if not rescue_rows.empty:
-                    frame = pd.concat([frame, rescue_rows.reindex(columns=frame.columns)], ignore_index=True)
-'''
-    patched = source.replace(marker, marker + injection, 1)
-    old_raise = '        raise RuntimeError("Classified hour totals do not reconcile to the official ED totals.")'
-    new_raise = '        failed_checks = checks.loc[~checks["passed"]].to_dict("records")\n        raise RuntimeError("Classified hour totals do not reconcile to the official ED totals: " + json.dumps(failed_checks, default=str))'
-    if old_raise in patched:
-        patched = patched.replace(old_raise, new_raise, 1)
-    patch_path.write_text(patched, encoding="utf-8")
-    print("Patched hour classifier to consume recovered ED interval sidecar.")
-
-def _patch_pipeline_framework_rescue_inputs(bundle: Path) -> None:
-    """Feed recovered ED intervals into the independent hour-framework rebuild."""
-    patch_path = bundle / "pipeline.py"
-    if not patch_path.exists():
-        return
-    source = patch_path.read_text(encoding="utf-8")
-    helper_marker = "def _augment_hour_framework_inputs_for_rescues("
-    if helper_marker not in source:
-        helper = '''
-def _augment_hour_framework_inputs_for_rescues(v84_output_dir, rescue_summary, log_fn):
-    """Append recovered zero-hour intervals to the framework's validated inputs."""
-    if not rescue_summary:
-        return
-    import re as _re
-    import json as _json
-    import pandas as _pd
-    root = Path(v84_output_dir)
-    rows = []
-    for entry_index, entry in enumerate(rescue_summary):
-        if entry.get("status") != "rescued":
-            continue
-        site = str(entry.get("site") or "").strip().lower()
-        intervals = entry.get("rescued_intervals") or []
-        for interval_index, interval in enumerate(intervals):
-            start = _pd.to_datetime(interval.get("start"), errors="coerce")
-            end = _pd.to_datetime(interval.get("end"), errors="coerce")
-            if _pd.isna(start) or _pd.isna(end) or end <= start:
-                continue
-            year = int(start.year)
-            source_key = f"zero_hour_rescue|{site}|{year}|{entry_index}"
-            rows.append({
-                "analysis_year": year,
-                "site_best": site,
-                "interval_start_clipped": start.strftime("%Y-%m-%d %H:%M:%S"),
-                "interval_end_clipped": end.strftime("%Y-%m-%d %H:%M:%S"),
-                "interval_method": "zero_hour_rescue_explicit_interval",
-                "bed_or_space_reduction_text": "Recovered explicit interval from zero-hour notice.",
-                "schedule_state_episode_key": source_key,
-                "is_manual_add": False,
-                "manual_add_id": "",
-            })
-    if not rows:
-        return
-
-    rescue_frame = _pd.DataFrame(rows)
-    added = len(rescue_frame)
-    (root / "ed_rescue_intervals.json").write_text(_json.dumps(rows), encoding="utf-8")
-    # The hour-analysis script consumes this sidecar directly, so do not mutate its source CSVs.
-    for path in ():
-        match = _re.search(r"v84_(\d{4})_ahs_archive_ed_intervals_active\.csv$", path.name)
-        if not match:
-            continue
-        year = int(match.group(1))
-        additions = rescue_frame[rescue_frame["analysis_year"].eq(year)].copy()
-        if additions.empty:
-            continue
-        existing = _pd.read_csv(path)
-        for column in additions.columns:
-            if column not in existing.columns:
-                existing[column] = "" if column not in {"analysis_year", "is_manual_add"} else (False if column == "is_manual_add" else year)
-        key_columns = ["site_best", "interval_start_clipped", "interval_end_clipped"]
-        existing_keys = set(map(tuple, existing[key_columns].astype(str).itertuples(index=False, name=None)))
-        additions = additions[
-            ~additions[key_columns].astype(str).apply(tuple, axis=1).isin(existing_keys)
-        ]
-        if additions.empty:
-            continue
-        existing = _pd.concat([existing, additions.reindex(columns=existing.columns)], ignore_index=True)
-        existing.to_csv(path, index=False)
-        added += len(additions)
-
-    year_summary_path = root / "v84_ahs_archive_year_summary.csv"
-    if year_summary_path.exists():
-        summary = _pd.read_csv(year_summary_path)
-        hour_column = next(
-            (column for column in ("all_method_unioned_closure_hours", "unioned_ed_disruption_hours")
-             if column in summary.columns),
-            None,
-        )
-        if hour_column is not None and "analysis_year" in summary.columns:
-            by_year = rescue_frame.assign(hours=( _pd.to_datetime(rescue_frame["interval_end_clipped"]) - _pd.to_datetime(rescue_frame["interval_start_clipped"]) ).dt.total_seconds() / 3600).groupby("analysis_year")["hours"].sum()
-            for year, hours in by_year.items():
-                mask = _pd.to_numeric(summary["analysis_year"], errors="coerce").eq(int(year))
-                if mask.any():
-                    summary.loc[mask, hour_column] = summary.loc[mask, hour_column].astype(float) + float(hours)
-            summary.to_csv(year_summary_path, index=False)
-
-    site_year_path = root / "v84_ahs_archive_site_year_panel.csv"
-    if site_year_path.exists():
-        panel = _pd.read_csv(site_year_path)
-        if {"analysis_year", "site_best", "unioned_closure_hours"}.issubset(panel.columns):
-            rescue_frame["hours"] = (
-                _pd.to_datetime(rescue_frame["interval_end_clipped"])
-                - _pd.to_datetime(rescue_frame["interval_start_clipped"])
-            ).dt.total_seconds() / 3600
-            by_site_year = rescue_frame.groupby(["analysis_year", "site_best"])["hours"].sum()
-            for (year, site), hours in by_site_year.items():
-                mask = _pd.to_numeric(panel["analysis_year"], errors="coerce").eq(int(year)) & panel["site_best"].astype(str).str.lower().eq(str(site).lower())
-                if mask.any():
-                    panel.loc[mask, "unioned_closure_hours"] = panel.loc[mask, "unioned_closure_hours"].astype(float) + float(hours)
-                else:
-                    new_row = {column: "" for column in panel.columns}
-                    new_row.update({"analysis_year": int(year), "site_best": site, "unioned_closure_hours": float(hours)})
-                    panel = _pd.concat([panel, _pd.DataFrame([new_row])], ignore_index=True)
-            panel.to_csv(site_year_path, index=False)
-
-    log_fn(f"  hour-framework inputs: added {added} recovered ED interval(s) and reconciled official ED totals.")
-'''
-        source = source.replace("\ndef _build_hour_frameworks(", "\n" + helper + "\ndef _build_hour_frameworks(", 1)
-    call_marker = "    hour_frameworks = _build_hour_frameworks(v84_output_dir, new_output_dir, public_analysis_end, log_fn)"
-    call = "    _augment_hour_framework_inputs_for_rescues(v84_output_dir, rescue_summary, log_fn)\n" + call_marker
-    if call_marker in source and "    _augment_hour_framework_inputs_for_rescues(v84_output_dir, rescue_summary, log_fn)\n" not in source:
-        source = source.replace(call_marker, call, 1)
-    validation_helper_marker = "def _validate_hour_framework_totals("
-    if validation_helper_marker not in source:
-        validation_helper = '''def _validate_hour_framework_totals(staging_html, service_year_summary):
-    """Fail closed when HOUR_FRAMEWORKS diverges from service-layer totals."""
-    text = Path(staging_html).read_text(encoding="utf-8")
-    marker = "const HOUR_FRAMEWORKS = "
-    start = text.find(marker)
-    if start < 0:
-        raise RuntimeError("Missing HOUR_FRAMEWORKS block; staged HTML was not released.")
-    try:
-        actual, _ = json.JSONDecoder().raw_decode(text[start + len(marker):])
-    except json.JSONDecodeError as exc:
-        raise RuntimeError("HOUR_FRAMEWORKS block is invalid; staged HTML was not released.") from exc
-    observed = {
-        str(row.get("service_layer") or "").strip().lower(): float(row.get("total_hours") or 0)
-        for row in (actual.get("time_overall_summary") or [])
-    }
-    expected_map = {
-        "all": "all_analyzed_services",
-        "ed": "ed",
-        "ob": "obstetrics",
-        "acute": "acute care",
-        "surgery": "surgery/or",
-        "other": "other services",
-    }
-    missing = []
-    mismatches = []
-    for service_id, framework_label in expected_map.items():
-        expected_block = (service_year_summary.get(service_id) or {}).get("all") or {}
-        if not expected_block:
-            continue
-        expected = float(expected_block.get("hours") or 0)
-        observed_value = observed.get(framework_label)
-        if observed_value is None:
-            missing.append(framework_label)
-        elif abs(observed_value - expected) >= 0.02:
-            mismatches.append(f"{service_id}: expected {expected:.4f}, observed {observed_value:.4f}")
-    if missing or mismatches:
-        details = []
-        if missing:
-            details.append("missing " + ", ".join(missing))
-        if mismatches:
-            details.append("mismatches " + "; ".join(mismatches))
-        raise RuntimeError("Hour-framework totals do not match SERVICE_YEAR_SUMMARY: " + " | ".join(details))
-'''
-        source = source.replace("\ndef _build_hour_frameworks(", "\n" + validation_helper + "\ndef _build_hour_frameworks(", 1)
-    validation_marker = '    _validate_staged_hour_framework_html(staging_html, hour_frameworks["html_data"], log_fn)'
-    validation_call = "    _validate_hour_framework_totals(staging_html, service_year_summary)\n" + validation_marker
-    if validation_marker in source and "    _validate_hour_framework_totals(staging_html, service_year_summary)\n" not in source:
-        source = source.replace(validation_marker, validation_call, 1)
-    if source != patch_path.read_text(encoding="utf-8"):
-        patch_path.write_text(source, encoding="utf-8")
-        print("Patched hour-framework inputs to include recovered ED intervals.")
-
-def _patch_pipeline_rescue_hours_metadata(bundle: Path) -> None:
-    """Expose recovered ED hours to the legacy cross-layer QA pass."""
-    patch_path = bundle / "pipeline.py"
-    if not patch_path.exists():
-        return
-    source = patch_path.read_text(encoding="utf-8")
-    marker = "    qa_report = cross_layer_release_qa.run_qa(new_output_dir, updater_root=Path(__file__).resolve().parent)"
-    replacement = "    rescue_hours_meta = new_output_dir / \"ed_rescue_hours.json\"\n"
-    replacement += "    rescue_hours_meta.write_text(json.dumps({\"total_hours\": round(sum(sum(months.values()) for months in rescued_by_site.values()), 2)}), encoding=\"utf-8\")\n"
-    replacement += marker
-    if marker in source and "ed_rescue_hours.json" not in source:
-        patch_path.write_text(source.replace(marker, replacement, 1), encoding="utf-8")
-        print("Patched pipeline to expose recovered ED hours to release QA.")
-
-def _patch_cross_layer_rescue_hours_qa(bundle: Path) -> None:
-    """Include recovered ED hours in the legacy source-hour comparison."""
-    patch_path = bundle / "cross_layer_release_qa.py"
-    if not patch_path.exists():
-        return
-    source = patch_path.read_text(encoding="utf-8")
-    old_start = "    baseline = updater_root / \"cache\" / \"_last_known_good_baseline.html\"\n\n    checks = []"
-    new_start = "    baseline = updater_root / \"cache\" / \"_last_known_good_baseline.html\"\n    rescue_hours = 0.0\n    rescue_meta = run_dir / \"ed_rescue_hours.json\"\n    if rescue_meta.exists():\n        try:\n            rescue_hours = float((json.loads(rescue_meta.read_text(encoding=\"utf-8\")) or {}).get(\"total_hours\") or 0.0)\n        except (OSError, TypeError, ValueError, json.JSONDecodeError):\n            rescue_hours = 0.0\n\n    checks = []"
-    old_check = "            source_hour_totals[service_id] = metrics.source_hours\n            _add(checks, f\"{service_id}_hours_match_year_summary\", abs(float(service_block[\"all\"][\"hours\"]) - metrics.source_hours) < 0.02, metrics.source_hours, service_block[\"all\"][\"hours\"])"
-    new_check = "            expected_source_hours = metrics.source_hours + (rescue_hours if service_id == \"ed\" else 0.0)\n            source_hour_totals[service_id] = expected_source_hours\n            _add(checks, f\"{service_id}_hours_match_year_summary\", abs(float(service_block[\"all\"][\"hours\"]) - expected_source_hours) < 0.02, expected_source_hours, service_block[\"all\"][\"hours\"])"
-    changed = False
-    if old_start in source and "rescue_hours = 0.0" not in source:
-        source = source.replace(old_start, new_start, 1)
-        changed = True
-    if old_check in source:
-        source = source.replace(old_check, new_check, 1)
-        changed = True
-    if changed:
-        patch_path.write_text(source, encoding="utf-8")
-        print("Patched cross-layer QA to include recovered ED hours.")
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--bundle-dir", type=Path, required=True)
     parser.add_argument("--repo-root", type=Path, default=Path.cwd())
     parser.add_argument("--force", action="store_true", help="Publish even when the historical cutoff is current")
+    parser.add_argument("--dry-run", action="store_true", help="Build and validate without publishing to GitHub")
     args = parser.parse_args()
     bundle = args.bundle_dir.resolve()
     repo_root = args.repo_root.resolve()
@@ -404,12 +139,6 @@ def main() -> int:
 
     _repair_bundle_compatibility(bundle)
     _ensure_zero_hour_parser(bundle, repo_root)
-    _patch_pipeline_release_gate(bundle)
-    _patch_html_patcher_rescue_counts(bundle)
-    _patch_pipeline_rescue_hours_metadata(bundle)
-    _patch_hour_framework_sidecar_reader(bundle)
-    _patch_pipeline_framework_rescue_inputs(bundle)
-    _patch_cross_layer_rescue_hours_qa(bundle)
     sys.path.insert(0, str(bundle))
     import github_api
     import html_patcher
@@ -435,6 +164,13 @@ def main() -> int:
     historical_toggle.ensure_toggle(staged)
     if not staged.exists() or staged.stat().st_size < 1000:
         raise RuntimeError("Historical candidate is missing or unexpectedly small")
+    if args.dry_run:
+        print(json.dumps({
+            "status": "dry_run_success",
+            "public_analysis_end": result["report"].get("public_analysis_end"),
+            "staging_html": str(staged),
+        }, indent=2))
+        return 0
     response = github_api.put_file(
         owner=config["github_owner"],
         repo=config["github_repo"],
