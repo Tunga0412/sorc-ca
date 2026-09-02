@@ -11,7 +11,6 @@ on:
       - "automation/requirements.txt"
       - "automation/requirements.lock.txt"
       - ".github/workflows/sorc-live-update.yml"
-      - "sorctracks_tool.html"
   schedule:
     - cron: "31 2 * * *"
   workflow_dispatch:
@@ -130,3 +129,4 @@ jobs:
           else:
               raise SystemExit("Deployed Live page did not pass the keyless-provider check")
           PY
+
