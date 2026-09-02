@@ -4,6 +4,9 @@ from __future__ import annotations
 
 import argparse
 import ast
+import shutil
+import tempfile
+import zipfile
 import json
 import os
 import sys
@@ -125,12 +128,74 @@ def _ensure_zero_hour_parser(bundle: Path, repo_root: Path) -> None:
     print(f"Loaded zero_hour_parser fallback into bundle: {bundled}")
 
 
+
+def _write_refreshed_bundle(
+    bundle: Path,
+    new_output_dir: Path,
+    output_path: Path,
+    public_analysis_end: str | None,
+) -> Path:
+    """Package the validated run output as the next portable input baseline."""
+    bundle = bundle.resolve()
+    new_output_dir = new_output_dir.resolve()
+    output_path = output_path.resolve()
+    refreshed_baseline = new_output_dir / "v84_output"
+    required = refreshed_baseline / "v84_ahs_archive_all_years_raw_preappend_for_cached_rerun.csv"
+    if not required.exists():
+        raise RuntimeError(
+            "Validated Historical run is missing the refreshed ED baseline: "
+            f"{required}"
+        )
+
+    temp_root = Path(tempfile.mkdtemp(prefix="sorc_historical_bundle_refresh_"))
+    temp_bundle = temp_root / "bundle"
+    temp_zip = output_path.with_name(output_path.name + ".tmp")
+    try:
+        shutil.copytree(bundle, temp_bundle)
+        baseline = temp_bundle / "ahs_all_years_outputs_v84_explicit_preappend_postappend"
+        if baseline.exists():
+            shutil.rmtree(baseline)
+        shutil.copytree(refreshed_baseline, baseline)
+
+        config_path = temp_bundle / "config.sanitized.json"
+        config = json.loads(config_path.read_text(encoding="utf-8"))
+        config["last_published_public_analysis_end"] = public_analysis_end
+        config["baseline_refresh_source"] = "validated Historical updater run"
+        config_path.write_text(
+            json.dumps(config, indent=2, sort_keys=True) + "\n",
+            encoding="utf-8",
+        )
+
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        if temp_zip.exists():
+            temp_zip.unlink()
+        with zipfile.ZipFile(
+            temp_zip,
+            "w",
+            compression=zipfile.ZIP_DEFLATED,
+            compresslevel=6,
+        ) as archive:
+            for path in sorted(temp_bundle.rglob("*")):
+                if path.is_file():
+                    archive.write(path, path.relative_to(temp_bundle).as_posix())
+        temp_zip.replace(output_path)
+    finally:
+        shutil.rmtree(temp_root, ignore_errors=True)
+
+    print(
+        "Refreshed Historical baseline bundle: "
+        f"{output_path} ({output_path.stat().st_size:,} bytes)"
+    )
+    return output_path
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--bundle-dir", type=Path, required=True)
     parser.add_argument("--repo-root", type=Path, default=Path.cwd())
     parser.add_argument("--force", action="store_true", help="Publish even when the historical cutoff is current")
     parser.add_argument("--dry-run", action="store_true", help="Build and validate without publishing to GitHub")
+    parser.add_argument("--refreshed-bundle-path", type=Path, help="Write the refreshed portable input bundle to this path after validation")
     args = parser.parse_args()
     bundle = args.bundle_dir.resolve()
     repo_root = args.repo_root.resolve()
@@ -171,6 +236,15 @@ def main() -> int:
             "staging_html": str(staged),
         }, indent=2))
         return 0
+    refreshed_bundle = None
+    if args.refreshed_bundle_path:
+        refreshed_bundle = _write_refreshed_bundle(
+            bundle=bundle,
+            new_output_dir=Path(result["report"]["new_output_dir"]),
+            output_path=args.refreshed_bundle_path,
+            public_analysis_end=result["report"].get("public_analysis_end"),
+        )
+
     response = github_api.put_file(
         owner=config["github_owner"],
         repo=config["github_repo"],
@@ -186,6 +260,7 @@ def main() -> int:
         "public_analysis_end": result["report"].get("public_analysis_end"),
         "commit": response.get("commit", {}).get("sha"),
         "staging_html": str(staged),
+        "refreshed_bundle": str(refreshed_bundle) if refreshed_bundle else None,
     }, indent=2))
     return 0
 
