@@ -25,7 +25,8 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  BUNDLE_URL: https://github.com/Tunga0412/sorc-ca/releases/download/historical-bundle-2026-08-26/sorctracks_historical_bundle_20260901_patched.zip
+  BUNDLE_URL: https://github.com/Tunga0412/sorc-ca/releases/download/historical-bundle-2026-08-26/sorctracks_historical_bundle_latest.zip
+  HISTORICAL_RELEASE_TAG: historical-bundle-2026-08-26
 
 jobs:
   update-historical:
@@ -58,7 +59,19 @@ jobs:
 
       - name: Generate and publish accepted historical candidate
         id: publish
-        run: python automation/run_historical_update.py --bundle-dir "$BUNDLE_DIR" --repo-root "$GITHUB_WORKSPACE" ${{ inputs.force == true && '--force' || '' }} ${{ inputs.dry_run == true && '--dry-run' || '' }}
+        run: python automation/run_historical_update.py --bundle-dir "$BUNDLE_DIR" --repo-root "$GITHUB_WORKSPACE" --refreshed-bundle-path "$GITHUB_WORKSPACE/.historical_bundle_latest.zip" ${{ inputs.force == true && '--force' || '' }} ${{ inputs.dry_run == true && '--dry-run' || '' }}
+
+      - name: Upload refreshed Historical baseline bundle
+        if: ${{ success() && inputs.dry_run != true }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          HISTORICAL_RELEASE_TAG: historical-bundle-2026-08-26
+        run: |
+          test -s .historical_bundle_latest.zip
+          gh release upload "$HISTORICAL_RELEASE_TAG" .historical_bundle_latest.zip \
+            --repo "$GH_REPO" \
+            --clobber
 
       - name: Open or update failure issue
         if: failure()
