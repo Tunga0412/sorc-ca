@@ -10,6 +10,11 @@ on:
         required: false
         default: false
         type: boolean
+      dry_run:
+        description: "Build and validate without publishing to GitHub"
+        required: false
+        default: false
+        type: boolean
 
 permissions:
   contents: write
@@ -53,7 +58,7 @@ jobs:
 
       - name: Generate and publish accepted historical candidate
         id: publish
-        run: python automation/run_historical_update.py --bundle-dir "$BUNDLE_DIR" --repo-root "$GITHUB_WORKSPACE" ${{ inputs.force == true && '--force' || '' }}
+        run: python automation/run_historical_update.py --bundle-dir "$BUNDLE_DIR" --repo-root "$GITHUB_WORKSPACE" ${{ inputs.force == true && '--force' || '' }} ${{ inputs.dry_run == true && '--dry-run' || '' }}
 
       - name: Open or update failure issue
         if: failure()
