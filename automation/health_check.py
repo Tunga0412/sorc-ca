@@ -10,6 +10,7 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+import time
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -40,6 +41,8 @@ LIVE_TILE_HARDENING_MARKERS = (
     "backupTiles",
     "tileerror",
 )
+FETCH_ATTEMPTS = 4
+RETRYABLE_HTTP_STATUS_CODES = {408, 425, 429, 500, 502, 503, 504}
 
 
 def _now_utc() -> datetime:
@@ -58,13 +61,29 @@ def _read_page(target: str) -> tuple[str, int | None]:
         path = Path(target)
         if path.exists():
             return path.read_text(encoding="utf-8"), None
-    response = requests.get(
-        target,
-        timeout=(15, 45),
-        headers={"User-Agent": "SORCTracks health monitor/1.0"},
-    )
-    response.raise_for_status()
-    return response.text, response.status_code
+    last_error: Exception | None = None
+    for attempt in range(FETCH_ATTEMPTS):
+        try:
+            response = requests.get(
+                target,
+                timeout=(15, 45),
+                headers={"User-Agent": "SORCTracks health monitor/1.0"},
+            )
+            if response.status_code in RETRYABLE_HTTP_STATUS_CODES:
+                if attempt == FETCH_ATTEMPTS - 1:
+                    response.raise_for_status()
+                last_error = requests.HTTPError(
+                    f"HTTP {response.status_code} from {target}"
+                )
+            else:
+                response.raise_for_status()
+                return response.text, response.status_code
+        except requests.RequestException as exc:
+            last_error = exc
+        if attempt == FETCH_ATTEMPTS - 1:
+            raise last_error
+        time.sleep(min(2 ** attempt, 8))
+    raise last_error
 
 
 def _constant(html: str, name: str):
