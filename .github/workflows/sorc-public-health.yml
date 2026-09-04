@@ -29,7 +29,10 @@ jobs:
           import datetime as dt
           import json
           import os
+          import socket
           import sys
+          import time
+          import urllib.error
           import urllib.request
 
           HISTORICAL_URL = "https://sorc.ca/sorctracks_tool.html"
@@ -38,15 +41,35 @@ jobs:
           SHORTAGES_DATA_URL = "https://sorc.ca/data/consolidated.js"
           MAX_LIVE_AGE_HOURS = 48
           MAX_SHORTAGES_AGE_DAYS = 45
+          FETCH_ATTEMPTS = 4
+          RETRYABLE_HTTP_CODES = {408, 425, 429, 500, 502, 503, 504}
           failures = []
 
           def fetch(url):
-              request = urllib.request.Request(
-                  url,
-                  headers={"User-Agent": "SORC public health check/1.0"},
-              )
-              with urllib.request.urlopen(request, timeout=45) as response:
-                  return response.status, response.read().decode("utf-8")
+              last_error = None
+              for attempt in range(FETCH_ATTEMPTS):
+                  request = urllib.request.Request(
+                      url,
+                      headers={"User-Agent": "SORC public health check/1.0"},
+                  )
+                  try:
+                      with urllib.request.urlopen(request, timeout=45) as response:
+                          return response.status, response.read().decode("utf-8")
+                  except urllib.error.HTTPError as exc:
+                      last_error = exc
+                      retryable = exc.code in RETRYABLE_HTTP_CODES
+                  except (urllib.error.URLError, ConnectionError, TimeoutError, socket.timeout) as exc:
+                      last_error = exc
+                      retryable = True
+                  if not retryable or attempt == FETCH_ATTEMPTS - 1:
+                      raise last_error
+                  delay = min(2 ** attempt, 8)
+                  print(
+                      f"Transient fetch failure for {url} ({last_error}); retrying in {delay}s",
+                      file=sys.stderr,
+                  )
+                  time.sleep(delay)
+              raise last_error
 
           def constant(html, name):
               marker = f"const {name} = "
@@ -191,7 +214,8 @@ jobs:
               failures.append(f"Historical workflow monitoring failed: {exc}")
 
           if failures:
-              print("\n".join(failures), file=sys.stderr)
+              print("
+".join(failures), file=sys.stderr)
               raise SystemExit(1)
           print("SORC public health check passed")
           PY
@@ -242,10 +266,17 @@ jobs:
           )
           log = Path("health-check.log").read_text(encoding="utf-8", errors="replace")[-6000:]
           body = (
-              "The scheduled SORC public health check failed.\n\n"
-              f"Workflow: {os.environ['GITHUB_RUN_URL']}\n\n"
-              "Latest output:\n\n"
-              f"{log}\n"
+              "The scheduled SORC public health check failed.
+
+"
+              f"Workflow: {os.environ['GITHUB_RUN_URL']}
+
+"
+              "Latest output:
+
+"
+              f"{log}
+"
           )
           if existing:
               api("PATCH", f"/issues/{existing['number']}", {"body": body})
