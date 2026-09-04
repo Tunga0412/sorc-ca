@@ -214,8 +214,7 @@ jobs:
               failures.append(f"Historical workflow monitoring failed: {exc}")
 
           if failures:
-              print("
-".join(failures), file=sys.stderr)
+              print("\n".join(failures), file=sys.stderr)
               raise SystemExit(1)
           print("SORC public health check passed")
           PY
@@ -266,17 +265,10 @@ jobs:
           )
           log = Path("health-check.log").read_text(encoding="utf-8", errors="replace")[-6000:]
           body = (
-              "The scheduled SORC public health check failed.
-
-"
-              f"Workflow: {os.environ['GITHUB_RUN_URL']}
-
-"
-              "Latest output:
-
-"
-              f"{log}
-"
+              "The scheduled SORC public health check failed.\n\n"
+              f"Workflow: {os.environ['GITHUB_RUN_URL']}\n\n"
+              "Latest output:\n\n"
+              f"{log}\n"
           )
           if existing:
               api("PATCH", f"/issues/{existing['number']}", {"body": body})
