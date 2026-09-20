@@ -6,7 +6,7 @@ This folder contains the deployable SORC webpages and the separately maintained 
 
 - `index.html` - research and publications landing page
 - `about.html` - SORC members and approach
-- `projects.html` - ongoing projects
+- `projects.html` - completed and ongoing projects
 - `jip.html` - Junior Investigator Program
 - `standards.html` - authorship and collaboration standards
 - `sorctracks.html` - SORCTracks hosting page
@@ -33,4 +33,3 @@ The hosting pages load the tools through relative iframe paths. Keep the tool fi
 The hosted Live workflow generates a candidate from the current AHS public page, runs the Live parser and health checks, and commits the result only after validation. The Shortages workflow uses the documented Health Product Shortages Canada API, with the account email and password stored as the GitHub Actions secrets `SORCSHORTAGES_API_EMAIL` and `SORCSHORTAGES_API_PASSWORD`. The independent public health workflow checks SORCTracks and SORCShortages every six hours for missing data, stale outputs, fixture data, and known map errors.
 
 The local updater remains the fallback for historical SORCTracks releases until the historical source corpus and baseline files are moved into durable hosted storage.
-
