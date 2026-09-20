@@ -171,7 +171,10 @@
     .badge-sorc       { background: var(--navy); color: white; }
     .badge-inprogress { background: #2a1a2a; color: #d5a8d0; }
     .badge-submitted  { background: #2a2a1a; color: #d5d0a8; }
-    .badge-accepted, .badge-presented { background: #0a2a12; color: #a8d5b2; }
+    .badge-accepted  { background: #0a2a12; color: #a8d5b2; }
+    .badge-presented,
+    .badge-published,
+    .badge-tool      { background: #1a2535; color: #a8c8e8; }
     .badge-collab     { background: var(--blue); color: white; }
 
     .project-title {
@@ -182,6 +185,13 @@
       line-height: 1.4;
       margin-bottom: 0.4rem;
     }
+
+    .project-title a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .project-title a:hover { color: var(--blue); }
 
     .project-authors {
       font-size: 0.82rem;
@@ -451,6 +461,38 @@
     <div class="subsection-title">Completed Projects</div>
 
     <div class="project-list">
+
+      <div class="subsection-title" style="margin-top: 0.5rem;">Published and launched works</div>
+
+      <div class="project-card" id="sorctracks-work">
+        <div class="project-meta">
+          <span class="badge badge-sorc">SORC</span>
+          <span class="badge badge-tool">Tool Launched</span>
+        </div>
+        <div class="project-title"><a href="sorctracks.html">SORCTracks: A Visualization of Temporary Health Service Disruptions Across Alberta</a></div>
+        <div class="project-authors"><strong>Tung A</strong></div>
+        <div class="project-status">Visualization Tool. Systematic Outcomes Research Collaborative. Version 1.4. 2026.</div>
+      </div>
+
+      <div class="project-card" id="sorcshortages-work">
+        <div class="project-meta">
+          <span class="badge badge-sorc">SORC</span>
+          <span class="badge badge-tool">Tool Launched</span>
+        </div>
+        <div class="project-title"><a href="sorcshortages.html">SORCShortages: A View of Canadian Drug Shortage and Discontinuation Reports</a></div>
+        <div class="project-authors"><strong>Tung A</strong></div>
+        <div class="project-status">Visualization Tool. Systematic Outcomes Research Collaborative. Version 1.0. 2026.</div>
+      </div>
+
+      <div class="project-card" id="debiasing-review">
+        <div class="project-meta">
+          <span class="badge badge-sorc">SORC</span>
+          <span class="badge badge-published">Published</span>
+        </div>
+        <div class="project-title"><a href="https://doi.org/10.33137/utmj.v100i1.38937" target="_blank" rel="noopener">Debiasing and Educational Interventions in Medical Diagnosis: A Systematic Review</a></div>
+        <div class="project-authors"><strong>Tung A</strong>, <strong>Melchiorre M</strong>.</div>
+        <div class="project-status">Systematic Review. University of Toronto Medical Journal. 2023; 100(1).</div>
+      </div>
 
       <!-- AAV-TMA -->
       <!-- Battery Prevention -->
