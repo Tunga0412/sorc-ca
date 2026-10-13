@@ -79,6 +79,12 @@ jobs:
               decoder = json.JSONDecoder()
               packed_marker = "const SORC_PACKED_EXPORT = "
               if packed_marker in html:
+                  initialized = html.find("const SORC_PACKED_DATA = ")
+                  names = ("DATA", "HOUR_FRAMEWORKS", "YEAR_SUMMARY", "SERVICE_YEAR_SUMMARY", "SERVICE_LAYER_META")
+                  for key in names:
+                      consumer = html.find(f'const {key} = SORC_PACKED_DATA["{key}"]')
+                      if initialized < 0 or consumer < initialized:
+                          raise ValueError("packed public data consumer precedes initialization")
                   import base64
                   import gzip
                   import hashlib
