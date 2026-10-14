@@ -558,7 +558,7 @@
       <button class="filter-btn" data-filter="all">All</button>
       <button class="filter-btn active" data-filter="sorc">SORC</button>
       <button class="filter-btn" data-filter="member">Select Member Works</button>
-      <button class="filter-btn" data-filter="published">Published</button>
+      <button class="filter-btn" data-filter="published">Published &amp; Presented</button>
       <button class="filter-btn" data-filter="inprogress">Ongoing &amp; Under Review</button>
     </div>
 
@@ -633,12 +633,11 @@
         <div class="pub-year">2026</div>
       </div>
 
-      <!-- ── SORC Ongoing and Under Review ───────────────────────── -->
-      <div class="pub-item" data-affil="sorc" data-status="submitted">
+      <div class="pub-item" data-affil="sorc" data-status="presented">
         <div>
           <div class="pub-meta">
             <span class="badge badge-sorc">SORC</span>
-            <span class="badge badge-accepted">Accepted</span>
+            <span class="badge badge-presented">Presented</span>
           </div>
           <div class="pub-title">
             <a href="projects.html#battery-prevention">
@@ -651,6 +650,7 @@
         <div class="pub-year">2026</div>
       </div>
 
+      <!-- ── SORC Ongoing and Under Review ───────────────────────── -->
       <div class="pub-item" data-affil="sorc" data-status="submitted">
         <div>
           <div class="pub-meta">
@@ -892,7 +892,7 @@
           f === 'all'        ? true :
           f === 'sorc'       ? affil  === 'sorc' :
           f === 'member'     ? affil  === 'member' :
-          f === 'published'  ? status === 'published' :
+          f === 'published'  ? (status === 'published' || status === 'presented') :
           f === 'inprogress' ? (status === 'inprogress' || status === 'submitted') :
           false;
         item.style.display = show ? 'grid' : 'none';
