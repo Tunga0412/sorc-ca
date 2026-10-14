@@ -374,7 +374,7 @@
     <h1 class="page-title">Methods</h1>
     <div class="hero-rule"></div>
     <p class="page-intro">SORCTracks is a public-record reconstruction. For interpretive caveats that apply before consulting these methods, see the <a href="sorctracks.html" class="inline-link">SORCTracks page</a>.</p>
-    <p class="page-intro" style="margin-top: 1rem;">This page is a web-facing summary of the methods common across SORCTracks service layers. These methods reflect procedures in use as of Version 1.4 (Aug 9, 2026).</p>
+    <p class="page-intro" style="margin-top: 1rem;">This page is a web-facing summary of the methods common across SORCTracks service layers. These methods reflect procedures in use as of Version 1.5 (Oct 14, 2026).</p>
   </div>
 
   <div class="section">
@@ -391,80 +391,44 @@
         </div>
       </div>
 
-      <!-- Definitions -->
       <div class="method-section">
         <div class="method-heading">Definitions</div>
         <div class="method-body">
-          <div class="def-list">
-            <div class="def-row">
-              <div class="def-term">Raw record / event</div>
-              <div class="def-desc">A source-specific archive entry before deduplication.</div>
-            </div>
-            <div class="def-row">
-              <div class="def-term">Merged disruption</div>
-              <div class="def-desc">A deduplicated service disruption record, produced after repeated postings referring to the same underlying disruption are collapsed into a single record.</div>
-            </div>
-            <div class="def-row">
-              <div class="def-term">Disruption interval</div>
-              <div class="def-desc">The reconstructed start-to-end period during which service was unavailable or reduced, according to the public wording of the source record.</div>
-            </div>
-            <div class="def-row">
-              <div class="def-term">Unioned hours</div>
-              <div class="def-desc">Unique site-level disruption hours after overlapping intervals are merged within each site and year. This measure avoids double-counting when multiple disruptions overlap at the same site.</div>
-            </div>
-            <div class="def-row">
-              <div class="def-term">Manual fixed interval</div>
-              <div class="def-desc">A manually curated interval added when a disruption was clearly documented in the public source material but was not captured in usable form by either archive scrape. Manual additions are subject to overlap merging and contribute to unioned hours only where they add time not already captured by other sources.</div>
-            </div>
-          </div>
+          <p>A raw record is a source-specific posted assertion. Repeated assertions are reconciled while distinct service components and amendments retain their provenance.</p>
+          <p>A disruption interval is a source-supported period of posted unavailability or restriction. Unioned hours measure elapsed time after overlap is removed within each facility, service group, and reporting period. Totals across groups are service-hours.</p>
+          <p>A documented correction interval has a recorded source, eligibility decision, and timing rationale. It is subject to the same overlap merging and contributes only time not already supported.</p>
         </div>
       </div>
 
-      <!-- Inclusion and Exclusion Criteria -->
       <div class="method-section">
         <div class="method-heading">Inclusion and Exclusion Criteria</div>
         <div class="method-body">
-          <div class="criteria-block">
-            <div class="criteria-label">Included</div>
-            <ul class="criteria-list">
-              <li>Records referring to temporary service disruptions of the relevant service type during the study window.</li>
-            </ul>
-          </div>
-          <div class="criteria-block" style="margin-top: 1rem;">
-            <div class="criteria-label">Excluded</div>
-            <ul class="criteria-list">
-              <li>Service disruptions not relevant to the layer under analysis.</li>
-              <li>Bed or capacity reduction notices not describing a service disruption of the relevant type.</li>
-              <li>Events outside the study window.</li>
-              <li>Reopen-only notices without a defensible start time.</li>
-            </ul>
-          </div>
+          <p>The ED layer includes full ED closure or unavailable onsite physician coverage. Partial ED treatment-space loss alone is excluded. Non-ED layers include posted service, physician, operative-capability, admissions, and partial-capacity restrictions during the reporting window.</p>
+          <p>Non-ED hours are elapsed facility/service-group time under restriction, not lost bed-hours or complete hospital-closure time. General shortage wording, conditional risk without a supported restriction, unrelated service loss, and events outside the reporting window do not establish counted hours.</p>
+          <p>Unresolved scope, years, timing, or facility identity remain flagged; they are not assigned invented hours.</p>
         </div>
       </div>
 
-      <!-- Interval Reconstruction -->
       <div class="method-section">
         <div class="method-heading">Interval Reconstruction</div>
         <div class="method-body">
-          <p>Intervals were reconstructed from public wording using rule-based parsing. Explicit start and end times were retained directly from the source text.</p>
-          <p>Recurring overnight, weekend, or reduced-hours schedules were converted into intervals when the wording supported a defensible interpretation. Records with incomplete or ambiguous timing were retained for review but not converted into disruption hours unless supported by another source or a manually documented fixed interval.</p>
+          <p>Intervals are reconstructed from the relevant source component. Printed dates and clocks retain their roles; forecast end dates are distinguished from reported restoration. A date-only boundary uses local 00:00 as an analytical convention, not a verified clinical clock. Intervals include their start and exclude their end.</p>
+          <p>Recurring restrictions are expanded only when their own wording and bounded affirmative source support establish the pattern. Ordinary opening hours alone do not establish disruption hours. Date-only weekday patterns use calendar-day bounds; an explicit first-onset clock does not shift every later recurrence.</p>
         </div>
       </div>
 
-      <!-- Duplicate Handling -->
       <div class="method-section">
-        <div class="method-heading">Duplicate Handling</div>
+        <div class="method-heading">Overlap and Amendments</div>
         <div class="method-body">
-          <p>Repeated records from snapshot pages were deduplicated into merged disruption records using site, timing, service, and text fields. Notice-derived records were reconciled against the snapshot-derived corpus to identify duplicates, overlaps, and distinct disruptions not captured in the snapshot stream.</p>
-          <p>Overlapping intervals were merged before calculating site-year burden.</p>
+          <p>Repeated snapshot assertions and notice records are reconciled by facility, service component, wording, and calendar support. Later records replace earlier support only when they document an amendment of the same component. Different component durations can coexist.</p>
+          <p>Overlapping intervals are unioned within each facility and service group before calculating reporting-period totals.</p>
         </div>
       </div>
 
-      <!-- Manual Recoveries -->
       <div class="method-section">
-        <div class="method-heading">Manual Recoveries</div>
+        <div class="method-heading">Documented Corrections</div>
         <div class="method-body">
-          <p>Manual fixed intervals were added when a disruption was clearly documented in the public source material but was not captured in usable form by either archive scrape. These additions were logged and retained as auditable fixed intervals in the dataset.</p>
+          <p>Source-linked corrections are retained with the source, interpretation, and affected component or calendar. The corrected reconstruction is checked for overlap and arithmetic consistency. Software checks do not establish independent human validation.</p>
         </div>
       </div>
 
@@ -477,15 +441,14 @@
         </div>
       </div>
 
-      <!-- Hour Breakdown -->
       <div class="method-section">
         <div class="method-heading">Hour Breakdown</div>
         <div class="method-body">
-          <p>SORCTracks includes an hour breakdown panel that distributes unioned disruption hours across two independently selectable frameworks: timing structure and time of week. Breakdowns are applied to final unioned intervals and reconcile exactly to the service-layer total hours for the selected site and year.</p>
-          <p><strong>Timing structure</strong> classifies each disruption's hours into one of three mutually exclusive categories. Scheduled hours are source-evidence based: the classification is assigned when source wording explicitly supports a recurring posted timing pattern. Sustained hours are assigned after final interval unioning to uninterrupted disruption spans of at least seven days. Intermittent hours are the remaining hours that are neither Scheduled nor Sustained. The tool displays all three categories directly.</p>
-          <p><strong>Time of week</strong> distributes hours across four windows using local Alberta time. Daytime covers weekdays 07:00–17:00, evening covers weekdays 17:00–22:00, weekend or holiday covers weekends and Alberta statutory holidays 07:00–22:00, and night covers 22:00–07:00 every day. The statutory holiday classification uses Alberta statutory general holidays, not the broader observed paid-holiday calendar. Hours spanning daylight-saving transitions are calculated using nominal local civil-clock arithmetic with no correction applied at the clock change.</p>
-          <p>When all analyzed services are selected, hours are summed across service layers. Overlaps between different service layers at the same site are not deduplicated in this view, so the total reflects service-hours rather than unioned hours across services.</p>
-          <p>Where a selected subtype has recorded disruption hours, the tool applies the same hour-breakdown logic to that subtype view.</p>
+          <p>Timing structure and time-of-week partitions reconcile to the selected facility, service, and reporting-period total. The same logic applies to supported subtype views.</p>
+          <p><strong>Timing structure</strong> is classified from the complete support for each source component before reporting-window clipping and cross-source union. Explicit recurring restrictions have recurring timing; uninterrupted support of at least seven local calendar days is sustained; other supported periods have no recurring timing identified. Incomplete or conflicting classifications remain unclassified. Overlap is counted once without treating one source as clinically authoritative.</p>
+          <p><strong>Time of week</strong> uses Alberta local dates and clocks: weekday daytime 07:00–17:00, weekday evening 17:00–22:00, weekend or statutory holiday 07:00–22:00, and every night 22:00–07:00. Holidays use Alberta Employment Standards general holidays; optional holidays and public-service substitute days are excluded. Canada Day uses July 2 when July 1 falls on Sunday.</p>
+          <p>Disruption hours use integer elapsed seconds in UTC, retaining the actual duration across daylight-saving transitions. Calendar comparison denominators use the stated local civil-clock windows.</p>
+          <p>When all analyzed services are selected, hours are summed across service groups. Overlap between different groups at the same facility is retained, so the result is service-hours.</p>
         </div>
       </div>
 
@@ -494,10 +457,10 @@
         <div class="method-heading">Known Limitations</div>
         <div class="method-body">
           <p>SORCTracks is a public-record reconstruction rather than an operational gold standard. Public wording is inconsistent across notices, site names are not always standardized, and some real disruptions cannot be timed defensibly from available source material.</p>
-          <p>Open-ended disruptions may accumulate hours as the observed source window expands. A disruption with no posted end date will accrue additional hours in each successive data release until a resolution is captured or the disruption is manually closed. This means site-year totals for the most recent period in any given release should be treated as provisional, and cross-version comparisons should account for the publication date and coverage period of each release.</p>
-          <p>Some disruptions may not have been publicly posted at all, or may have been posted but not archived in a form captured by the reconstruction process. SORCTracks therefore represents a lower bound on total disruption burden rather than a complete inventory.</p>
+          <p>Open-ended restrictions are bounded by accepted affirmative source support rather than carried forward indefinitely from a missing end date. A dated continuing assertion can support an interval interior without establishing eventual restoration; later unsupported time remains unknown. Comparisons across releases should account for their coverage periods and versioned interpretation rules.</p>
+          <p>Some disruptions may not have been posted, retained, or reconstructed. Some supported programme, regional, or unresolved facility records cannot be assigned to the map. The tool presents a known, reconstructable subset; provincial completeness and the direction of difference from actual clinical downtime are not established.</p>
           <p>Disruption reasons are categorized from the verbatim text of source postings and reflect the stated reason as posted. They may not capture the underlying or proximate cause in all cases.</p>
-          <p>The deposit includes documentation sufficient to inspect the analytic logic and verify selected outputs against the public source material. Full independent reproduction of all outputs would require reimplementation of the described procedures or scoped access to additional pipeline artifacts. Source code is not publicly distributed. Researchers seeking to validate specific records or coordinate on independent re-implementation are invited to contact <a href="mailto:info@sorc.ca" class="inline-link">info@sorc.ca</a>.</p>
+          <p>The public tool includes documentation and selected automation code for inspecting analytic logic and checking selected outputs against public source material. The full historical runtime and retained source evidence are not distributed with the public tool; independent reproduction would require reimplementation or scoped access to additional pipeline artifacts. Researchers seeking to validate specific records or coordinate on independent re-implementation are invited to contact <a href="mailto:info@sorc.ca" class="inline-link">info@sorc.ca</a>.</p>
         </div>
       </div>
 

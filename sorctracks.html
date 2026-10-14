@@ -490,7 +490,7 @@
   },
   "url": "https://sorc.ca/sorctracks.html",
   "license": "https://creativecommons.org/licenses/by/4.0/",
-  "temporalCoverage": "2021-08-01/2026-08-31",
+  "temporalCoverage": "2021-08-01/2026-09-30",
   "spatialCoverage": {
     "@type": "Place",
     "name": "Alberta, Canada"
@@ -536,7 +536,7 @@
     <div class="hero-rule"></div>
     <p class="page-intro">SORC is primarily led by students in the University of Alberta MD Program and has a strong interest in Alberta's ongoing health service access challenges. This interest has led SORC to develop projects that make fragmented public health system data more accessible, interpretable, and useful for communities, clinicians, researchers, and policymakers.</p>
     <p class="page-intro" style="margin-top: 1rem;">SORCTracks Archive is an independent public-data visualization tool that reconstructs publicly archived Alberta Health Services temporary service disruption postings into an interactive, searchable map. Users can explore where, when, and how often temporary service disruptions have been publicly posted across Alberta.</p>
-    <p class="page-intro" style="margin-top: 1rem;">The historical tool covers all analyzed service layers (Emergency Department, Obstetrics, Acute Care, Surgery/Operative Capability, and Other Services) and includes a searchable reference layer of AHS locations. Version 1.4 adds SORCTracks Live, a separate daily-refreshed display of current AHS public postings that uses current Mountain Time to distinguish notices active now from scheduled or recurring notices.</p>
+    <p class="page-intro" style="margin-top: 1rem;">The historical tool covers all analyzed service layers (Emergency Department, Obstetrics, Acute Care, Surgery/Operative Capability, and Other Services) and includes a searchable reference layer of AHS locations. Version 1.5 upgrades parsing and corrects the non-emergency service layers. SORCTracks Live is a separate daily-refreshed display of current AHS public postings that uses current Mountain Time to distinguish notices active now from scheduled or recurring notices.</p>
     <p class="page-intro" style="margin-top: 1rem;">SORCTracks Archive is not a real-time operational dashboard. SORCTracks Live shows the latest daily snapshot of current AHS postings. It is not an operational dashboard and may not reflect changes between scrapes. Neither product is an AHS product or intended for clinical or operational decision-making.</p>
 
       <div class="changelog-wrap" style="margin-top: 2rem;">
@@ -556,6 +556,11 @@
         </thead>
         <tbody>
           <tr>
+            <td>Version 1.5</td>
+            <td>Oct 14, 2026</td>
+            <td>Parser upgrade. Obstetrics, Acute Care, Surgery, and Other Services layers reviewed and corrected.</td>
+          </tr>
+          <tr class="changelog-history" style="display:none;">
             <td>Version 1.4</td>
             <td>Aug 9, 2026</td>
             <td>SORCTracks Live added. Displays currently active AHS service disruption postings, updated daily</td>
@@ -588,7 +593,7 @@
           <tr class="changelog-history" style="display:none;">
             <td>Beta v0.3</td>
             <td>May 31, 2026</td>
-            <td>Obstetrics layer added. Full manual review of all data through May 31, 2026. Parser upgrades for improved capture accuracy</td>
+            <td>Obstetrics layer added. Parser upgrades for improved capture accuracy</td>
           </tr>
           <tr class="changelog-history" style="display:none;">
             <td>Beta v0.2</td>
@@ -613,8 +618,9 @@
         <li>This is a public-record reconstruction, not an operational gold standard. Some disruptions may not have been publicly posted, archived consistently, or timed defensibly from available source material.</li>
         <li>SORCTracks Archive reflects archived public postings and is updated monthly on the first of the month. SORCTracks Live is refreshed daily from current AHS public postings. Neither product is an Alberta Health Services product or affiliated with AHS.</li>
         <li>SORCTracks Live uses the current Mountain Time to display which disruptions are active at this moment, distinguishing them from disruptions that are scheduled or recurrent but not currently active. Disruptions posted or removed between daily scrapes will not be reflected until the next update.</li>
-        <li>Estimated hours reflect publicly reconstructable disruption intervals. Unioned hours represent unique site-level disruption time after overlapping intervals are merged, and should not be treated as a precise operational measure.</li>
+        <li>Hours describe posted restrictions and are unioned within each facility and service group. ED hours include full closure or unavailable onsite physicians; non-ED hours also include partial-capacity and capability restrictions. They are not verified clinical downtime, lost bed-hours, or complete hospital-closure time.</li>
         <li>When all analyzed services are selected, hours are summed across service layers. Overlaps between different services at the same site are not removed in this view. The total reflects service-hours, not a union across service types.</li>
+        <li>Date-only boundaries and bounded recurring schedules use documented analytical conventions; forecast ends are distinguished from reported restoration. Untimed or unmapped support remains outside the displayed hour totals.</li>
         <li>Nearby sites shown in the tool are capability-aware nearest candidates based on the AHS facility directory. They are not a real-time indication that a given site was open or available during any specific disruption.</li>
         <li>This tool supports research and public understanding. It is not intended for clinical or operational decision-making.</li>
       </ul>
@@ -631,7 +637,7 @@
     <div style="display: flex; flex-direction: column; gap: 1.25rem; margin-bottom: 1.75rem; max-width: 760px;">
       <div style="padding: 1.25rem 1.5rem; border: 1px solid var(--rule); background: white;">
         <div style="font-size: 0.68rem; color: var(--blue); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 0.6rem;">Visualization Tool</div>
-        <p style="font-size: 0.875rem; color: var(--mid); line-height: 1.8;">Tung A. SORCTracks: A visualization of temporary health service disruptions across Alberta [Internet]. Version 1.4. Edmonton: Systematic Outcomes Research Collaborative; 2026 Aug 9 [cited YYYY Mon DD]. Available from: https://sorc.ca/sorctracks.html</p>
+        <p style="font-size: 0.875rem; color: var(--mid); line-height: 1.8;">Tung A. SORCTracks: A visualization of temporary health service disruptions across Alberta [Internet]. Version 1.5. Edmonton: Systematic Outcomes Research Collaborative; 2026 Oct 14 [cited YYYY Mon DD]. Available from: https://sorc.ca/sorctracks.html</p>
       </div>
     </div>
 
@@ -642,6 +648,7 @@
     <hr class="divider" style="margin-top: 2rem;">
     <div class="subsection-label">Studies</div>
     <div class="subsection-title">Archive-based studies underpinning SORCTracks</div>
+    <p class="section-intro">The study abstracts below retain their original analyses and study windows. They are not recalculated with every SORCTracks release.</p>
 
     <div class="project-list">
 
