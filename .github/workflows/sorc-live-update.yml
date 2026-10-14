@@ -2,8 +2,14 @@ name: SORCTracks Live update
 
 on:
   push:
+    branches: [main]
     paths:
       - "automation/live_tool.py"
+      - "automation/public_data_reader.py"
+      - "automation/current_card_guard.py"
+      - "automation/live_due.py"
+      - "automation/request_pages_build.py"
+      - "automation/verify_live_deployment.py"
       - "automation/html_patcher.py"
       - "automation/ahs_scrape_v84_patched.py"
       - "automation/health_check.py"
@@ -12,11 +18,13 @@ on:
       - "automation/requirements.lock.txt"
       - ".github/workflows/sorc-live-update.yml"
   schedule:
-    - cron: "31 2 * * *"
+    # Primary morning run and same-day retry; the retry skips a fresh day.
+    - cron: "31 9,15 * * *"
   workflow_dispatch:
 
 permissions:
   contents: write
+  pages: write
 
 concurrency:
   group: sorc-publisher
@@ -24,14 +32,14 @@ concurrency:
 
 jobs:
   update-live:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     steps:
       - name: Check out current public site
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
         with:
           python-version: "3.13"
           cache: pip
@@ -40,13 +48,20 @@ jobs:
       - name: Install pinned Live dependencies
         run: python -m pip install -r automation/requirements.lock.txt
 
+      - name: Check daily publication state
+        id: due
+        run: python automation/live_due.py
+
       - name: Generate Live candidate
+        if: steps.due.outputs.due == 'true'
         run: python automation/run_live_update.py
 
       - name: Run local candidate health checks
+        if: steps.due.outputs.due == 'true'
         run: python automation/health_check.py --historical-url "$GITHUB_WORKSPACE/sorctracks_tool.html" --live-url "$GITHUB_WORKSPACE/sorctracks_live.html" --max-live-age-hours 48 --output automation/live-health.json
 
       - name: Publish accepted Live page
+        if: steps.due.outputs.due == 'true'
         run: |
           git config user.name "SORC automation"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -79,54 +94,18 @@ jobs:
           done
           exit 1
 
-      - name: Verify deployed Live map
+      - name: Request configured GitHub Pages build
         env:
-          LIVE_URL: https://sorc.ca/sorctracks_live.html
-        run: |
-          python - <<'PY'
-          import time
-          import urllib.request
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python automation/request_pages_build.py
 
-          url = "https://sorc.ca/sorctracks_live.html"
-          required = (
-              "tile.openstreetmap.org",
-              "basemaps.cartocdn.com",
-              "backupTiles",
-              "tileerror",
-          )
-          forbidden = (
-              "api key required",
-              "mapbox",
-              "tiles.stadiamaps.com",
-              "api_key=",
-              "apikey=",
-              "access_token=",
-          )
+      - name: Verify exact deployed Live bytes
+        run: python automation/verify_live_deployment.py --expected sorctracks_live.html
 
-          for attempt in range(1, 19):
-              try:
-                  check_url = f"{url}?deployment_health_check={int(time.time())}"
-                  request = urllib.request.Request(
-                      check_url,
-                      headers={"User-Agent": "SORCTracks deployment health check/1.0"},
-                  )
-                  with urllib.request.urlopen(request, timeout=30) as response:
-                      html = response.read().decode("utf-8", errors="replace")
-                  lowered = html.lower()
-                  missing = [marker for marker in required if marker not in html]
-                  present_forbidden = [marker for marker in forbidden if marker in lowered]
-                  if response.status == 200 and not missing and not present_forbidden:
-                      print("Deployed Live map passed the keyless-provider check")
-                      break
-                  print(
-                      f"Attempt {attempt}: waiting for GitHub Pages deployment "
-                      f"(missing={missing}, forbidden={present_forbidden})"
-                  )
-              except Exception as exc:
-                  print(f"Attempt {attempt}: waiting for GitHub Pages deployment ({exc})")
-              if attempt < 18:
-                  time.sleep(10)
-          else:
-              raise SystemExit("Deployed Live page did not pass the keyless-provider check")
-          PY
+      - name: Verify hosted freshness when daily retry is skipped
+        if: steps.due.outputs.due != 'true'
+        run: python automation/health_check.py --max-live-age-hours 36
 
+      - name: Report a failed daily update
+        if: failure()
+        run: echo "::error::Live update or exact deployment verification failed. Last successfully published data has been preserved; the public freshness monitor remains active."

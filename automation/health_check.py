@@ -15,6 +15,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 import requests
+from public_data_reader import public_constant
 
 
 DEFAULT_HISTORICAL_URL = "https://sorc.ca/sorctracks_tool.html"
@@ -87,13 +88,7 @@ def _read_page(target: str) -> tuple[str, int | None]:
 
 
 def _constant(html: str, name: str):
-    marker = f"const {name} = "
-    start = html.find(marker)
-    if start < 0:
-        raise ValueError(f"missing JavaScript constant: {name}")
-    decoder = json.JSONDecoder()
-    value, _ = decoder.raw_decode(html[start + len(marker):])
-    return value
+    return public_constant(html, name)
 
 
 def _check_common(name: str, html: str, status: int | None) -> list[str]:
@@ -144,6 +139,14 @@ def check_pages(historical_url: str, live_url: str, max_live_age_hours: float) -
             observations["live_generated_at"] = live_data.get("generated_at")
             if live_data.get("demo_fixture"):
                 failures.append("Live page is using fixture data")
+            source_at = live_data.get("source_fetched_at") or live_data.get("as_of_timestamp")
+            if not source_at:
+                failures.append("Live page has no source observation timestamp")
+            else:
+                source_age = (checked_at - _parse_datetime(str(source_at))).total_seconds()/3600
+                observations["live_source_age_hours"] = round(source_age, 2)
+                if source_age < -1 or source_age > max_live_age_hours:
+                    failures.append("Live source observation is stale or in the future")
             generated_at = live_data.get("generated_at")
             if not generated_at:
                 failures.append("Live page has no generated_at timestamp")
@@ -193,4 +196,5 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+
 
