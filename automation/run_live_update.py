@@ -15,6 +15,7 @@ REPO_ROOT = ROOT.parent if ROOT.name == "automation" else ROOT
 sys.path.insert(0, str(ROOT))
 
 import live_tool
+from public_data_reader import public_constant
 
 
 def _normalise_html(path: Path) -> None:
@@ -38,6 +39,14 @@ def _validate_candidate(path: Path) -> None:
     generated_at = re.search(r'"generated_at":"([^"]+)"', text)
     if not generated_at:
         raise RuntimeError("Live candidate is missing generated_at")
+    data = public_constant(text, "LIVE_DATA")
+    if data.get("demo_fixture"):
+        raise RuntimeError("Injected test captures cannot become a public Live candidate")
+    if data.get("schema_version") != 8 or not data.get("source_fetched_at") or not isinstance(data.get("clock_contract"), dict):
+        raise RuntimeError("Live candidate lacks the received v8 source/clock contract")
+    for item in [x for site in data.get("sites", []) for x in site.get("disruptions", [])] + data.get("unmapped_disruptions", []):
+        if item.get("status") not in {"active_now", "scheduled", "unclear"}:
+            raise RuntimeError("Live candidate has an unreceived notice status")
 
 
 def main() -> int:
@@ -46,11 +55,13 @@ def main() -> int:
     parser.add_argument("--base-script", type=Path, default=ROOT / "ahs_scrape_v84_patched.py")
     parser.add_argument("--output", type=Path, default=REPO_ROOT / "sorctracks_live.html")
     parser.add_argument("--as-of")
+    parser.add_argument("--private-receipts-dir", type=Path, required=True)
     args = parser.parse_args()
 
     candidate = args.output.with_name(args.output.name + ".candidate")
     try:
-        result = live_tool.build_live_page(args.template, args.base_script, candidate, as_of=args.as_of)
+        result = live_tool.build_live_page(args.template, args.base_script, candidate, as_of=args.as_of,
+                                           private_receipts_dir=args.private_receipts_dir)
         _normalise_html(candidate)
         _validate_candidate(candidate)
         os.replace(candidate, args.output)

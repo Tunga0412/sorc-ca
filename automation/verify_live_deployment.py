@@ -21,7 +21,7 @@ def check(expected: bytes, actual: bytes):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--expected", type=Path, required=True)
-    parser.add_argument("--attempts", type=int, default=36)
+    parser.add_argument("--attempts", type=int, default=90)
     parser.add_argument("--delay-seconds", type=int, default=10)
     args = parser.parse_args()
     expected = args.expected.read_bytes()

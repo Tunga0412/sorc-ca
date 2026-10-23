@@ -24,10 +24,12 @@ import pandas as pd
 
 from public_data_reader import public_constant
 from current_card_guard import require_own_current_census, require_advertised_pagination_closed
+from live_timezone import LOCAL_TZ, browser_clock_contract
+from live_source_capture import SourceCapture, write_private_json
 
 
 LIVE_URL = "https://www.albertahealthservices.ca/br/Page17594.aspx"
-LOCAL_TZ = ZoneInfo("America/Edmonton")
+LIVE_SCHEMA_VERSION = 8
 MONTHS = {name.lower(): number for number, name in enumerate(
     ("January", "February", "March", "April", "May", "June",
      "July", "August", "September", "October", "November", "December"), 1
@@ -68,15 +70,15 @@ def _has_schedule_cue(row: dict) -> bool:
 
 
 def _service_layer(value: object) -> str:
-    """Map Live service labels to the same filter layers as SORCTracks."""
+    """Qualified programme labels; substrings such as 'allied' are not ED."""
     text = _norm(value)
-    if any(token in text for token in ("emergency", "emergency department", "ed ")):
+    if re.search(r"\bed\b|\bemergency(?: department| services| care)?\b", text):
         return "ed"
-    if any(token in text for token in ("obstetric", "maternity", "labour and delivery", "labor and delivery")):
+    if re.search(r"\bob\b|\bobstetric(?:s|al)?\b|\bmaternity\b|\blabou?r and delivery\b|\bc section\b|\bca?esarean\b", text):
         return "ob"
-    if any(token in text for token in ("acute", "inpatient", "medical unit", "medicine unit")):
+    if re.search(r"\bacute(?: care)?\b|\binpatient\b|\b(?:medical|medicine) unit\b", text):
         return "acute"
-    if any(token in text for token in ("surgery", "operating room", "operative", "anesthesia", "anaesthesia")):
+    if re.search(r"\bsurg(?:ery|ical)\b|\boperating rooms?\b|\boperative\b|\bana?esthesia\b", text):
         return "surgery"
     return "other"
 
@@ -218,7 +220,7 @@ def _schedule_windows(text: str, as_of: datetime, row: dict | None = None) -> li
         if re.search(r"\b\d{1,2}(?:st|nd|rd|th)?\s+(?:at|from)\s+\d{1,2}\s*(?:am|pm|a\.m\.|p\.m\.)\b|\b\d{1,2}(?:st|nd|rd|th)\s*\(", remainder, re.I):
             raise RuntimeError("Unparsed later clock clause in current finite calendar")
     elif date_tokens and not (len(date_tokens) == 1 and re.search(r"\bstarting\s+(?:" + MONTH_PATTERN + r")", text, re.I)):
-        raise RuntimeError("Unreceived dated source-body calendar; preserving prior Live")
+        raise RuntimeError("Unreceived dated source-body calendar; current notice needs clarification")
     if not matches and len(date_tokens) == 1 and re.search(r"\bstarting\s+(?:" + MONTH_PATTERN + r")", text, re.I):
         # A sole printed onset clock for an explicit recurring schedule is
         # handled by the recurrence parser, not a finite start/end pair.
@@ -236,7 +238,27 @@ def _schedule_windows(text: str, as_of: datetime, row: dict | None = None) -> li
         ed = sd if match.group("same") else int(match.group("ed"))
         explicit_sy = match.group("sy")
         explicit_ey = match.group("ey")
-        years = {int(explicit_sy)} if explicit_sy else ({int(explicit_ey)} if explicit_ey else source_years)
+        if explicit_sy:
+            years = {int(explicit_sy)}
+        elif explicit_ey:
+            years = {int(explicit_ey) - int(em < sm)}
+        elif broad_start is not None and broad_end is not None:
+            if broad_end.year - broad_start.year > 40:
+                raise RuntimeError("Source calendar exceeds the supported own-year range")
+            years = set(range(int(broad_start.year), int(broad_end.year) + 1))
+        elif broad_start is not None:
+            # A same-year list can be anchored by its first printed onset
+            # exactly matching the card's own dated start. A retrieval clock
+            # or an unrelated older start is not a year anchor.
+            first = matches[0]
+            anchored = (MONTHS[first.group("sm").lower()], int(first.group("sd"))) == (broad_start.month, broad_start.day)
+            same_year = all((MONTHS[m.group("sm").lower()], int(m.group("sd"))) >= (broad_start.month, broad_start.day)
+                            and (m.group("same") or MONTHS[m.group("em").lower()] >= MONTHS[m.group("sm").lower()]) for m in matches)
+            if not anchored or not same_year:
+                raise RuntimeError("Finite source calendar lacks a bounded unique year authority")
+            years = {int(broad_start.year)}
+        else:
+            years = source_years
         if not years:
             raise RuntimeError("Explicit clock calendar has no publisher-owned year anchor")
         candidates = []
@@ -343,7 +365,7 @@ _SERVICE_SUBJECTS = {
     "ob": r"\bOB\b|\bobstetric(?:s|al)?\b|\bmaternity\b|\b(?:labour|labor)\s+and\s+delivery\b|\bc[ -]?section\b|\bcaesarean\b|\bepidural\b",
     "acute": r"\bacute(?:\s+care)?\b|\binpatient\b|\b(?:medical|medicine)\s+unit\b",
     "surgery": r"\bsurg(?:ery|ical)\b|\boperating\s+rooms?\b|\b(?:anaesthesia|anesthesia)\b",
-    "other": r"\b(?:endoscopy|endoscopic|cardiology|cardiac|ophthalmology|ophthalmic|rehabilitation|rehab|detox|dialysis|ambulatory|outpatient|palliative)\b|\blong[ -]term\s+care\b|\bhome\s+care\b",
+    "other": r"\b(?:diagnostic imaging|radiology|CT|MRI|ultrasound|x[ -]?ray|laboratory|endoscopy|endoscopic|cardiology|cardiac|ophthalmology|ophthalmic|rehabilitation|rehab|detox|dialysis|ambulatory|outpatient|palliative)\b|\blong[ -]term\s+care\b|\bhome\s+care\b",
 }
 _FOREIGN_SUBJECT = re.compile(
     r"\b(?:nearby|neighbou?ring|adjacent|other|another|alternate|alternative|nearest|receiving)"
@@ -378,6 +400,39 @@ def _subject_clauses(text: str):
     if left < right: yield left, right, text[left:right]
 
 
+def _resource_capacity_assertion(clause: str) -> bool:
+    """A positive own reduction field can specify capacity without 'closed'."""
+    resource = r"(?:beds?|(?:treatment|care|operating|procedure|delivery)\s+(?:spaces?|rooms?)|scanners?)"
+    bare = re.fullmatch(r"\s*(?P<lost>\d+)\s*(?:/|of|out\s+of)\s*(?P<total>\d+)\s+" + resource + r"\s*(?:closed|unavailable|out of service)?[.\s]*", clause, re.I)
+    if bare:
+        lost, total = int(bare.group("lost")), int(bare.group("total"))
+        if total <= 0 or lost > total:
+            raise RuntimeError("Current numerical capacity has invalid own bounds")
+        return lost > 0
+    single = re.fullmatch(r"\s*(?P<count>[1-9]\d*)\s+" + resource + r"\s*(?:closed|unavailable|out of service)?[.\s]*", clause, re.I)
+    if single:
+        return True
+    equipment = r"(?:CT(?:\s+scanner)?|MRI(?:\s+scanner)?|ultrasound|x[ -]?ray|diagnostic imaging|scanner|endoscopy equipment|dialysis equipment)"
+    return bool(re.fullmatch(r"\s*(?:no|without)\s+(?:on[ -]?site\s+)?" + equipment
+                            + r"\s*(?:(?:is|are)\s+)?(?:available|operational|working|on[ -]?site)?[.\s]*", clause, re.I))
+
+def _neutral_own_context(clause: str) -> bool:
+    return bool(re.search(r"\b(?:nursing staff|nurses?|nursing)\s+(?:remain|remains|is|are)\s+(?:available\s+)?on[ -]?site\b"
+                          r"|\bVEP\s+(?:coverage\s+)?(?:may be|is|remains)\s+available\b"
+                          r"|\b(?:regular|normal|usual)\s+operating hours\b"
+                          r"|\b(?:no|zero|0)\s+(?:current\s+)?(?:reductions?|restrictions?|closures?)\b"
+                          r"|\b0\s*/\s*[1-9]\d*\s+(?:beds?|treatment spaces?|operating rooms?)\b", clause, re.I))
+
+def _other_subject_family(value: str) -> str:
+    token = _norm(value)
+    if token in {"diagnostic imaging", "radiology", "ct", "mri", "ultrasound", "x ray"}:
+        return "diagnostic imaging"
+    if token in {"cardiology", "cardiac"}:
+        return "cardiac"
+    if token in {"rehabilitation", "rehab"}:
+        return "rehabilitation"
+    return token
+
 def _live_subject_scope(row: dict) -> dict:
     """Bind own assertions and clock antecedents; ambiguous scope stops release."""
     text = _text(row.get("bed_or_space_reduction_text"))
@@ -386,7 +441,7 @@ def _live_subject_scope(row: dict) -> dict:
     own = _service_layer(programme)
     programme_groups = {k for k, rule in _SERVICE_SUBJECTS.items() if re.search(rule, programme, re.I)}
     if len(programme_groups) > 1:
-        raise RuntimeError("Ambiguous multi-service current card; preserving prior Live")
+        raise RuntimeError("Ambiguous multi-service current card; current notice needs clarification")
     own_other = set(re.findall(_SERVICE_SUBJECTS["other"], programme, re.I))
     last_subject = "own"
     own_asserted = False
@@ -394,6 +449,7 @@ def _live_subject_scope(row: dict) -> dict:
     retained = []
     excluded_clock = False
     own_clock = False
+    unresolved_own = False
     for left, right, clause in _subject_clauses(text):
         groups = {k for k, rule in _SERVICE_SUBJECTS.items() if re.search(rule, clause, re.I)}
         # An explicitly named unfamiliar service is not lent to the card's
@@ -412,8 +468,8 @@ def _live_subject_scope(row: dict) -> dict:
             else:
                 unfamiliar.append(label)
         if unfamiliar:
-            if own in groups:
-                raise RuntimeError("Unresolved additional named service subject; preserving prior Live")
+            if own in groups or not groups:
+                raise RuntimeError("Unresolved additional named service subject; current notice needs clarification")
             groups.add("unreceived_other_service")
         foreign_facility = bool(_FOREIGN_SUBJECT.search(clause))
         names = [m.group().strip() for m in _FACILITY_NAME.finditer(clause)]
@@ -433,15 +489,15 @@ def _live_subject_scope(row: dict) -> dict:
         # A referral sentence is context, even if its patients are 'our' patients.
         referral = bool(re.search(r"\b(?:go to|attend|redirected|referred|transferred|seek care|alternate care)\b", clause, re.I))
         if foreign_facility and explicit_own and not referral:
-            raise RuntimeError("Own and foreign facility subjects share an unresolved clause; preserving prior Live")
+            raise RuntimeError("Own and foreign facility subjects share an unresolved clause; current notice needs clarification")
         if own in groups and len(groups) > 1:
-            raise RuntimeError("Multiple service subjects share an unresolved clause; preserving prior Live")
+            raise RuntimeError("Multiple service subjects share an unresolved clause; current notice needs clarification")
         subject = ("foreign_facility" if foreign_facility or referral else
                    "other_service" if groups and own not in groups else
                    "own" if groups or explicit_own else last_subject)
         if own == "other" and groups == {"other"} and own_other:
             mentioned = set(re.findall(_SERVICE_SUBJECTS["other"], clause, re.I))
-            if {_norm(x) for x in mentioned}.isdisjoint({_norm(x) for x in own_other}):
+            if {_other_subject_family(x) for x in mentioned}.isdisjoint({_other_subject_family(x) for x in own_other}):
                 subject = "other_service"
         if groups or foreign_facility or referral or explicit_own:
             last_subject = subject
@@ -459,9 +515,15 @@ def _live_subject_scope(row: dict) -> dict:
             clause, re.I))
         positive = any(facts[k] for k in ("closed", "adjusted", "physician", "service"))
         partial_available = bool(re.search(r"\breduced\s+(?:level|capacity|staffing|number)|\blimited\s+(?:capacity|staffing)", clause, re.I)) and not re.search(r"\b(?:no|not|without|resolved|denied|ended|restored)\b", clause, re.I)
-        positive = positive or vep or partial_available or (broader and not facts["negative_only"] and not baseline)
+        capacity = _resource_capacity_assertion(clause) if subject == "own" and not facts["negative_only"] else False
+        positive = positive or vep or partial_available or capacity or (broader and not facts["negative_only"] and not baseline)
+        zero_capacity = bool(re.fullmatch(r"\s*0\s*(?:/|of|out\s+of)\s*[1-9]\d*\s+(?:beds?|(?:treatment|care|operating|procedure|delivery)\s+(?:spaces?|rooms?))\s*(?:closed|unavailable|out of service)?[.\s]*", clause, re.I))
+        if zero_capacity:
+            positive = False
         clock = bool(_CLOCK_CUE.search(clause))
-        negative = facts["negative_only"] and not vep
+        negative = (facts["negative_only"] and not vep) or zero_capacity
+        if subject == "own" and not positive and not negative and not _neutral_own_context(clause) and clause.strip():
+            unresolved_own = True
         keep = subject == "own" and not (negative and not positive)
         # An available/open-only clock is not a loss calendar. Contextual
         # nursing/VEP clauses may carry the preceding own restriction's dates.
@@ -478,14 +540,14 @@ def _live_subject_scope(row: dict) -> dict:
                        "positive_posting_assertion": positive,
                        "clock_cue": clock})
     if own_asserted and excluded_clock and not own_clock:
-        raise RuntimeError("Own restriction has no own clock binding beside a foreign/negative calendar; preserving prior Live")
+        raise RuntimeError("Own restriction has no own clock binding beside a foreign/negative calendar; current notice needs clarification")
     # Keep original text exactly when every clause belongs to the accepted
     # own posting. The complete raw field is always retained for display.
     projection = text if all(q["retained"] for q in quotes) else " ".join(retained)
-    return {"rule": "live_own_subject_service_v7", "facility": facility,
+    return {"rule": "live_own_subject_service_v8", "facility": facility,
             "programme": programme, "service_layer": own,
             "field_sha256": hashlib.sha256(text.encode()).hexdigest(),
-            "disposition": "own_posting" if own_asserted else "no_own_restriction",
+            "disposition": "own_posting" if own_asserted else "unresolved" if unresolved_own or not text else "no_own_restriction",
             "owned_reduction_text": projection, "clauses": quotes}
 
 
@@ -512,14 +574,14 @@ def _structured_bound(value: object) -> datetime | None:
         r"(?:\s*(?:\(\s*(?P<paren>[^)]+)\s*\)|(?:at\s+)?(?P<clock>\d{1,2}(?::\d{2})?\s*(?:a\.?m\.?|p\.?m\.?)|\d{4})))?\s*",
         text, re.I)
     if full is None:
-        raise RuntimeError("Unreceived or imprecise own structured date bound; preserving prior Live")
+        raise RuntimeError("Unreceived or imprecise own structured date bound; current notice needs clarification")
     parsed = pd.to_datetime(full.group("day"), errors="coerce")
     if pd.isna(parsed):
-        raise RuntimeError("Invalid own structured date bound; preserving prior Live")
+        raise RuntimeError("Invalid own structured date bound; current notice needs clarification")
     printed_clock = full.group("paren") or full.group("clock")
     clock = _parse_clock(printed_clock) if printed_clock else time.min
     if clock is None:
-        raise RuntimeError("Invalid own structured bound clock; preserving prior Live")
+        raise RuntimeError("Invalid own structured bound clock; current notice needs clarification")
     return _require_unique_local_clock(datetime.combine(parsed.date(), clock, tzinfo=LOCAL_TZ))
 
 
@@ -546,7 +608,7 @@ def _clip_own_bounds(row: dict, as_of: datetime, windows) -> list[tuple[datetime
         if start_utc < end_utc:
             result.append((start_utc.astimezone(LOCAL_TZ), end_utc.astimezone(LOCAL_TZ)))
     if windows and not result:
-        raise RuntimeError("Own printed calendar lies entirely outside own structured bounds; preserving prior Live")
+        raise RuntimeError("Own printed calendar lies entirely outside own structured bounds; current notice needs clarification")
     return result
 
 
@@ -636,7 +698,7 @@ def _hardisty_announced_weekend_windows(row: dict, as_of: datetime):
     if first_clock is None or (onset.month, onset.day) != (MONTHS[anchor.group(1).lower()], int(anchor.group(2))):
         raise RuntimeError("Hardisty onset date/clock conflict")
     if onset.date().weekday() != 4:
-        raise RuntimeError("Unreceived Hardisty weekday-pattern onset; preserving prior Live")
+        raise RuntimeError("Unreceived Hardisty weekday-pattern onset; current notice needs clarification")
     first = _require_unique_local_clock(datetime.combine(onset.date(), first_clock, tzinfo=LOCAL_TZ))
     bound = _parse_date(row.get("anticipated_end_date_text"))
     end_date = bound.date() if bound is not None else as_of.date() + timedelta(days=366)
@@ -669,14 +731,14 @@ def _runtime_windows_unclipped(row: dict, as_of: datetime, base=None) -> list[tu
         # baseline timetable. The timetable never defines its complement.
         own_assertion = re.split(r"\b(?:regular|normal|usual) operating hours\b", reduction, maxsplit=1, flags=re.I)[0]
         if _has_schedule_cue({"bed_or_space_reduction_text": own_assertion}):
-            raise RuntimeError("Unreceived restriction schedule mixed with ordinary baseline context; preserving prior Live")
+            raise RuntimeError("Unreceived restriction schedule mixed with ordinary baseline context; current notice needs clarification")
         return []
     regular_complement = _regular_hours_complement_windows(row, as_of, base=base)
     if regular_complement:
         return regular_complement
     recurring_cue = bool(re.search(r"\b(?:daily|nightly|overnight|each night|weekends?|weekdays?|mondays?|tuesdays?|wednesdays?|thursdays?|fridays?|saturdays?|sundays?|adjusted hours|regular operating hours)\b", reduction, re.I))
     if recurring_cue and re.search(r"\b(?:alternate|alternating|every other|except|excluding)\b", reduction, re.I):
-        raise RuntimeError("Unreceived recurrence exception or alternating pattern; preserving prior Live")
+        raise RuntimeError("Unreceived recurrence exception or alternating pattern; current notice needs clarification")
     end_bound = _structured_bound(row.get("anticipated_end_date_text"))
     if not recurring_cue and end_bound is not None:
         onset = _parse_date(row.get("start_date_text"))
@@ -714,10 +776,10 @@ def _runtime_windows_unclipped(row: dict, as_of: datetime, base=None) -> list[tu
         parsed = [(start, end) for start, end in parsed if start < end]
         if parsed:
             if recurring_cue and any(item.get("interval_method") not in {"daily_window_schedule", "listed_weekday_schedule", "regular_hours_complement", "weekend_schedule", "weekly_clock_schedule"} for item in intervals):
-                raise RuntimeError("Recurring wording received only a generic date fallback; preserving prior Live")
+                raise RuntimeError("Recurring wording received only a generic date fallback; current notice needs clarification")
             return parsed
     if recurring_cue:
-        raise RuntimeError("Unparsed current recurring schedule; preserving prior Live")
+        raise RuntimeError("Unparsed current recurring schedule; current notice needs clarification")
 
     # Finite clocks were already checked in the own reduction field. The
     # combined raw block contains labelled start/end dates and Reason context;
@@ -741,6 +803,11 @@ def _runtime_windows_unclipped(row: dict, as_of: datetime, base=None) -> list[tu
 
 def _classify_row(row: dict, as_of: datetime, base=None) -> str | None:
     scope = _live_subject_scope(row)
+    if scope["disposition"] == "unresolved":
+        upper = _structured_bound(row.get("anticipated_end_date_text"))
+        if upper is not None and upper.astimezone(timezone.utc) <= as_of.astimezone(timezone.utc):
+            return None
+        return "unclear"
     if scope["disposition"] != "own_posting":
         return None
     row = _scoped_row(row, scope)
@@ -774,7 +841,8 @@ def _row_to_disruption(row: dict, status: str, schedule_windows: list[tuple[date
         "start": _text(row.get("start_date_text")),
         "end": _text(row.get("anticipated_end_date_text")),
         "status": status,
-        "status_label": "Active now" if status == "active_now" else "Scheduled / recurring",
+        "status_label": "Active now" if status == "active_now" else "Status unclear" if status == "unclear" else "Scheduled / recurring",
+        "status_explanation": "The posting is retained, but its current timing or service restriction needs clarification." if status == "unclear" else "",
         "start_date_key": (_parse_date(row.get("start_date_text")) or pd.Timestamp.min).strftime("%Y-%m-%d") if _parse_date(row.get("start_date_text")) is not None else "",
         "end_date_key": (_parse_date(row.get("anticipated_end_date_text")) or pd.Timestamp.min).strftime("%Y-%m-%d") if _parse_date(row.get("anticipated_end_date_text")) is not None else "",
         "schedule_windows": [
@@ -787,7 +855,7 @@ def _row_to_disruption(row: dict, status: str, schedule_windows: list[tuple[date
     }
 
 
-def build_live_data(template_path: Path, base_script: Path, as_of: str | None = None) -> tuple[dict, list[dict]]:
+def build_live_data(template_path: Path, base_script: Path, as_of: str | None = None, *, private_receipts_dir=None, fetch_source=None, decision_sink=None) -> tuple[dict, list[dict]]:
     existing_data = public_constant(template_path.read_text(encoding="utf-8"), "DATA")
     if not isinstance(existing_data, dict) or not existing_data.get("sites"):
         raise RuntimeError("Historical public registry contains no sites")
@@ -796,122 +864,136 @@ def build_live_data(template_path: Path, base_script: Path, as_of: str | None = 
     live_date = pd.Timestamp(live_moment.date()).normalize()
     base = _load_base_script(base_script)
     live_url = getattr(base, "LIVE_CURRENT_URL", LIVE_URL)
+    capture = SourceCapture(private_receipts_dir, fetch_source)
+    decisions = []
     original_get_html = base.get_html
-    receipts = []
-    source_pages = []
-    fetch_failures = []
+    from bs4 import BeautifulSoup
     def checked_html(url):
-        parsed = urlparse(url)
-        if parsed.scheme != "https" or parsed.hostname != "www.albertahealthservices.ca":
-            raise RuntimeError("Unexpected Live source authority")
-        try:
-            response = base.requests.get(url, headers=base.HEADERS, timeout=base.REQUEST_TIMEOUT)
-            response.raise_for_status()
-            final = urlparse(response.url)
-            if response.status_code != 200 or final.scheme != "https" or final.hostname != parsed.hostname or final.path != parsed.path:
-                raise RuntimeError("Current AHS source redirected or has invalid HTTP status")
-            source = response.content
-            text = response.text
-            if not re.search(r"<h1[^>]*>\s*AHS Facilities Temporary Bed / Space Reductions", text, re.I):
-                raise RuntimeError("Current source is not the AHS disruptions page")
-            receipts.append({"requested_url": url, "sha256": hashlib.sha256(source).hexdigest(), "fetched_at": datetime.now(LOCAL_TZ).isoformat()})
-            source_pages.append(text)
-            return text
-        except Exception:
-            fetch_failures.append(url)
-            raise
+        text = capture.get_html(url)
+        # The legacy scraper can perform POSTs outside get_html. Reject those
+        # advertised actions before it can enqueue or execute any such request.
+        if any(x.get("kind") != "get" for x in base._discover_snapshot_page_candidates(BeautifulSoup(text, "lxml"), url)):
+            raise RuntimeError("Unreceived POST pagination; preserving accepted Live data")
+        return text
     base.get_html = checked_html
+    receipt = {"schema": "LIVE_PRIVATE_COLLECTION_RECEIPT_V8", "schema_version": 8,
+               "status": "HOLD", "candidate_accepted": False, "complete_census": False,
+               "source_pages": capture.pages, "source_sections": 0, "decision_count": 0,
+               "retained": 0, "excluded": 0, "unclear": 0, "unmapped": 0}
     try:
-        rows = base.scrape_snapshot(live_date, live_url)
-    finally:
+        try:
+            rows = base.scrape_snapshot(live_date, live_url)
+        finally:
+            base.get_html = original_get_html
+        if capture.failures or not capture.pages or rows is None or rows.empty:
+            raise RuntimeError("Incomplete or empty current AHS collection; preserving accepted Live data")
+        if len(rows) > 2000:
+            raise RuntimeError("Current AHS card count exceeds the bounded census")
+        pagination = require_advertised_pagination_closed(base, capture.pages, capture.source_text)
+        census = require_own_current_census(rows.to_dict(orient="records"), capture.source_text)
+        receipt.update(source_sections=census["source_sections"], complete_census=True,
+                       pagination=pagination, census=census)
+        grouped = {}
+        unmapped = []
+        seen = set()
+        for number, original in enumerate(rows.to_dict(orient="records")):
+            row = dict(original)
+            raw_fields = {key: _text(row.get(key)) for key in ("facility_name", "community_heading",
+                "program_or_service", "bed_or_space_reduction_text", "reason_text", "start_date_text",
+                "anticipated_end_date_text", "raw_block_text", "snapshot_url")}
+            row_id = hashlib.sha256(json.dumps(raw_fields, sort_keys=True, ensure_ascii=False).encode()).hexdigest()
+            decision = {"source_row": number, "row_id": row_id, "raw_fields": raw_fields}
+            diagnostic = None
+            try:
+                if any(len(value) > 32768 for value in raw_fields.values()):
+                    raise RuntimeError("Current field exceeds the bounded interpretation size")
+                scope = _live_subject_scope(row)
+                decision["scope"] = scope
+                status = _classify_row(row, live_moment, base=base)
+                windows = _runtime_windows(row, live_moment, base=base) if status not in (None, "unclear") else []
+            except Exception as exc:
+                status, windows = "unclear", []
+                diagnostic = {"type": type(exc).__name__, "message": str(exc)[:300]}
+            if status is None:
+                scope = decision.get("scope", {})
+                fate = "excluded_no_own_restriction" if scope.get("disposition") == "no_own_restriction" else "excluded_expired"
+                decision.update(fate=fate, status=None)
+                receipt["excluded"] += 1
+            else:
+                canonical = _resolve_site(row, lookup, sites)
+                if canonical is None:
+                    status = "unclear"
+                    windows = []
+                disruption = _row_to_disruption(row, status, schedule_windows=windows)
+                key = (canonical or raw_fields["facility_name"], disruption["service"], row_id)
+                if key in seen:
+                    decision.update(fate="excluded_exact_duplicate", status=None)
+                    receipt["excluded"] += 1
+                else:
+                    seen.add(key)
+                    decision.update(fate="retained_" + status, status=status, site=canonical,
+                                    service_layer=disruption["service_layer"],
+                                    schedule_windows=disruption["schedule_windows"])
+                    if diagnostic:
+                        decision["diagnostic"] = diagnostic
+                    receipt["retained"] += 1
+                    receipt["unclear"] += int(status == "unclear")
+                    if canonical is None:
+                        receipt["unmapped"] += 1
+                        disruption.update(facility_name=raw_fields["facility_name"], community=raw_fields["community_heading"])
+                        unmapped.append(disruption)
+                    else:
+                        site = sites[canonical]
+                        if canonical not in grouped:
+                            grouped[canonical] = {"name": site.get("name", canonical),
+                                "display_name": site.get("display_name") or site.get("facility_name") or site.get("name", canonical),
+                                "facility_name": site.get("facility_name", ""), "community": site.get("community", ""),
+                                "lat": site.get("lat"), "lng": site.get("lng"), "disruptions": []}
+                        grouped[canonical]["disruptions"].append(disruption)
+            decisions.append(decision)
+            if decision_sink:
+                decision_sink(dict(decision))
+        receipt["decision_count"] = len(decisions)
+        if len(decisions) != receipt["source_sections"] or receipt["retained"] + receipt["excluded"] != len(decisions):
+            raise RuntimeError("Not every current source card received an explicit fate")
+        live_sites = sorted(grouped.values(), key=lambda site: _norm(site.get("display_name")))
+        for site in live_sites:
+            site["disruption_count"] = len(site["disruptions"])
+            site["active_now_count"] = sum(x["status"] == "active_now" for x in site["disruptions"])
+            site["scheduled_count"] = sum(x["status"] == "scheduled" for x in site["disruptions"])
+        all_items = [item for site in live_sites for item in site["disruptions"]] + unmapped
+        data = {"schema_version": LIVE_SCHEMA_VERSION, "as_of": live_date.strftime("%Y-%m-%d"),
+            "as_of_timestamp": live_moment.isoformat(), "generated_at": datetime.now(LOCAL_TZ).isoformat(),
+            "source_url": live_url, "source_fetched_at": capture.pages[-1]["fetched_at"],
+            "source_publisher_updated": capture.publisher_updated(), "source_page_count": len(capture.pages),
+            "demo_fixture": capture.injected, "sites": live_sites, "unmapped_disruptions": unmapped,
+            "active_disruption_count": len(all_items), "active_site_count": len(live_sites),
+            "active_now_disruption_count": sum(x["status"] == "active_now" for x in all_items),
+            "scheduled_disruption_count": sum(x["status"] == "scheduled" for x in all_items),
+            "unclear_disruption_count": sum(x["status"] == "unclear" for x in all_items),
+            "active_now_site_count": sum(site["active_now_count"] > 0 for site in live_sites),
+            "scheduled_site_count": sum(site["scheduled_count"] > 0 for site in live_sites),
+            "clock_contract": browser_clock_contract()}
+        receipt.update(status="ACCEPTED", candidate_accepted=True, source_capture_id=capture.capture_id)
+        write_private_json(private_receipts_dir, "Card_Decisions.json",
+                           {"schema": "LIVE_PRIVATE_CARD_DECISIONS_V8", "count": len(decisions), "decisions": decisions})
+        write_private_json(private_receipts_dir, "Collection_Receipt.json", receipt)
+        return data, unmapped
+    except Exception as exc:
         base.get_html = original_get_html
-    if fetch_failures or not receipts:
-        raise RuntimeError("Incomplete or invalid current AHS collection; preserving prior Live page")
-    if rows is None or rows.empty:
-        raise RuntimeError("The AHS current disruption page returned no rows; refusing to publish an empty Live page.")
+        receipt.update(status="HOLD", candidate_accepted=False, source_capture_id=capture.capture_id,
+                       source_pages=capture.pages, decision_count=len(decisions),
+                       error={"type": type(exc).__name__, "message": str(exc)[:300]})
+        write_private_json(private_receipts_dir, "Card_Decisions.json",
+                           {"schema": "LIVE_PRIVATE_CARD_DECISIONS_V8", "count": len(decisions), "decisions": decisions})
+        write_private_json(private_receipts_dir, "Collection_Receipt.json", receipt)
+        write_private_json(private_receipts_dir, "Collection_Error.json", {"status":"HOLD", "error":receipt["error"]})
+        raise
 
-    require_advertised_pagination_closed(base, receipts, source_pages)
-    require_own_current_census(rows.to_dict(orient="records"), source_pages)
-    grouped: dict[str, dict] = {}
-    unmapped: list[dict] = []
-    unparsed_schedules: list[dict] = []
-    seen: set[tuple[str, str, str, str]] = set()
-    for row in rows.to_dict(orient="records"):
-        status = _classify_row(row, live_moment, base=base)
-        if status is None:
-            continue
-        runtime_windows = _runtime_windows(row, live_moment, base=base)
-        own_schedule_text = _live_subject_scope(row)["owned_reduction_text"]
-        if not _positive_adjusted_opening(_scoped_row(row, _live_subject_scope(row))):
-            own_schedule_text = re.split(r"\b(?:regular|normal|usual) operating hours\b", own_schedule_text, maxsplit=1, flags=re.I)[0]
-        if _has_schedule_cue({"bed_or_space_reduction_text": own_schedule_text}) and not runtime_windows:
-            unparsed_schedules.append({
-                "facility_name": _text(row.get("facility_name")),
-                "community_heading": _text(row.get("community_heading")),
-                "service": _text(row.get("program_or_service")),
-                "details": _row_detail_text(row)[:240],
-            })
-            continue
-        canonical = _resolve_site(row, lookup, sites)
-        if canonical is None:
-            unmapped.append({
-                "facility_name": _text(row.get("facility_name")),
-                "community_heading": _text(row.get("community_heading")),
-                "service": _text(row.get("program_or_service")),
-            })
-            continue
-        disruption = _row_to_disruption(row, status, schedule_windows=runtime_windows)
-        dedup_key = (canonical, _norm(disruption["service"]), _norm(disruption["details"]), status)
-        if dedup_key in seen:
-            continue
-        seen.add(dedup_key)
-        site = sites[canonical]
-        if canonical not in grouped:
-            grouped[canonical] = {
-                "name": site.get("name", canonical),
-                "display_name": site.get("display_name") or site.get("facility_name") or site.get("name", canonical),
-                "facility_name": site.get("facility_name", ""),
-                "community": site.get("community", ""),
-                "lat": site.get("lat"),
-                "lng": site.get("lng"),
-                "disruptions": [],
-            }
-        grouped[canonical]["disruptions"].append(disruption)
-
-    live_sites = sorted(grouped.values(), key=lambda site: _norm(site.get("display_name")))
-    for site in live_sites:
-        site["disruption_count"] = len(site["disruptions"])
-        site["active_now_count"] = sum(item["status"] == "active_now" for item in site["disruptions"])
-        site["scheduled_count"] = sum(item["status"] == "scheduled" for item in site["disruptions"])
-    data = {
-        "as_of": live_date.strftime("%Y-%m-%d"),
-        "as_of_timestamp": live_moment.isoformat(),
-        "generated_at": datetime.now(LOCAL_TZ).isoformat(),
-        "source_url": live_url,
-        "source_fetched_at": receipts[-1]["fetched_at"],
-        "source_page_count": len(receipts),
-        "demo_fixture": live_url.startswith("https://example.test"),
-        "sites": live_sites,
-        "active_disruption_count": sum(site["disruption_count"] for site in live_sites),
-        "active_site_count": len(live_sites),
-        "active_now_disruption_count": sum(site["active_now_count"] for site in live_sites),
-        "scheduled_disruption_count": sum(site["scheduled_count"] for site in live_sites),
-        "active_now_site_count": sum(site["active_now_count"] > 0 for site in live_sites),
-        "scheduled_site_count": sum(site["scheduled_count"] > 0 for site in live_sites),
-    }
-    if unparsed_schedules:
-        preview = "; ".join(
-            f"{item['facility_name']} / {item['service']}"
-            for item in unparsed_schedules[:8]
-        )
-        raise RuntimeError(
-            f"Live page has {len(unparsed_schedules)} schedule-like row(s) that the SORCTracks parser could not interpret; refusing to publish. Examples: {preview}"
-        )
-    return data, unmapped
 
 
 def _js_json(value: object) -> str:
-    return json.dumps(value, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
+    return json.dumps(value, ensure_ascii=False, separators=(",", ":")).replace("<", "\\u003c").replace(">", "\\u003e").replace("&", "\\u0026").replace("\u2028", "\\u2028").replace("\u2029", "\\u2029")
 
 
 def _format_mt(value: str) -> str:
@@ -926,6 +1008,9 @@ def _format_mt(value: str) -> str:
 def render_live_html(data: dict, template_path: Path | None = None) -> str:
     title = "SORCTracks Live"
     source = html.escape(data["source_url"], quote=True)
+    frontend = Path(__file__).with_name("live_frontend_v8.js").read_text(encoding="utf-8")
+    observed = html.escape(_format_mt(data["source_fetched_at"]), quote=True)
+    publisher_date = html.escape(data.get("source_publisher_updated") or "not stated", quote=True)
     template_styles = ""
     if template_path is not None:
         template_text = template_path.read_text(encoding="utf-8")
@@ -951,8 +1036,12 @@ def render_live_html(data: dict, template_path: Path | None = None) -> str:
     .status-dot.now { background:#B42318; } .status-dot.scheduled { background:#C8871A; }
     .live-card { margin:.55rem 0; padding:.55rem .65rem; border-left:3px solid #B42318; background:#fff8f7; }
     .live-card.scheduled { border-left-color:#C8871A; background:#fffaf0; }
+    .live-card.unclear { border-left-color:#667085; background:#F4F5F7; }
+    .status-dot.unclear { background:#667085; }
+    .status-dot.mixed { background:#7A3E9D; }
     .live-status { display:inline-block; margin-bottom:.25rem; color:#B42318; font-size:.64rem; font-weight:400; letter-spacing:.1em; text-transform:uppercase; }
     .live-status.scheduled { color:#9A6500; }
+    .live-status.unclear { color:#475467; }
     .live-card .service { color:var(--navy); font-size:.82rem; font-weight:400; }
     .live-card .details { color:var(--mid); font-size:.74rem; line-height:1.4; }
     .live-card a { color:var(--blue); font-size:.7rem; text-decoration:none; }
@@ -981,7 +1070,7 @@ def render_live_html(data: dict, template_path: Path | None = None) -> str:
   <header>
     <div class="sorc-header-title">
       <div class="title">SORCTracks <span class="live-badge">● LIVE</span></div>
-      <div class="subtitle">Current AHS service disruptions · status evaluated at the current MT time<br><span id="liveClock">Current time loading…</span>{' · <span class="demo-badge">sample fixture data</span>' if data.get('demo_fixture') else ''}</div>
+      <div class="subtitle">Current AHS disruption postings · status follows the posted schedule{' · <span class="demo-badge">sample fixture data</span>' if data.get('demo_fixture') else ''}<br><span id="sourceObserved">Last checked: {observed}</span><br><span id="sourcePublisher">AHS page updated: {publisher_date}</span><br><span id="liveClock">Current Alberta time loading…</span></div>
     </div>
     <nav class="sorc-mode-switch" aria-label="SORCTracks mode">
       <a href="sorctracks_tool.html">SORCTracks</a>
@@ -989,7 +1078,7 @@ def render_live_html(data: dict, template_path: Path | None = None) -> str:
     </nav>
     <div class="live-summary" id="summaryStats"><strong>{data["active_now_disruption_count"]}</strong> active now · <strong>{data["scheduled_disruption_count"]}</strong> scheduled / recurring · <strong>{data["active_site_count"]}</strong> sites shown</div>
       <div class="control-pair" role="group" aria-label="Live map filters">
-      <div class="view-control"><label for="statusSelect">Map view</label><select id="statusSelect"><option value="all">All notices</option><option value="active_now">Active now</option><option value="scheduled">Scheduled / recurring</option></select></div>
+      <div class="view-control"><label for="statusSelect">Map view</label><select id="statusSelect"><option value="all">All notices</option><option value="active_now">Active now</option><option value="scheduled">Scheduled / recurring</option><option value="unclear">Status unclear</option></select></div>
       <div class="view-control"><label for="serviceSelect">Service</label><select id="serviceSelect"><option value="all">All analyzed services</option><option value="ed">Emergency</option><option value="ob">Obstetrics</option><option value="acute">Acute Care</option><option value="surgery">Surgery</option><option value="other">Other Services</option></select></div>
       </div>
       <div id="liveHealth" class="live-health" role="status" aria-live="polite" hidden></div>
@@ -997,67 +1086,32 @@ def render_live_html(data: dict, template_path: Path | None = None) -> str:
   <div id="map" role="region" aria-label="Map of current Alberta service disruptions"></div>
   <main class="sidebar" id="sidebar" aria-label="Current service disruption data">
     <div class="panel-label">Live disruption notices</div>
-    <div class="search-panel"><input id="search" class="search-input" type="search" placeholder="Search site or service" aria-label="Search live disruptions" /><div class="live-filter-note">Red markers are active at the current time. Gold markers are scheduled or recurring notices that may not be active right now.</div><div class="status-legend"><span class="status-key"><span class="status-dot now"></span> Active now</span><span class="status-key"><span class="status-dot scheduled"></span> Scheduled / recurring</span></div><div id="resultCount" class="result-count"></div></div>
+    <div class="search-panel"><input id="search" class="search-input" type="search" placeholder="Search site or service" aria-label="Search live disruptions" /><div class="live-filter-note">Status follows AHS postings and announced schedules; it is not a real-time confirmation of service availability. Grey notices need clarification. Future windows are forecasts.</div><div class="status-legend"><span class="status-key"><span class="status-dot now"></span> Active now</span><span class="status-key"><span class="status-dot scheduled"></span> Scheduled / recurring</span><span class="status-key"><span class="status-dot mixed"></span> Mixed</span><span class="status-key"><span class="status-dot unclear"></span> Status unclear</span></div><div id="resultCount" class="result-count"></div></div>
     <div id="list"></div>
   </main>
   <footer><div>Current AHS service-disruption notices &middot; SORC, 2026</div><div>Source: <a href="{source}" target="_blank" rel="noopener">AHS current service-disruption page</a> &middot; <a href="https://sorc.ca">sorc.ca</a></div></footer>
   <script>
     const LIVE_DATA = {_js_json(data)};
-    const map = L.map('map', {{ zoomControl:true }}).setView([54.0, -114.5], 6);
-    const tileOptions = {{ attribution:'&copy; OpenStreetMap contributors', maxZoom:19 }};
-    const primaryTiles = L.tileLayer('https://{{s}}.tile.openstreetmap.org/{{z}}/{{x}}/{{y}}.png', tileOptions).addTo(map);
-    const backupTiles = L.tileLayer('https://{{s}}.basemaps.cartocdn.com/light_all/{{z}}/{{x}}/{{y}}{{r}}.png', {{ attribution:'&copy; OpenStreetMap, &copy; CARTO', maxZoom:18 }});
-    let backupActivated = false;
-    primaryTiles.on('tileerror', () => {{ if (!backupActivated) {{ backupActivated = true; backupTiles.addTo(map); }} }});
-    const markers = new Map();
-    const esc = (value) => String(value ?? '').replace(/[&<>'"]/g, ch => ({{'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}}[ch]));
-    const serviceSelect = document.getElementById('serviceSelect');
-    const statusSelect = document.getElementById('statusSelect');
-    const LIVE_TIME_ZONE = 'America/Edmonton';
-    const LIVE_STALE_AFTER_HOURS = 36;
-    const LIVE_DOWN_AFTER_HOURS = 48;
-    const dateKey = (instant) => {{ const parts = new Intl.DateTimeFormat('en-CA', {{timeZone:LIVE_TIME_ZONE,year:'numeric',month:'2-digit',day:'2-digit'}}).formatToParts(instant); const get = type => parts.find(part => part.type === type).value; return `${{get('year')}}-${{get('month')}}-${{get('day')}}`; }};
-    function runtimeStatus(item, now) {{
-      const windows = (item.schedule_windows || []).map(window => ({{start:new Date(window.start),end:new Date(window.end)}}));
-      if (windows.length) {{ if (windows.some(window => window.start <= now && now < window.end)) return 'active_now'; if (windows.some(window => window.start > now)) return 'scheduled'; return null; }}
-      const today = dateKey(now); if (item.start_date_key && today < item.start_date_key) return 'scheduled'; if (item.end_date_key && today >= item.end_date_key) return null; return 'active_now';
-    }}
-    function statusLabel(status) {{ return status === 'active_now' ? 'Active now' : 'Scheduled / recurring'; }}
-    function currentItems(site, now = new Date()) {{ return site.disruptions.map(item => ({{...item, status:runtimeStatus(item, now)}})).filter(item => item.status); }}
-    function selectedItems(site, now = new Date()) {{ const status = statusSelect.value; const service = serviceSelect.value; return currentItems(site, now).filter(item => (!status || status === 'all' || item.status === status) && (!service || service === 'all' || item.service_layer === service)); }}
-    function matches(site, now = new Date()) {{ const q = document.getElementById('search').value.trim().toLowerCase(); const items = selectedItems(site, now); const hay = [site.display_name,site.community,...items.map(item => item.service+' '+item.details)].join(' ').toLowerCase(); return items.length > 0 && (!q || hay.includes(q)); }}
-    function popup(site, now = new Date()) {{ const items = currentItems(site, now); return `<div class="popup-title">${{esc(site.display_name)}}</div><div class="popup-stat">${{esc(site.community)}} · ${{items.length}} notice(s)</div>${{items.map(item => `<div style="margin-top:7px"><b>${{esc(statusLabel(item.status))}}</b><br>${{esc(item.service)}}<br>${{esc(item.details)}}</div>`).join('')}}`; }}
-    function markerStyle(site, now = new Date()) {{ const items = currentItems(site, now); const hasNow = items.some(item => item.status === 'active_now'); const hasScheduled = items.some(item => item.status === 'scheduled'); const color = hasNow && hasScheduled ? '#7A3E9D' : hasNow ? '#B42318' : '#C8871A'; return {{ radius:Math.min(18,6+items.length*2), color:'#0F2347', fillColor:color, fillOpacity:.78, weight:2 }}; }}
-    function updateSummary(now = new Date()) {{ const items = LIVE_DATA.sites.flatMap(site => currentItems(site, now)); const active = items.filter(item => item.status === 'active_now').length; const scheduled = items.filter(item => item.status === 'scheduled').length; const sites = LIVE_DATA.sites.filter(site => currentItems(site, now).length).length; document.getElementById('summaryStats').innerHTML = `<strong>${{active}}</strong> active now · <strong>${{scheduled}}</strong> scheduled / recurring · <strong>${{sites}}</strong> sites shown`; }}
-    function formatMt(instant) {{ return new Intl.DateTimeFormat('en-US', {{timeZone:LIVE_TIME_ZONE,month:'long',day:'numeric',year:'numeric',hour:'numeric',minute:'2-digit',hour12:true}}).format(instant).replace(' AM',' AM MT').replace(' PM',' PM MT'); }}
-    function updateClock(now = new Date()) {{ document.getElementById('liveClock').textContent = `Current time: ${{formatMt(now)}}`; }}
-    function updateHealth(now = new Date()) {{ const box = document.getElementById('liveHealth'); const published = new Date(LIVE_DATA.generated_at); const source = new Date(LIVE_DATA.as_of_timestamp); const ageHours = (now - published) / 3600000; box.hidden = false; if (!Number.isFinite(ageHours) || ageHours >= LIVE_DOWN_AFTER_HOURS) {{ box.className='live-health down'; box.innerHTML = `<strong>SORCTracks Live may be unavailable.</strong> The page is showing the last successfully gathered data from ${{formatMt(source)}}.`; }} else if (ageHours >= LIVE_STALE_AFTER_HOURS) {{ box.className='live-health warning'; box.innerHTML = `<strong>SORCTracks Live may be delayed.</strong> The page is showing data from the last successful update at ${{formatMt(source)}}.`; }} else {{ box.hidden = true; }} }}
-    function render() {{
-      const now = new Date(); updateClock(now); updateSummary(now); updateHealth(now); const list = document.getElementById('list'); const resultCount = document.getElementById('resultCount'); const bounds = []; list.innerHTML = ''; let siteCount = 0; let itemCount = 0;
-      LIVE_DATA.sites.forEach(site => {{ const items = selectedItems(site, now); const visible = matches(site, now); const marker = markers.get(site.name); if (marker) {{ marker.setStyle(markerStyle(site, now)).setPopupContent(popup(site, now)); if (visible) marker.addTo(map); else map.removeLayer(marker); }} if (!visible) return; siteCount += 1; itemCount += items.length; bounds.push([site.lat,site.lng]); const section = document.createElement('section'); section.className='site'; section.innerHTML = `<div class="site-name">${{esc(site.display_name)}}</div><div class="community">${{esc(site.community)}} · ${{items.length}} matching notice(s)</div>${{items.map(item => `<div class="live-card ${{item.status === 'scheduled' ? 'scheduled' : ''}}"><div class="live-status ${{item.status === 'scheduled' ? 'scheduled' : ''}}">${{esc(statusLabel(item.status))}}</div><div class="service">${{esc(item.service)}}</div>${{item.reduction ? `<div class="details">${{esc(item.reduction)}}</div>` : ''}}${{item.reason ? `<div class="details">${{esc(item.reason)}}</div>` : ''}}${{item.timing_note ? `<div class="details">${{esc(item.timing_note)}}</div>` : ''}}${{item.start || item.end ? `<div class="details">${{esc(item.start || 'current')}}${{item.end ? ' – ' + esc(item.end) : ''}}</div>` : ''}}<a href="${{esc(item.source_url)}}" target="_blank" rel="noopener">Source notice</a></div>`).join('')}}`; section.addEventListener('click', () => {{ map.setView([site.lat,site.lng], Math.max(map.getZoom(),8)); }}); list.appendChild(section); }});
-      resultCount.textContent = `${{itemCount}} notice(s) at ${{siteCount}} site(s)`; if (!list.children.length) list.innerHTML = '<div class="empty-state">No disruptions match this filter.</div>'; if (bounds.length) map.fitBounds(bounds, {{ padding:[30,30], maxZoom:8 }});
-    }}
-    LIVE_DATA.sites.forEach(site => {{ const marker = L.circleMarker([site.lat,site.lng], markerStyle(site)).bindPopup(popup(site)); markers.set(site.name, marker); }});
-    document.getElementById('search').addEventListener('input', render); serviceSelect.addEventListener('change', render); statusSelect.addEventListener('change', render); render(); setInterval(render, 60000);
+{frontend}
   </script>
 </body>
 </html>'''
 
 
-def build_live_page(template_path: Path, base_script: Path, output_path: Path, as_of: str | None = None) -> dict:
-    data, unmapped = build_live_data(template_path, base_script, as_of=as_of)
-    if unmapped:
-        preview = "; ".join(sorted({row.get("facility_name") or row.get("community_heading") for row in unmapped})[:8])
-        raise RuntimeError(f"Live page has {len(unmapped)} unmapped current row(s); refusing to publish. Examples: {preview}")
+def build_live_page(template_path: Path, base_script: Path, output_path: Path, as_of: str | None = None, *, private_receipts_dir=None, fetch_source=None, decision_sink=None) -> dict:
+    data, unmapped = build_live_data(template_path, base_script, as_of=as_of,
+        private_receipts_dir=private_receipts_dir, fetch_source=fetch_source, decision_sink=decision_sink)
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(render_live_html(data, template_path=template_path), encoding="utf-8")
-    return {
-        "output": str(output_path),
-        "sites": data["active_site_count"],
+    receipt = json.loads((Path(private_receipts_dir) / "Collection_Receipt.json").read_text()) if private_receipts_dir is not None else {}
+    return {"output": str(output_path), "schema_version": 8, "candidate_accepted": True,
+        "complete_census": True, "sites": data["active_site_count"],
+        **{key: receipt.get(key) for key in ("decision_count", "retained", "excluded", "unclear", "unmapped", "source_capture_id")},
         "active_now_disruptions": data["active_now_disruption_count"],
         "scheduled_disruptions": data["scheduled_disruption_count"],
-        "as_of": data["as_of"],
-    }
+        "unclear_disruptions": data["unclear_disruption_count"], "unmapped_disruptions": len(unmapped),
+        "as_of": data["as_of"]}
+
 
 
 def main() -> int:
@@ -1066,8 +1120,9 @@ def main() -> int:
     parser.add_argument("--base-script", type=Path, required=True, help="AHS v84 base scraper script")
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--as-of", help="Override current date (YYYY-MM-DD), mainly for testing")
+    parser.add_argument("--private-receipts-dir", type=Path, required=True)
     args = parser.parse_args()
-    result = build_live_page(args.template, args.base_script, args.output, as_of=args.as_of)
+    result = build_live_page(args.template, args.base_script, args.output, as_of=args.as_of, private_receipts_dir=args.private_receipts_dir)
     print(json.dumps(result, indent=2))
     return 0
 
