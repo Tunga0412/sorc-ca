@@ -14,6 +14,10 @@ def check(expected: bytes, actual: bytes):
     data = public_constant(text, "LIVE_DATA")
     if data.get("demo_fixture") or not data.get("generated_at"):
         raise ValueError("Deployed Live data is invalid")
+    if type(data.get("schema_version")) is not int or data["schema_version"] < 8 or not data.get("source_fetched_at"):
+        raise ValueError("Live publisher regressed below the received v8 source-capture contract")
+    if type(data.get("source_page_count")) is not int or not 1 <= data["source_page_count"] <= 20:
+        raise ValueError("Live source page census is missing or invalid")
     required = ("tile.openstreetmap.org", "basemaps.cartocdn.com", "backupTiles", "tileerror")
     if any(x not in text for x in required):
         raise ValueError("Deployed Live map lacks fallback")

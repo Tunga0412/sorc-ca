@@ -170,7 +170,11 @@ jobs:
               else:
                   if data.get("demo_fixture"):
                       failures.append("Live page is using fixture data")
-                  source_at = data.get("source_fetched_at") or data.get("as_of_timestamp")
+                  if type(data.get("schema_version")) is not int or data["schema_version"] < 8:
+                      failures.append("Live publisher regressed below the accepted v8 contract")
+                  if type(data.get("source_page_count")) is not int or not 1 <= data["source_page_count"] <= 20:
+                      failures.append("Live source page census is missing or invalid")
+                  source_at = data.get("source_fetched_at")
                   if not source_at:
                       failures.append("Live page has no source observation time")
                   else:

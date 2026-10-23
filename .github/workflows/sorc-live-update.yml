@@ -34,6 +34,16 @@ jobs:
       - name: Install pinned verification dependencies
         run: python -m pip install -r automation/requirements.lock.txt
       # Collection is private. This workflow never fetches AHS or changes data.
+      - name: Reject a legacy Live renderer before requesting deployment
+        run: |
+          python - <<'PY'
+          import sys
+          from pathlib import Path
+          sys.path.insert(0, "automation")
+          from verify_live_deployment import check
+          raw = Path("sorctracks_live.html").read_bytes()
+          check(raw, raw)
+          PY
       - name: Request the configured Pages build if needed
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

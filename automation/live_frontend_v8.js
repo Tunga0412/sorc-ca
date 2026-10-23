@@ -99,7 +99,7 @@ function render(){
   if(!list.children.length)list.innerHTML='<div class="empty-state">No disruptions match this filter.</div>';
   if(bounds.length)map.fitBounds(bounds,{padding:[30,30],maxZoom:8});
 }
-LIVE_DATA.sites.forEach(site=>markers.set(site.name,L.circleMarker([site.lat,site.lng],markerStyle([]))));
+LIVE_DATA.sites.forEach(site=>markers.set(site.name,L.circleMarker([site.lat,site.lng],markerStyle([])).bindPopup(popup(site,[]))));
 document.getElementById('search').addEventListener('input',render);serviceSelect.addEventListener('change',render);statusSelect.addEventListener('change',render);
 render();setInterval(render,60000);
 
