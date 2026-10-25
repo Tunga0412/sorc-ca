@@ -26,6 +26,15 @@ def main():
             return
     except requests.RequestException:
         pass
+    metadata = session.get("https://api.github.com/repos/" + REPOSITORY + "/pages", timeout=30)
+    if metadata.status_code != 200:
+        raise SystemExit("GitHub Pages configuration unavailable")
+    mode = metadata.json().get("build_type")
+    if mode == "workflow":
+        print("Waiting for the validated Pages Actions deployment; no branch build requested")
+        return
+    if mode != "legacy":
+        raise SystemExit("Unrecognised GitHub Pages build type")
     response = session.post("https://api.github.com/repos/" + REPOSITORY + "/pages/builds", timeout=30)
     if response.status_code != 201:
         raise SystemExit("GitHub Pages build request rejected (HTTP " + str(response.status_code) + ")")
