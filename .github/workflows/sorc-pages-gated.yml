@@ -18,7 +18,7 @@ permissions:
   contents: read
 
 env:
-  SORC_PAGES_GATE_ARMED: 'false'
+  SORC_PAGES_GATE_ARMED: 'true'
 
 concurrency:
   group: sorc-pages-validated
