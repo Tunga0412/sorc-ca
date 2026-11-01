@@ -92,7 +92,7 @@ jobs:
       id-token: write
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      url: https://sorc.ca/
     steps:
       - name: Deploy validated public site
         id: deployment
