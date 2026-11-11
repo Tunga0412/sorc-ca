@@ -96,4 +96,25 @@ jobs:
     steps:
       - name: Deploy validated public site
         id: deployment
+        continue-on-error: true
         uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e
+        with:
+          timeout: '240000'
+      - name: Retry the same validated deployment once
+        id: deployment_retry
+        if: steps.deployment.outcome == 'failure' && !cancelled()
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e
+        with:
+          timeout: '240000'
+      - name: Require a successful validated deployment
+        if: always()
+        env:
+          INITIAL_OUTCOME: ${{ steps.deployment.outcome }}
+          RETRY_OUTCOME: ${{ steps.deployment_retry.outcome }}
+        run: |
+          if [ "$INITIAL_OUTCOME" = "success" ] || [ "$RETRY_OUTCOME" = "success" ]; then
+            echo "Validated site deployment succeeded."
+          else
+            echo "Validated site deployment failed after at most two attempts." >&2
+            exit 1
+          fi
