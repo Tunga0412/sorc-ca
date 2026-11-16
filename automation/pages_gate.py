@@ -1,7 +1,7 @@
 """Validate public aggregate exports before creating a GitHub Pages artifact.
 
-This checks structure and deployment eligibility. It never fetches source data
-or recalculates scientific intervals. Stale Live observations remain visible
+This checks SORCTracks structure and independently reconciles SORCShortages
+against its retained original snapshot without network access. Stale Live observations remain visible
 with the existing age warnings; they do not block unrelated website updates.
 """
 from __future__ import annotations
