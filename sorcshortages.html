@@ -396,6 +396,7 @@
           </tr>
         </thead>
         <tbody>
+          <tr><td>Version 1.1</td><td>Nov 16, 2026</td><td>Source audit, snapshot boundaries, duration corrections, retained original snapshots and research downloads</td></tr>
           <tr>
             <td>Version 1.0</td>
             <td>Aug 11, 2026</td>
@@ -429,7 +430,7 @@
         <div class="subsection-title">How to Cite</div>
         <div style="padding: 1.25rem 1.5rem; border: 1px solid var(--rule); background: white; margin-bottom: 1rem;">
           <div style="font-size: 0.68rem; color: var(--blue); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 0.6rem;">Visualization Tool</div>
-          <p style="font-size: 0.875rem; color: var(--mid); line-height: 1.8;">Tung A. SORCShortages: A view of Canadian drug shortage and discontinuation reports [Internet]. Version 1.0. Edmonton: Systematic Outcomes Research Collaborative; 2026 Aug 11 [cited YYYY Mon DD]. Available from: https://sorc.ca/sorcshortages.html</p>
+          <p style="font-size: 0.875rem; color: var(--mid); line-height: 1.8;">Tung A. SORCShortages: A view of Canadian drug shortage and discontinuation reports [Internet]. Version 1.1. Edmonton: Systematic Outcomes Research Collaborative; 2026 Nov 16 [cited YYYY Mon DD]. Available from: https://sorc.ca/sorcshortages.html</p>
         </div>
         <p style="font-size: 0.875rem; color: var(--mid); line-height: 1.8;">Source: <a href="https://healthproductshortages.ca/" class="inline-link" target="_blank" rel="noopener">Health Product Shortages Canada</a>, Ottawa: Health Canada.</p>
       </div>
@@ -440,18 +441,19 @@
 
         <p><strong>Source.</strong> The current release includes the reports available in the latest dated source snapshot. The embedded dashboard displays the current report counts and snapshot date.</p>
 
-        <p><strong>Episode construction.</strong> Each report is treated as one episode. Start date uses the actual start date when available, otherwise the anticipated start date. End date uses the observed end date when available. Active status is evaluated against the snapshot date. Anticipated reports with a future start date are not counted as active. Ongoing episodes are right-censored at the snapshot date. Estimated end dates are not used as observed ends.</p>
+        <p><strong>Episode construction.</strong> Each report is treated as one episode. Start date uses the actual start date when available, otherwise the anticipated start date. Only source-reported actual shortages with dates covering the snapshot are counted as active. Anticipated reports are not promoted to actual shortages when their start date passes. Observed/elapsed durations use resolved or actual-shortage reports only; anticipated, avoided and discontinuation reports do not receive a shortage duration. Future starts have no observed duration. A reported actual end after the snapshot is retained and flagged, while elapsed duration is censored at the snapshot. Estimated end dates are not observed ends.</p>
 
         <p><strong>Report types.</strong> Shortage and discontinuation are as classified in the source and are kept separate throughout. They are not combined in duration statistics or episode counts.</p>
 
         <p><strong>Tier 3.</strong> Reported directly from the source. It is not inferred or reclassified by SORCShortages.</p>
 
-        <p><strong>Pattern series.</strong> The active episode series begins March 2017, the start of the mandatory reporting era. Pre-2017 records remain searchable. Episodes with intervals overlapping the reporting-era window are included in the series even if their start date precedes 2017.</p>
+        <p><strong>Pattern series.</strong> The report-interval series begins March 2017, the start of the mandatory reporting era. Pre-2017 records remain searchable. Intervals overlapping the reporting-era window are included even if their start date precedes 2017. The series uses reported actual or anticipated dates and includes avoided reports with valid intervals; it describes reporting, not confirmed patient-level unavailability. No interval is extended beyond its dated source observation. The median and duration histogram mix completed durations and elapsed censored observations and are not survival estimates of time to resolution.</p>
 
-        <p><strong>Quality handling.</strong> Six source date conflicts and one unrecoverable calendar-date issue are retained and flagged rather than silently corrected. Avoidance dates preceding anticipated starts are treated as an expected lifecycle pattern. Missing optional product fields remain missing.</p>
+        <p><strong>Quality handling.</strong> Original reported dates are retained or preserved in the downloadable original snapshot. Invalid calendar dates, ends before starts, and reported end dates after the snapshot are flagged. The dashboard displays current flag counts. Avoidance dates before anticipated starts are treated as an expected lifecycle pattern. Missing optional fields remain missing.</p>
 
-        <p><strong>Update schedule.</strong> The dataset is refreshed monthly on the first of the month from the public Health Product Shortages Canada export. SORCShortages is maintained separately from the hosted SORCTracks workflows.</p>
+        <p><strong>Update schedule.</strong> The dataset is refreshed monthly on the first of the month from the Health Product Shortages Canada API, with public export and original CSV ZIP recovery paths. SORCShortages is maintained separately from the hosted SORCTracks workflows.</p>
 
+        <p><strong>Research downloads.</strong> <a href="data/records.csv" class="inline-link" download>CSV records</a>, <a href="data/consolidated.json" class="inline-link" download>full JSON</a>, <a href="data/source-audit.json" class="inline-link">source audit</a>, and a <a href="shortages-data-guide.txt" class="inline-link">data guide</a> are available. The dashboard links the exact original compressed snapshot for its release. Original snapshots are retained from version 1.1 onward. They are periodic captures, not a complete archive of every source revision. Retain the dated file and its hash for reproducible research.</p>
         <p>For media or research inquiries, contact <a href="mailto:info@sorc.ca" class="inline-link">info@sorc.ca</a>.</p>
       </div>
     </div>
