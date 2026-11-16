@@ -53,7 +53,9 @@ jobs:
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           for attempt in 1 2 3; do
             git add data/consolidated.json data/consolidated.js data/records.csv data/source-audit.json data/snapshots
-            git diff --cached --check
+            # CSV preserves source whitespace and standard CRLF records; validate its
+            # values with validate_shortages above, rather than code style rules.
+            git diff --cached --check -- data/consolidated.json data/consolidated.js data/source-audit.json
             if git diff --cached --quiet; then
               echo 'Another run already published this accepted snapshot'
               exit 0
