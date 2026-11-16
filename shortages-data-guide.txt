@@ -1,0 +1,63 @@
+SORCShortages 1.1 — Research data guide
+Released 16 November 2026
+
+Source and scope
+These files describe publicly reported Canadian drug shortages and discontinuations from Health Product Shortages Canada. One source report is one record, identified by type:report_id. Reports can be anticipated, avoided, resolved, reversed or discontinued. They do not measure local stock, unfilled prescriptions, patient harm, sales volumes or causal supply-chain effects.
+
+Downloads
+data/records.csv contains the full dated record set. CSV fields are quoted when they contain commas or newlines. Import DIN and report_id as text to preserve leading zeros. Booleans are True/False; missing values are empty.
+data/consolidated.json contains the same records, summaries, chart series, provenance and audit receipt. JSON is preferable for preserving null values and types. The browser JavaScript copy contains exactly the same JSON object.
+data/source-audit.json records the full source comparison and census changes from the previous publication.
+The dashboard's Original snapshot link identifies the exact retained source input at data/snapshots/<date>-<hash>.json.gz. The full SHA-256 of its decompressed bytes is in provenance.raw_snapshot_sha256. Keep this file and the calculation version/code revision with your analysis.
+
+Snapshot meaning
+The snapshot date uses America/Edmonton. UTC capture_started_at and capture_completed_at delimit the collection period; the public source can be revised during that period. A capture is not an atomic midnight census. Original snapshots are retained from version 1.1 onward. A record's history array describes retained observations used in that build; it is not the official source's complete revision history. Official report/history links can expose later corrections, including retroactive actual start dates. Use the source version appropriate to the analysis cutoff.
+
+Record fields
+report_id: original report identifier, stored as text.
+record_key: type:report_id, unique within the dataset.
+type: shortage or discontinuation. These are never combined in duration summaries.
+din: source Drug Identification Number, as text; can be missing.
+brand_name, common_name, company_name, active_ingredient, strength, dosage_form, route, packaging, atc_code, atc_description: source product/report fields. Multiline ingredients and strengths remain multiline.
+status: canonical source status. active_confirmed means the source's Actual shortage label; it does not mean independently confirmed patient-level unavailability. Other values are anticipated_shortage, avoided_shortage, resolved, discontinued, to_be_discontinued and reversed.
+source_status: exact status value in the captured input, before canonical labels.
+tier_3: source Tier 3 flag; SORC does not assign tiers. The summary counts shortage reports with this flag across statuses, not only currently open reports.
+market_status: product market status reported at capture, such as MARKETED, DORMANT or CANCELLED POST MARKET. It is not necessarily market status at the original shortage date.
+product_updated_date: date of the captured product information, where supplied.
+created_date, updated_date: report creation and update dates, where supplied.
+reason: source reason text.
+company_comments_en/fr, health_canada_comments_en/fr, mitigation_en/fr: separately retained source comments and supply-mitigation text. Missing comments do not establish that no mitigation occurred.
+english_description/french_description: legacy description fields retained for compatibility; use the separate comment fields for complete source notes.
+
+Dates
+actual_start_date, anticipated_start_date, actual_end_date, estimated_end_date, actual_discontinuation_date, anticipated_discontinuation_date, remaining_supply_date: source dates, normalized to calendar dates. Invalid/unrecoverable dates become null, with original values preserved in the original snapshot.
+start_date: actual start when available, otherwise anticipated start; the analogous discontinuation date is used for discontinuations.
+start_date_source: which source date supplies start_date.
+end_date: source actual end for shortages or source actual discontinuation date. A future value is retained and flagged; it is not an observed resolution at the snapshot.
+future_start: the selected start is after the record's last observation.
+end_after_snapshot: a reported end is after the last observation.
+date_order_issue: end before start, excluding avoided-before-start reports.
+avoided_before_start: an avoided report was closed before its anticipated start; this is a normal reporting lifecycle and is not silently converted into a shortage.
+date_plausibility_issue and invalid_date_fields: invalid calendar dates or dates outside the supported 1900–2100 range in original source date fields. Flags are research review aids, not independent source verification.
+
+Calculated measures
+active_at_snapshot: source status is Actual shortage, start is on/before the snapshot and no actual end on/before the snapshot exists; the record must be present in the latest observation. Anticipated reports are not promoted to actual shortages when their date passes.
+duration_days: calendar end-minus-start days for resolved or actual-shortage reports with usable dates. An open actual shortage is measured only through the source observation date. Future starts, anticipated/avoided reports and discontinuations have no shortage duration. Negative intervals have no duration.
+censored: the duration is an elapsed observation rather than an observed completed duration. Reported future actual ends are retained but do not extend elapsed duration into the future.
+ongoing: compatibility field with the same meaning as censored at the last observation; do not infer availability at a later date.
+last_seen_snapshot and present_in_latest_snapshot: prevent records absent from a later captured snapshot being extended indefinitely.
+
+Charts and denominators
+The overlap series counts valid reported date intervals overlapping each calendar month, including anticipated and avoided reports with valid intervals. It is truncated at the dated source observation. It describes reporting intervals, not a count of shortages actually experienced by patients.
+The start series counts reported selected starts on/before the observation date. It includes source actual and anticipated dates.
+Both chart series begin in March 2017, the mandatory-reporting era. Earlier reports remain searchable. A partially observed latest month must not be compared to complete months as if it had full follow-up.
+The duration histogram and median mix completed durations and elapsed censored observations. They are not survival estimates or estimates of median time to resolution. duration_records supplies their denominator; right_censored_records identifies censored observations.
+Summary metrics and charts always describe the full snapshot. Explorer filters affect table results only. Downloads contain the full dataset.
+
+Verification and reproducibility
+The source audit compares every source report identity, 40 source fields, calculated date/status rules, summary counts, all chart months and duration bins against the retained original input using a checker that does not import the production normalizer. Separate hand-specified original-report fixtures exercise source errors and changed-state chronology. This establishes transformation consistency with the captured source, not the real-world accuracy or completeness of mandatory reporting.
+Every publication retains original inputs and the producer code hashes. The publication gate rejects mismatched JSON/JavaScript/CSV, missing original snapshots, failed source audits and datasets built with older producer code.
+
+Citation
+Tung A. SORCShortages: A view of Canadian drug shortage and discontinuation reports [Internet]. Version 1.1. Edmonton: Systematic Outcomes Research Collaborative; 2026 Nov 16 [cited YYYY Mon DD]. Available from https://sorc.ca/sorcshortages.html
+Also cite the original Health Product Shortages Canada source and specify your download/snapshot date. Source content remains attributable to its original providers; this guide does not grant rights over third-party material.

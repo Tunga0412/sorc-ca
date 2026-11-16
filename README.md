@@ -33,3 +33,9 @@ The hosting pages load the tools through relative iframe paths. Keep the tool fi
 The hosted Live workflow generates a candidate from the current AHS public page, runs the Live parser and health checks, and commits the result only after validation. The Shortages workflow uses the documented Health Product Shortages Canada API, with the account email and password stored as the GitHub Actions secrets `SORCSHORTAGES_API_EMAIL` and `SORCSHORTAGES_API_PASSWORD`. The independent public health workflow checks SORCTracks and SORCShortages every six hours for missing data, stale outputs, fixture data, and known map errors.
 
 The local updater remains the fallback for historical SORCTracks releases until the historical source corpus and baseline files are moved into durable hosted storage.
+
+## SORCShortages 1.1 research downloads
+
+The Shortages producer retains each original source snapshot in `data/snapshots/`, publishes full CSV/JSON downloads and `data/source-audit.json`, and independently checks every captured report before publication. See `shortages-data-guide.txt` for field definitions and interpretation. Its Python 3.13.16 parser dependencies are pinned separately in `sorcshortages/requirements.txt`.
+
+Changes are checked by the Shortages release-audit workflow before merge. The main-only monthly publisher repeats source/date regression tests and the full source audit. A successful update triggers the existing validated Pages deployment. The Pages gate also verifies source hashes, producer code, CSV/JSON/JavaScript agreement and the source census, so older data cannot be deployed with a changed producer.

@@ -48,7 +48,7 @@ def parse_date(value: Any) -> str | None:
         candidate = match.group(0)
         if is_implausible_date(candidate):
             return None
-        return candidate
+        return date.fromisoformat(candidate).isoformat()
     for fmt in ("%Y/%m/%d", "%m/%d/%Y", "%d/%m/%Y"):
         try:
             from datetime import datetime
@@ -67,8 +67,11 @@ def is_implausible_date(value: Any) -> bool:
     match = re.search(r"\d{4}-\d{2}-\d{2}", str(value).strip())
     if not match:
         return False
-    year = int(match.group(0)[:4])
-    return year < 1900 or year > 2100
+    try:
+        parsed = date.fromisoformat(match.group(0))
+    except ValueError:
+        return True
+    return parsed.year < 1900 or parsed.year > 2100
 
 
 def as_bool(value: Any) -> bool:
@@ -97,10 +100,23 @@ def infer_report_type(record: dict[str, Any]) -> str:
         value = value.get("label") or value.get("name") or value.get("value") or ""
     text = str(value).lower()
     if text:
-        return "discontinuation" if "discontinu" in text else "shortage"
+        if "discontinu" in text: return "discontinuation"
+        if "shortage" in text: return "shortage"
+        raise ValueError(f"Unrecognized report type: {value!r}")
     if any("discontinu" in _norm_key(str(k)) for k in record):
         return "discontinuation"
-    return "shortage"
+    if any("shortage" in _norm_key(str(k)) for k in record): return "shortage"
+    raise ValueError("Source row has no recognized report type")
+
+
+def canonical_status(value: Any) -> str:
+    label = _text_value(value, "Unknown")
+    key = re.sub(r"[\s-]+", "_", label.strip().lower())
+    mapping = {"actual_shortage":"active_confirmed", "actual":"active_confirmed", "anticipated":"anticipated_shortage", "avoided":"avoided_shortage"}
+    key = mapping.get(key, key)
+    if key not in {"active_confirmed","anticipated_shortage","avoided_shortage","resolved","discontinued","to_be_discontinued","reversed"}:
+        raise ValueError(f"Unrecognized source status: {label!r}")
+    return key
 
 
 def normalize_record(record: dict[str, Any], report_type: str | None = None) -> dict[str, Any]:
@@ -137,13 +153,16 @@ def normalize_record(record: dict[str, Any], report_type: str | None = None) -> 
         end_date = actual_discontinuation
         status = _find(record, ("discontinuation_status", "discontinuation status", "status"))
 
-    status_text = str(status or "Unknown").strip()
+    source_status = _text_value(status, "Unknown")
+    status_text = canonical_status(status)
     status_lower = status_text.lower()
     closed = any(term in status_lower for term in ("resolved", "avoided", "discontinued", "reversed"))
     ongoing = inferred_type == "shortage" and not end_date and not closed
-    selected_start_raw = actual_start_raw if actual_start else anticipated_start_raw
+    selected_start_raw = (actual_start_raw if actual_start else anticipated_start_raw) if inferred_type == "shortage" else (actual_discontinuation_raw if actual_discontinuation else anticipated_discontinuation_raw)
     selected_end_raw = actual_end_raw if inferred_type == "shortage" else actual_discontinuation_raw
-    selected_date_plausibility_issue = is_implausible_date(selected_start_raw) or is_implausible_date(selected_end_raw)
+    original_dates = {"actual_start_date":actual_start_raw,"anticipated_start_date":anticipated_start_raw,"actual_end_date":actual_end_raw,"estimated_end_date":anticipated_end_raw,"actual_discontinuation_date":actual_discontinuation_raw,"anticipated_discontinuation_date":anticipated_discontinuation_raw}
+    invalid_date_fields = [key for key,value in original_dates.items() if is_implausible_date(value)]
+    selected_date_plausibility_issue = bool(invalid_date_fields)
 
     return {
         "report_id": str(report_id) if report_id is not None else None,
@@ -151,6 +170,13 @@ def normalize_record(record: dict[str, Any], report_type: str | None = None) -> 
         "type": inferred_type,
         "din": str(_find(record, ("din", "drug_identification_number", "drug identification number"), "")),
         "brand_name": _text_value(_find(record, ("brand.name", "brand_name", "brand name", "en_drug_brand_name"), "")),
+        "product_updated_date": parse_date((record.get("drug") or {}).get("updated_date")) if isinstance(record.get("drug"),dict) else None,
+        "company_comments_en": _text_value(_find(record,("en_comments","en_discontinuation_comments","Company comments"),"")),
+        "health_canada_comments_en": _text_value(_find(record,("hc_en_comments","Health Canada comments"),"")),
+        "company_comments_fr": _text_value(_find(record,("fr_comments","fr_discontinuation_comments"),"")),
+        "health_canada_comments_fr": _text_value(_find(record,("hc_fr_comments",),"")),
+        "mitigation_en": _text_value(_find(record,("en_supply_disruption_mitigation",),"")),
+        "mitigation_fr": _text_value(_find(record,("fr_supply_disruption_mitigation",),"")),
         "company_name": str(_find(record, ("company.name", "company_name", "company name"), "")),
         "common_name": _text_value(_find(record, ("common.name", "common_name", "common or proper name", "en_drug_common_name"), "")),
         "active_ingredient": _text_value(_find(record, ("ingredients", "active_ingredient", "active_ingredients", "active ingredient(s)", "en_ingredients"), "")),
@@ -161,6 +187,8 @@ def normalize_record(record: dict[str, Any], report_type: str | None = None) -> 
         "atc_code": str(_find(record, ("atc.code", "atc_code", "atc code", "atc_number"), "")),
         "atc_description": str(_find(record, ("atc_description", "atc description"), "")),
         "status": status_text,
+        "source_status": source_status,
+        "market_status": _text_value(_find(record, ("market_status", "market status", "drug.market_status", "current_status"), "")),
         "tier_3": as_bool(_find(record, ("tier_3", "tier3", "tier 3 status", "tier_3_status"), False)),
         "anticipated_start_date": anticipated_start,
         "actual_start_date": actual_start,
@@ -173,6 +201,7 @@ def normalize_record(record: dict[str, Any], report_type: str | None = None) -> 
         "start_date_source": start_date_source,
         "end_date": end_date,
         "date_plausibility_issue": selected_date_plausibility_issue,
+        "invalid_date_fields": invalid_date_fields,
         "ongoing": ongoing,
         "updated_date": parse_date(_find(record, ("last.updated", "last_updated", "updated_date", "updated date"))),
         "created_date": parse_date(_find(record, ("date.created", "created_date", "date created"))),

@@ -17,7 +17,7 @@ REPORTING_ERA_START = "2017-03"
 def _days_between(start: str | None, end: str | None, censor_date: str) -> int | None:
     if not start:
         return None
-    finish = end or censor_date
+    finish = min(end, censor_date) if end else censor_date
     try:
         days = (date.fromisoformat(finish) - date.fromisoformat(start)).days
         return days if days >= 0 else None
@@ -50,7 +50,7 @@ def _active_at(row: dict[str, Any], snapshot_date: str) -> bool:
     if row.get("type") != "shortage" or not row.get("start_date") or row["start_date"] > snapshot_date:
         return False
     status = str(row.get("status") or "").lower()
-    if any(term in status for term in ("resolved", "avoided", "discontinued", "reversed")):
+    if status != "active_confirmed":
         return False
     return not row.get("end_date") or row["end_date"] > snapshot_date
 
@@ -66,18 +66,19 @@ def _month_range(start_month: str, end_month: str) -> list[str]:
     return months
 
 
-def _episode_overlaps_month(row: dict[str, Any], month: str) -> bool:
+def _episode_overlaps_month(row: dict[str, Any], month: str, snapshot_date: str) -> bool:
     """Count a reported shortage when its episode overlaps a calendar month."""
     if row.get("type") != "shortage" or not row.get("start_date"):
         return False
     start = date.fromisoformat(row["start_date"])
-    end = date.fromisoformat(row["end_date"]) if row.get("end_date") else None
+    cutoff = date.fromisoformat(snapshot_date)
+    end = min(date.fromisoformat(row["end_date"]), cutoff) if row.get("end_date") else cutoff
     month_start = date.fromisoformat(f"{month}-01")
     next_month = date(month_start.year + (month_start.month == 12), 1 if month_start.month == 12 else month_start.month + 1, 1)
     month_end = next_month.fromordinal(next_month.toordinal() - 1)
-    if end and end < start:
+    if end < start:
         return False
-    return start <= month_end and (end is None or end >= month_start)
+    return start <= month_end and end >= month_start
 
 
 def _load_snapshot(path: Path) -> tuple[str, dict[str, Any]]:
@@ -123,10 +124,16 @@ def build_consolidated(snapshot_dir: str | Path, output_path: str | Path) -> dic
         clean["avoided_before_start"] = bool(source_order_issue and str(row.get("status") or "").lower() == "avoided_shortage")
         clean["date_order_issue"] = bool(source_order_issue and not clean["avoided_before_start"])
         clean["date_plausibility_issue"] = bool(row.get("date_plausibility_issue"))
-        clean["future_start"] = bool(row["type"] == "shortage" and row.get("start_date") and row["start_date"] > censor_date)
-        clean["active_at_snapshot"] = _active_at(row, censor_date)
-        clean["duration_days"] = _days_between(row.get("start_date"), row.get("end_date"), censor_date)
-        clean["censored"] = bool(clean["active_at_snapshot"] and not row.get("end_date"))
+        last_seen = histories[key][-1]["snapshot_date"]
+        clean["last_seen_snapshot"] = last_seen
+        clean["present_in_latest_snapshot"] = last_seen == censor_date
+        clean["future_start"] = bool(row.get("start_date") and row["start_date"] > last_seen)
+        clean["end_after_snapshot"] = bool(row.get("end_date") and row["end_date"] > last_seen)
+        clean["active_at_snapshot"] = clean["present_in_latest_snapshot"] and _active_at(row, censor_date)
+        duration_eligible = row["type"] == "shortage" and not clean["future_start"] and (row["status"] == "active_confirmed" or (row["status"] == "resolved" and bool(row.get("end_date")) and row["end_date"] <= last_seen))
+        clean["duration_days"] = _days_between(row.get("start_date"), row.get("end_date"), last_seen) if duration_eligible else None
+        clean["censored"] = bool(duration_eligible and row.get("start_date") and (not row.get("end_date") or clean["end_after_snapshot"]))
+        clean["ongoing"] = clean["censored"]
         clean["history"] = histories[key]
         records.append(clean)
     records.sort(key=lambda r: (r["type"], r.get("start_date") or "9999-99-99", r.get("report_id") or ""))
@@ -136,11 +143,11 @@ def build_consolidated(snapshot_dir: str | Path, output_path: str | Path) -> dic
     first_month = max(first_month, REPORTING_ERA_START)
     last_month = _month(censor_date)
     reconstructed_months = _month_range(first_month, last_month)
-    monthly_active = Counter({month: sum(_episode_overlaps_month(row, month) for row in shortage_records) for month in reconstructed_months})
+    monthly_active = Counter({month: sum(_episode_overlaps_month(row, month, min(censor_date, row["last_seen_snapshot"])) for row in shortage_records) for month in reconstructed_months})
     monthly_new = Counter(
         _month(r.get("start_date"))
         for r in shortage_records
-        if _month(r.get("start_date")) and r.get("start_date") <= censor_date
+        if _month(r.get("start_date")) and r.get("start_date") <= min(censor_date, r["last_seen_snapshot"])
     )
     duration_buckets = Counter()
     for row in records:
@@ -154,7 +161,7 @@ def build_consolidated(snapshot_dir: str | Path, output_path: str | Path) -> dic
     status_counts = Counter(r["status"] for r in records)
     tier_counts = Counter("Tier 3" if r["tier_3"] else "Other" for r in records if r["type"] == "shortage")
     output = {
-        "schema_version": 1,
+        "schema_version": 2,
         "generated_at": datetime.now(UTC).replace(microsecond=0).isoformat().replace("+00:00", "Z"),
         "latest_snapshot": snapshots[-1][0],
         "snapshot_count": len(snapshots),
@@ -172,6 +179,9 @@ def build_consolidated(snapshot_dir: str | Path, output_path: str | Path) -> dic
             "date_plausibility_issues": sum(1 for r in records if r.get("date_plausibility_issue")),
             "avoided_before_start_records": sum(1 for r in records if r.get("avoided_before_start")),
             "future_start_records": sum(1 for r in records if r.get("future_start")),
+            "end_after_snapshot_records": sum(1 for r in records if r.get("end_after_snapshot")),
+            "right_censored_records": sum(1 for r in records if r.get("censored")),
+            "missing_latest_snapshot_records": sum(1 for r in records if not r["present_in_latest_snapshot"]),
         },
         "series": {
             "active_shortages": [{"month": k, "value": monthly_active[k]} for k in sorted(monthly_active)],

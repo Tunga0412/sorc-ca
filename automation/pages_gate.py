@@ -1,7 +1,7 @@
 """Validate public aggregate exports before creating a GitHub Pages artifact.
 
-This checks structure and deployment eligibility. It never fetches source data
-or recalculates scientific intervals. Stale Live observations remain visible
+This checks SORCTracks structure and independently reconciles SORCShortages
+against its retained original snapshot without network access. Stale Live observations remain visible
 with the existing age warnings; they do not block unrelated website updates.
 """
 from __future__ import annotations
@@ -12,14 +12,51 @@ import json
 import math
 from pathlib import Path
 import shutil
+import csv
+import gzip
+import sys
 from public_data_reader import FIVE, public_constant
 
 LIVE = 'sorctracks_live.html'
 HISTORICAL = 'sorctracks_tool.html'
 SOURCE = 'https://www.albertahealthservices.ca/br/Page17594.aspx'
 STATUSES = {'active_now', 'scheduled', 'unclear'}
-STATIC_SUFFIXES = {'.html', '.ico', '.png', '.jpg', '.jpeg', '.webp', '.svg', '.css', '.js', '.json', '.txt', '.xml', '.pdf', '.woff', '.woff2'}
-EXCLUDED_ROOTS = {'automation', 'sorcshortages', '.github', '.git', '_site'}
+STATIC_SUFFIXES = {'.html', '.ico', '.png', '.jpg', '.jpeg', '.webp', '.svg', '.css', '.js', '.json', '.csv', '.gz', '.txt', '.xml', '.pdf', '.woff', '.woff2'}
+EXCLUDED_ROOTS = {'automation', 'sorcshortages', 'tests', '.github', '.git', '_site'}
+
+def validate_shortages(source):
+    """Require source/candidate agreement before any static artifact exists."""
+    source=Path(source).resolve()
+    data=json.loads((source/'data/consolidated.json').read_text())
+    require(data.get('schema_version')==2,'Shortages schema has not been audited')
+    require(data.get('source_audit',{}).get('passed') is True,'Shortages source audit is not accepted')
+    require(len(data.get('records',[]))>=20000,'Shortages report count is below production floor')
+    browser=(source/'data/consolidated.js').read_text()
+    prefix='window.SORC_DATA = '
+    require(browser.startswith(prefix),'Shortages browser data has no expected assignment')
+    require(json.loads(browser[len(prefix):].strip().removesuffix(';'))==data,'Shortages JSON and browser data differ')
+    provenance=data['provenance']
+    files={'sorcshortages/schema.py','sorcshortages/pipeline.py','sorcshortages/api.py','sorcshortages/cli.py','sorcshortages/audit.py','automation/shortages_monthly.py'}
+    require(set(provenance.get('producer_code_sha256',{}))==files,'Shortages producer inventory differs')
+    for name in files:
+        require(hashlib.sha256((source/name).read_bytes()).hexdigest()==provenance['producer_code_sha256'][name],'Shortages dataset predates its producer: '+name)
+    raw_path=(source/'data'/provenance['raw_snapshot_path']).resolve()
+    require(raw_path.is_relative_to(source/'data/snapshots'),'Shortages original snapshot path is outside archive')
+    raw=gzip.decompress(raw_path.read_bytes())
+    require(hashlib.sha256(raw).hexdigest()==provenance['raw_snapshot_sha256'],'Original Shortages snapshot hash differs')
+    original=json.loads(raw)
+    require(aware(original['capture_started_at'])<=aware(original['capture_completed_at']),'Source capture timestamps are reversed')
+    sys.path.insert(0,str(source))
+    from sorcshortages.audit import audit_dataset
+    receipt=audit_dataset(original,data)
+    require(receipt['source_records']==provenance['source_report_count'],'Shortages source count differs')
+    with (source/'data/records.csv').open(encoding='utf-8-sig',newline='') as handle:
+        csv_rows=list(csv.DictReader(handle))
+    require(len(csv_rows)==len(data['records']),'CSV report census differs')
+    for csv_row,row in zip(csv_rows,data['records']):
+        expected={key:('' if value is None else ';'.join(value) if isinstance(value,list) else str(value)) for key,value in row.items() if key!='history'}
+        require(csv_row==expected,'CSV record fields differ: '+row['record_key'])
+    return {'records':receipt['source_records'],'source_fields_checked':receipt['source_fields_checked'],'months_checked':receipt['months_checked'],'raw_snapshot_sha256':provenance['raw_snapshot_sha256']}
 
 def require(condition, message):
     if not condition:
@@ -92,10 +129,11 @@ def build(source, destination):
     source, destination = source.resolve(), destination.absolute()
     require(source.is_dir() and not destination.exists(), 'Artifact directory must be new')
     require(destination.resolve() != source, 'Artifact must not replace source')
+    require(not destination.resolve().is_relative_to(source), 'Artifact must be outside source')
     for path in source.rglob('*'):
         if '.git' not in path.relative_to(source).parts:
             require(not path.is_symlink(), 'Symlink in public source')
-    result = {'live': validate_live((source / LIVE).read_bytes()), 'historical': validate_historical((source / HISTORICAL).read_bytes())}
+    result = {'live': validate_live((source / LIVE).read_bytes()), 'historical': validate_historical((source / HISTORICAL).read_bytes()), 'shortages': validate_shortages(source)}
     destination.mkdir(parents=True)
     copied = []
     for path in sorted(source.rglob('*')):

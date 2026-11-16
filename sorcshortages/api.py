@@ -82,20 +82,39 @@ class ShortagesApiClient:
         if not self.token:
             self.login()
         rows: list[dict[str, Any]] = []
+        identifiers: set[str] = set()
         offset = 0
+        expected_total = None
         while True:
             payload = self.search_page(limit=100, offset=offset)
-            page = payload.get("data") or []
+            page = payload.get("data")
+            if not isinstance(page, list) or not isinstance(payload.get("total"), (int, str)):
+                raise ShortagesApiError("API omitted its report array or total")
+            try:
+                expected_total = int(payload["total"])
+                remaining = int(payload["remaining"])
+            except (ValueError, TypeError, KeyError) as exc:
+                raise ShortagesApiError("API pagination counts are invalid") from exc
+            if expected_total < 0 or remaining < 0:
+                raise ShortagesApiError("API pagination counts are negative")
+            for row in page:
+                if not isinstance(row, dict):
+                    raise ShortagesApiError("API report is not an object")
+                nested = row.get("report") if isinstance(row.get("report"), dict) else {}
+                identifier = row.get("report.id") or row.get("report_id") or row.get("id") or nested.get("id")
+                if identifier is None or str(identifier) in identifiers:
+                    raise ShortagesApiError("API contains a missing or repeated report ID")
+                identifiers.add(str(identifier))
             rows.extend(page)
             if len(rows) == len(page) or len(rows) % 1000 < len(page):
-                total = payload.get("total", "?")
-                print(f"reports: fetched {len(rows)} / {total}", flush=True)
-            if not page or int(payload.get("remaining", 0) or 0) <= 0:
+                print(f"reports: fetched {len(rows)} / {expected_total}", flush=True)
+            if remaining == 0:
+                if len(rows) != expected_total:
+                    raise ShortagesApiError(f"API returned {len(rows)} rows but reported {expected_total}")
                 break
+            if not page or len(rows) >= expected_total:
+                raise ShortagesApiError("API pagination stopped making consistent progress")
             offset += len(page)
-            # Protect the monthly job from an unexpected pagination response.
-            if offset > int(payload.get("total", offset) or offset) + 100:
-                raise ShortagesApiError("Pagination response was inconsistent with total")
             time.sleep(0.05)
         return rows
 
@@ -104,9 +123,11 @@ def _read_export_bytes(content: bytes) -> dict[str, list[dict[str, str]]]:
     """Read the site's two-CSV export, including its two-line preamble."""
     result: dict[str, list[dict[str, str]]] = {"shortages": [], "discontinuations": []}
     with ZipFile(io.BytesIO(content)) as archive:
+        csv_files = 0
         for name in archive.namelist():
             if name.endswith("/") or not name.lower().endswith(".csv"):
                 continue
+            csv_files += 1
             text = archive.read(name).decode("utf-8-sig", errors="replace")
             parsed = list(csv.reader(io.StringIO(text)))
             header_index = next(
@@ -120,6 +141,11 @@ def _read_export_bytes(content: bytes) -> dict[str, list[dict[str, str]]]:
             if header_index is None:
                 raise ShortagesApiError(f"Export CSV has no report ID header: {name}")
             headers = parsed[header_index]
+            if len(headers) != len(set(headers)):
+                raise ShortagesApiError(f"Duplicate CSV headers: {name}")
+            for values in parsed[header_index+1:]:
+                if any(value.strip() for value in values) and len(values) != len(headers):
+                    raise ShortagesApiError(f"CSV row width differs from its header: {name}")
             rows = [
                 {header: value for header, value in zip(headers, values)}
                 for values in parsed[header_index + 1 :]
@@ -128,6 +154,8 @@ def _read_export_bytes(content: bytes) -> dict[str, list[dict[str, str]]]:
             lower_name = name.lower()
             key = "discontinuations" if "discontinu" in lower_name else "shortages"
             result[key].extend(rows)
+        if not csv_files:
+            raise ShortagesApiError("Source ZIP contains no report CSV files")
     return result
 
 
@@ -161,6 +189,8 @@ class PublicExportClient:
             return self.opener.open(request, timeout=self.timeout)
         except HTTPError as exc:
             detail = exc.read().decode("utf-8", errors="replace")
+            if exc.code == 403 and "just a moment" in detail.lower():
+                raise ShortagesApiError("Provider security verification blocks the automated public export. Use the API or a manually downloaded original CSV ZIP; the accepted dataset is retained.") from exc
             raise ShortagesApiError(f"Public export request failed ({exc.code}): {detail[:500]}") from exc
         except URLError as exc:
             raise ShortagesApiError(f"Could not reach the public export: {exc.reason}") from exc
@@ -188,9 +218,14 @@ class PublicExportClient:
         soup = BeautifulSoup(html, "html.parser")
         form = soup.find("form", attrs={"name": "export"})
         if form is None:
+            if any(marker in soup.get_text(" ",strip=True).lower() for marker in ("no results", "no reports found")):
+                return 0, []
             raise ShortagesApiError("Public search page did not expose its export form")
         match = re.search(r"Showing\s+\d+\s+to\s+\d+\s+of\s+([\d,]+)", soup.get_text(" ", strip=True))
         if not match:
+            visible = soup.get_text(" ",strip=True).lower()
+            if any(marker in visible for marker in ("no results", "no reports found", "0 to 0 of 0")):
+                return 0, []
             raise ShortagesApiError("Public search page did not expose a result count")
         total = int(match.group(1).replace(",", ""))
         values: list[tuple[str, str]] = []
@@ -212,6 +247,8 @@ class PublicExportClient:
 
     def fetch_range(self, start_date: str, end_date: str) -> tuple[int, dict[str, list[dict[str, str]]]]:
         total, form_values = self._export_form(start_date, end_date)
+        if total == 0:
+            return 0, {"shortages": [], "discontinuations": []}
         if total > 10000:
             raise ShortagesApiError(
                 f"Export window {start_date} to {end_date} contains {total} reports, over the 10,000-record limit"

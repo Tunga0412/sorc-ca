@@ -41,3 +41,13 @@ The monthly Shortages workflow uses the documented Health Product Shortages Cana
 The workflow pulls the complete report stream, rebuilds the existing episode model, validates report counts, report types, date metadata, and monthly series, then commits the two data files only after validation. A failed pull leaves the last accepted dataset in place.
 
 The source account has a 90-day password reset requirement. The API secret must therefore be rotated before expiry. The public health workflow will continue to identify a stale Shortages dataset if a monthly run stops succeeding.
+
+## SORCShortages 1.1 verification and recovery
+
+The main-only Shortages publisher uses Ubuntu 24.04, Python 3.13.16 and `sorcshortages/requirements.txt`. Regression tests and an independent full source-to-output audit precede publication. The accepted publication includes CSV/JSON/JavaScript, its original compressed source and a source-audit receipt. The validated Pages workflow is triggered after the publisher succeeds and verifies those exact files again before creating an artifact.
+
+An incomplete census, duplicate report, unrecognized status/type, inconsistent export or loss exceeding the 99% retention floor refuses publication. Added/removed report keys are retained in the source-audit receipt. A source-reported date inconsistency is preserved and flagged; it is not silently corrected.
+
+The provider can block automated public exports at its security layer. Such a refusal is reported explicitly and leaves the accepted dataset in place. A maintainer can download a complete original provider ZIP in a regular browser and run `python -m automation.shortages_monthly --source csv-zip --input-export /path/to/original-export.zip`; the same source audit, census checks and provenance retention apply. A retained source can be replayed with `--source snapshot --input-snapshot /path/to/original.json.gz`. Its original snapshot date and capture interval are preserved.
+
+Before a manual data commit, run `python -B tests/test_shortages.py` and the Pages gate against the complete checkout with an output directory outside that checkout. Review source-audit additions/removals and retain raw snapshots. Do not change SORCTracks data to repair Shortages. The source-audit receipt establishes consistency with captured reports, not clinical accuracy or a complete source-revision archive.
