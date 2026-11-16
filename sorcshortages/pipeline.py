@@ -14,6 +14,30 @@ from .schema import normalize_record, parse_date
 REPORTING_ERA_START = "2017-03"
 
 
+def _duration_exclusion_reason(row: dict[str, Any]) -> str | None:
+    """Explain absent durations without presenting non-events as source errors."""
+    if row['duration_days'] is not None:
+        return None
+    if row['type'] != 'shortage':
+        return 'Not applicable: discontinuation report.'
+    if row['status'] not in {'active_confirmed', 'resolved'}:
+        status = row['status'].replace('_', ' ')
+        return f'Not applicable: {status} report.'
+    if row['date_order_issue']:
+        reason = 'the reported end date precedes the start date.'
+    elif not row.get('start_date'):
+        reason = 'the source start date is missing or invalid.'
+    elif row['future_start']:
+        reason = 'the reported start date is after the source snapshot.'
+    elif not row.get('end_date'):
+        reason = 'the resolved report has no usable actual end date.'
+    elif row['end_after_snapshot']:
+        reason = "the resolved report's actual end date is after the source snapshot."
+    else:
+        reason = 'the source does not provide a usable observed interval.'
+    return 'Duration Withheld: ' + reason + ' This report is excluded from duration statistics.'
+
+
 def _days_between(start: str | None, end: str | None, censor_date: str) -> int | None:
     if not start:
         return None
@@ -132,6 +156,7 @@ def build_consolidated(snapshot_dir: str | Path, output_path: str | Path) -> dic
         clean["active_at_snapshot"] = clean["present_in_latest_snapshot"] and _active_at(row, censor_date)
         duration_eligible = row["type"] == "shortage" and not clean["future_start"] and (row["status"] == "active_confirmed" or (row["status"] == "resolved" and bool(row.get("end_date")) and row["end_date"] <= last_seen))
         clean["duration_days"] = _days_between(row.get("start_date"), row.get("end_date"), last_seen) if duration_eligible else None
+        clean["duration_exclusion_reason"] = _duration_exclusion_reason(clean)
         clean["censored"] = bool(duration_eligible and row.get("start_date") and (not row.get("end_date") or clean["end_after_snapshot"]))
         clean["ongoing"] = clean["censored"]
         clean["history"] = histories[key]

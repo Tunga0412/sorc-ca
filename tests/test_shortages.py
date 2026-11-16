@@ -89,6 +89,48 @@ class SourceRules(unittest.TestCase):
         self.assertFalse(r['active_at_snapshot'])
         self.assertFalse(r['censored'])
 
+    def test_withheld_durations_explain_the_specific_source_problem(self):
+        suffix=' This report is excluded from duration statistics.'
+        cases=[
+            ({'report_id':'3746','actual_start_date':'2017-04-30','actual_end_date':'2017-03-20','status':'resolved'},'the reported end date precedes the start date.'),
+            ({'report_id':'missing','status':'active_confirmed'},'the source start date is missing or invalid.'),
+            ({'report_id':'bad','actual_start_date':'0008-08-31','status':'active_confirmed'},'the source start date is missing or invalid.'),
+            ({'report_id':'future','actual_start_date':'2026-11-02','status':'active_confirmed'},'the reported start date is after the source snapshot.'),
+            ({'report_id':'no-end','actual_start_date':'2026-10-01','status':'resolved'},'the resolved report has no usable actual end date.'),
+            ({'report_id':'future-end','actual_start_date':'2026-10-01','actual_end_date':'2026-11-02','status':'resolved'},"the resolved report's actual end date is after the source snapshot."),
+        ]
+        for raw,reason in cases:
+            with self.subTest(raw['report_id']):
+                r=self.build([raw])['records'][0]
+                self.assertIsNone(r['duration_days'])
+                self.assertEqual(r['duration_exclusion_reason'],'Duration Withheld: '+reason+suffix)
+
+    def test_non_applicable_durations_are_not_called_withheld(self):
+        for status in ['anticipated_shortage','avoided_shortage']:
+            r=self.build([{'report_id':'x','anticipated_start_date':'2026-10-01','status':status}])['records'][0]
+            self.assertEqual(r['duration_exclusion_reason'],'Not applicable: '+status.replace('_',' ')+' report.')
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp)
+            write_snapshot(root/'snapshots/2026-11-01.json',snapshot_date='2026-11-01',shortages=[],discontinuations=[{'report_id':'d','status':'discontinued','discontinuation_date':'2026-10-01'}],source='independent fixture')
+            r=build_consolidated(root/'snapshots',root/'derived.json')['records'][0]
+            self.assertEqual(r['duration_exclusion_reason'],'Not applicable: discontinuation report.')
+
+    def test_unrelated_date_flag_does_not_withhold_valid_duration(self):
+        r=self.build([{'report_id':'108101','actual_start_date':'2020-03-06','actual_end_date':'2020-06-22','estimated_end_date':'0001-01-01','status':'resolved'}])['records'][0]
+        self.assertTrue(r['date_plausibility_issue'])
+        self.assertEqual(r['duration_days'],108)
+        self.assertIsNone(r['duration_exclusion_reason'])
+        r=self.build([{'report_id':'open','actual_start_date':'2026-10-01','actual_end_date':'2026-12-30','status':'active_confirmed'}])['records'][0]
+        self.assertEqual(r['duration_days'],31)
+        self.assertIsNone(r['duration_exclusion_reason'])
+
+    def test_independent_audit_rejects_missing_withholding_explanation(self):
+        from sorcshortages.audit import audit_dataset
+        raw={'report_id':'3746','actual_start_date':'2017-04-30','actual_end_date':'2017-03-20','status':'resolved'}
+        result=self.build([raw]);result['records'][0]['duration_exclusion_reason']=None
+        with self.assertRaisesRegex(ValueError,'duration_exclusion_reason'):
+            audit_dataset({'snapshot_date':'2026-11-01','shortages':[raw],'discontinuations':[]},result)
+
 class IngestionRules(unittest.TestCase):
     def test_requested_window_start_is_preserved(self):
         self.assertEqual(list(monthly.month_ranges(date(2026,5,20),date(2026,6,2))),[(date(2026,5,20),date(2026,5,31)),(date(2026,6,1),date(2026,6,2))])

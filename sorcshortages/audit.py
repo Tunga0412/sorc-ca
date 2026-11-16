@@ -132,6 +132,21 @@ def audit_dataset(original,derived):
         reversed_order=bool(start and end and end<start)
         row['avoided_before_start']=reversed_order and status=='avoided_shortage'
         row['date_order_issue']=reversed_order and not row['avoided_before_start']
+        explanation=None
+        if row['duration_days'] is None:
+            if row['type']=='discontinuation':
+                explanation='Not applicable: discontinuation report.'
+            elif status not in {'active_confirmed','resolved'}:
+                explanation='Not applicable: '+status.replace('_',' ')+' report.'
+            else:
+                if reversed_order:reason='the reported end date precedes the start date.'
+                elif not start:reason='the source start date is missing or invalid.'
+                elif start>snapshot:reason='the reported start date is after the source snapshot.'
+                elif not end:reason='the resolved report has no usable actual end date.'
+                elif end>snapshot:reason="the resolved report's actual end date is after the source snapshot."
+                else:reason='the source does not provide a usable observed interval.'
+                explanation='Duration Withheld: '+reason+' This report is excluded from duration statistics.'
+        row['duration_exclusion_reason']=explanation
         raw=raw_by_key[key]
         invalid=[]
         for field in ['actual_start_date','anticipated_start_date','actual_end_date','estimated_end_date','actual_discontinuation_date','anticipated_discontinuation_date']:
@@ -140,7 +155,7 @@ def audit_dataset(original,derived):
         row['invalid_date_fields']=invalid
         row['date_plausibility_issue']=bool(invalid)
         row['ongoing']=row['censored']
-        for field in ['active_at_snapshot','future_start','end_after_snapshot','duration_days','censored','avoided_before_start','date_order_issue','invalid_date_fields','date_plausibility_issue','ongoing']:
+        for field in ['active_at_snapshot','future_start','end_after_snapshot','duration_days','duration_exclusion_reason','censored','avoided_before_start','date_order_issue','invalid_date_fields','date_plausibility_issue','ongoing']:
             if actual[key].get(field)!=row[field]:raise ValueError(f'Derived rule mismatch {key} {field}')
             comparisons+=1
     rows=list(expected.values());short=[r for r in rows if r['type']=='shortage']
