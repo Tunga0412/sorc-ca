@@ -7,17 +7,17 @@
   </url>
   <url>
     <loc>https://sorc.ca/sorctracks.html</loc>
-    <lastmod>2026-09-19</lastmod>
+    <lastmod>2026-11-21</lastmod>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://sorc.ca/sorcshortages.html</loc>
-    <lastmod>2026-09-19</lastmod>
+    <lastmod>2026-11-21</lastmod>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://sorc.ca/methods.html</loc>
-    <lastmod>2026-09-19</lastmod>
+    <lastmod>2026-11-21</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
@@ -27,18 +27,23 @@
   </url>
   <url>
     <loc>https://sorc.ca/jip.html</loc>
-    <lastmod>2026-09-19</lastmod>
+    <lastmod>2026-11-21</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://sorc.ca/about.html</loc>
-    <lastmod>2026-09-19</lastmod>
+    <lastmod>2026-11-21</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://sorc.ca/standards.html</loc>
-    <lastmod>2026-09-19</lastmod>
+    <lastmod>2026-11-21</lastmod>
     <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://sorc.ca/contributor-guide.html</loc>
+    <lastmod>2026-11-21</lastmod>
+    <priority>0.5</priority>
   </url>
 </urlset>
 

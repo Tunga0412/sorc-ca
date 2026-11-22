@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="description" content="Project roles, participation and authorship arrangements for SORC contributors.">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contributor Guide | SORC</title>
+    <link rel="icon" type="image/png" href="SORC_LOGO.png">
+  <link rel="shortcut icon" href="SORC_LOGO.png">
+  <link rel="apple-touch-icon" href="SORC_LOGO.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Lato:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy:  #0F2347;
+      --navy2: #162E5A;
+      --blue:  #3B82C4;
+      --bg:    #F8F9FC;
+      --text:  #0F2347;
+      --mid:   #1B3A6B;
+      --muted: #5A6A85;
+      --rule:  #D0D8E8;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; overflow-x: hidden; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      background: rgba(248,249,252,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--rule);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 3rem;
+      height: 56px;
+    }
+
+    .nav-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 700;
+      font-size: 1.35rem;
+      color: var(--navy);
+      letter-spacing: -0.02em;
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2.5rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-family: 'Lato', sans-serif;
+      font-weight: 400;
+      font-size: 0.8rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--mid);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover  { color: var(--blue); }
+    .nav-links a.active { color: var(--blue); }
+
+    @media (max-width: 600px) {
+      nav { padding: 0 1.25rem; }
+      .nav-links { gap: 1.25rem; }
+      .nav-logo { font-size: 1.15rem; }
+      .nav-links a { font-size: 0.72rem; letter-spacing: 0.06em; }
+    }
+
+    .page-header {
+      padding: 120px 3rem 48px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-size: 0.7rem;
+      font-weight: 400;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--blue);
+      margin-bottom: 1.25rem;
+    }
+
+    .page-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 400;
+      color: var(--navy);
+      line-height: 1.2;
+    }
+
+    .hero-rule {
+      width: 60px;
+      height: 2px;
+      background: var(--blue);
+      margin: 1.75rem 0;
+      opacity: 0.6;
+    }
+
+    .page-intro {
+      font-size: 0.95rem;
+      color: var(--mid);
+      max-width: 660px;
+      line-height: 1.85;
+    }
+
+    .section {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 0 3rem 80px;
+    }
+
+    /* ── Standards blocks ────────────────────────────────────────── */
+    .standards-block {
+      margin-bottom: 3rem;
+      padding-bottom: 3rem;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .standards-block:last-child {
+      border-bottom: none;
+    }
+
+    .block-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.5rem;
+      font-weight: 400;
+      color: var(--blue);
+      opacity: 0.4;
+      line-height: 1;
+      margin-bottom: 0.4rem;
+    }
+
+    .block-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: var(--navy);
+      margin-bottom: 1rem;
+    }
+
+    .block-body {
+      font-size: 0.9rem;
+      color: var(--mid);
+      line-height: 1.85;
+    }
+
+    .block-body p {
+      margin-bottom: 0.85rem;
+    }
+
+    .block-body p:last-child {
+      margin-bottom: 0;
+    }
+
+    .block-body ul {
+      margin: 0.75rem 0 0.85rem 1.25rem;
+    }
+
+    .block-body li {
+      margin-bottom: 0.4rem;
+      font-size: 0.9rem;
+      color: var(--mid);
+      line-height: 1.75;
+    }
+
+    .block-body strong {
+      color: var(--navy);
+      font-weight: 400;
+    }
+
+    .version-note {
+      font-size: 0.78rem;
+      color: var(--muted);
+      font-style: italic;
+      margin-bottom: 2.5rem;
+    }
+
+    footer {
+      border-top: 1px solid var(--rule);
+      padding: 2rem 3rem;
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-left {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    .footer-right {
+      font-size: 0.75rem;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+    }
+
+    @media (max-width: 800px) {
+      .page-header, .section { padding-left: 1.5rem; padding-right: 1.5rem; }
+      footer { flex-direction: column; gap: 0.5rem; padding: 1.5rem; }
+    }
+  
+    .has-dropdown { position: relative; }
+    .dropdown-toggle::after {
+      content: '\25BE';
+      font-size: 0.7em;
+      margin-left: 0.3em;
+      vertical-align: middle;
+      opacity: 0.7;
+    }
+    .dropdown-menu {
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(248,249,252,0.98);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--rule);
+      border-radius: 2px;
+      padding: 0.4rem 0;
+      min-width: 220px;
+      display: none;
+      list-style: none;
+      margin: 0;
+      box-shadow: 0 4px 14px rgba(15,35,71,0.08);
+    }
+    .dropdown-menu li { display: block; }
+    .dropdown-menu a {
+      display: block;
+      padding: 0.55rem 1.25rem;
+      font-size: 0.74rem;
+      letter-spacing: 0.1em;
+      white-space: nowrap;
+    }
+    .dropdown-menu a:hover { background: rgba(59,130,196,0.08); }
+    .has-dropdown:hover .dropdown-menu,
+    .has-dropdown:focus-within .dropdown-menu,
+    .has-dropdown.open .dropdown-menu { display: block; }
+    @media (max-width: 600px) {
+      .dropdown-menu {
+        min-width: 200px;
+        padding: 0.25rem 0;
+      }
+      .dropdown-menu a { padding: 0.5rem 1rem; font-size: 0.7rem; }
+    }
+
+  </style>
+  <link rel="canonical" href="https://sorc.ca/contributor-guide.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Systematic Outcomes Research Collaborative">
+  <meta property="og:title" content="Contributor Guide | SORC">
+  <meta property="og:description" content="Project roles, participation and authorship arrangements for SORC contributors.">
+  <meta property="og:url" content="https://sorc.ca/contributor-guide.html">
+  <meta property="og:image" content="https://sorc.ca/SORC_LOGO.png">
+  <meta property="og:image:alt" content="SORC logo">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Contributor Guide | SORC">
+  <meta name="twitter:description" content="Project roles, participation and authorship arrangements for SORC contributors.">
+  <meta name="twitter:url" content="https://sorc.ca/contributor-guide.html">
+  <meta name="twitter:image" content="https://sorc.ca/SORC_LOGO.png">
+  <meta name="twitter:image:alt" content="SORC logo">
+</head>
+<body>
+
+  <nav>
+    <a href="index.html" class="nav-logo">SORC</a>
+    <ul class="nav-links">
+      <li><a href="index.html">Research</a></li>
+      <li class="has-dropdown">
+        <a href="projects.html" class="dropdown-toggle">Projects</a>
+        <ul class="dropdown-menu">
+          <li><a href="projects.html">Projects</a></li>
+          <li><a href="sorctracks.html">SORCTracks</a></li>
+          <li><a href="sorcshortages.html">SORCShortages</a></li>
+          <li><a href="jip.html">Junior Investigator Program</a></li>
+        </ul>
+      </li>
+      <li><a href="about.html">About</a></li>
+    </ul>
+  </nav>
+
+  <div class="page-header">
+    <div class="section-label">Contributors</div>
+    <h1 class="page-title">Working with SORC</h1>
+    <div class="hero-rule"></div>
+    <p class="page-intro">This guide explains project roles and participation. Read it alongside our <a href="standards.html" style="color: var(--blue);">authorship and collaboration standards</a>.</p>
+  </div>
+
+  <div class="section">
+    <p class="version-note">Collaboration policy adopted April 2026</p>
+
+    <div class="standards-block">
+      <div class="block-num">01</div>
+      <div class="block-title">Project roles</div>
+      <div class="block-body">
+        <p><strong>Members</strong> are responsible for project conception, methodology, protocol registration, and overall quality assurance. They hold final editorial authority on all SORC-affiliated manuscripts.</p>
+        <p><strong>Junior investigators</strong> (participants in the SORC Junior Investigator Program) are expected to contribute to title/abstract screening, full-text review, data extraction, risk of bias assessment, and manuscript drafting for their assigned sections. Junior investigators who complete all assigned deliverables to an acceptable standard will be listed as authors, typically in positions 1 through 3.</p>
+        <p><strong>Expert collaborators</strong> are domain specialists or senior researchers brought in when a project would benefit from additional clinical or methodological expertise. They may be engaged at any stage of a project, including after data collection has begun. Their specific contribution, authorship position, and scope of involvement are agreed upon at the point of engagement and documented by the lead investigator.</p>
+        <p>All contributors are expected to maintain their agreed participation throughout the project timeline. Significant lapses in contribution without prior notice may affect authorship standing.</p>
+      </div>
+    </div>
+
+    <div class="standards-block">
+      <div class="block-num">02</div>
+      <div class="block-title">Leaving a project</div>
+      <div class="block-body">
+        <p>We recognise that personal, academic, and professional circumstances can change. If a contributor anticipates difficulty meeting their obligations, they are asked to notify the lead investigator as early as possible so that the project can be managed accordingly.</p>
+        <p>Contributors who withdraw after having completed substantial work will be acknowledged in the manuscript and may retain authorship at the discretion of the lead investigator, depending on the nature and extent of their prior contribution.</p>
+        <p>Contributors who withdraw without notice and without having completed their assigned deliverables will be removed from the author list. Their contributions to that point may still be acknowledged.</p>
+        <p>SORC is a small collaborative. Reliability and communication are as important as technical skill.</p>
+      </div>
+    </div>
+
+    <div class="standards-block">
+      <div class="block-num">03</div>
+      <div class="block-title">Resolving disagreements</div>
+      <div class="block-body">
+        <p>Disputes regarding authorship, contribution, or conduct are addressed first through direct discussion between the parties involved. If resolution cannot be reached, the matter is escalated to the lead investigator whose decision is final for SORC-affiliated works.</p>
+        <p>Questions about these standards or their application to a specific project should be directed to <a href="mailto:info@sorc.ca" style="color: var(--blue); text-decoration: none; border-bottom: 1px solid transparent;">info@sorc.ca</a>.</p>
+      </div>
+    </div>
+
+
+
+  </div>
+
+  <footer>
+    <div class="footer-left">© 2026 Systematic Outcomes Research Collaborative</div>
+    <div class="footer-right">sorc.ca · Evidence, systematically.</div>
+  </footer>
+
+
+<script>
+// Mobile-friendly dropdown: tap to toggle
+document.querySelectorAll('.has-dropdown > .dropdown-toggle').forEach(toggle => {
+  toggle.addEventListener('click', e => {
+    if (window.matchMedia('(max-width: 768px)').matches) {
+      e.preventDefault();
+      toggle.parentElement.classList.toggle('open');
+    }
+  });
+});
+document.addEventListener('click', e => {
+  if (!e.target.closest('.has-dropdown')) {
+    document.querySelectorAll('.has-dropdown.open').forEach(el => el.classList.remove('open'));
+  }
+});
+</script>
+</body>
+</html>

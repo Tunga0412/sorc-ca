@@ -376,9 +376,9 @@
     <h1 class="page-title">SORCShortages: A View of Canadian Drug Shortage and Discontinuation Reports</h1>
     <div class="hero-rule"></div>
 
-    <p class="page-intro">SORCShortages organizes Canadian drug shortage and discontinuation reports for research and public understanding.</p>
+    <p class="page-intro">Search and compare Canadian drug shortage and discontinuation reports.</p>
 
-    <p class="page-intro" style="margin-top: 1rem;">The tool draws from <a href="https://healthproductshortages.ca/" class="inline-link" target="_blank" rel="noopener">Health Product Shortages Canada</a> and organizes its individual notices into comparable episodes for searching, comparison, and pattern analysis. It uses dated source snapshots and is refreshed monthly on the first of the month. It is maintained separately from the hosted SORCTracks workflows. It is not an operational supply-chain system.</p>
+    <p class="page-intro" style="margin-top: 1rem;">SORCShortages uses dated snapshots from <a href="https://healthproductshortages.ca/" class="inline-link" target="_blank" rel="noopener">Health Product Shortages Canada</a>. Each report is kept as one episode. The dataset is refreshed monthly on the first of the month.</p>
 
     <div class="changelog-wrap" style="margin-top: 2rem;">
       <div class="section-label" style="margin-bottom: 0.6rem;">Version History</div>
@@ -409,14 +409,11 @@
 
   <div class="section">
     <div class="caution-box">
-      <div class="caution-box-title">Interpretive Cautions</div>
+      <div class="caution-box-title">Before using the data</div>
       <ul>
-        <li>These are reported episodes, not a census of unmet patient need, patient harm, or local inventory status. A report does not confirm that every patient or facility experienced an interruption.</li>
-        <li>Reports are mandatory and intentionally over-inclusive. The regulatory system is designed to capture anticipated shortages early. A report does not confirm that a shortage occurred.</li>
-        <li>Ongoing episodes are right-censored at the snapshot date. Estimated end dates shown in source fields are not treated as observed resolution dates.</li>
-        <li>The pattern chart begins in March 2017, the start of the mandatory reporting era. Earlier records remain searchable, but the chart is not comparable to pre-reporting-era data.</li>
-        <li>SORCShortages is not affiliated with Health Canada or Health Product Shortages Canada.</li>
-        <li>This tool supports research and public understanding. It is not intended for clinical or operational decision-making.</li>
+        <li>Reports can be anticipated, avoided or revised. A report does not confirm a shortage occurred or establish local stock levels or patient impact.</li>
+        <li>Durations for ongoing actual shortages end at the snapshot date. Estimated end dates do not confirm resolution.</li>
+        <li>SORCShortages is not affiliated with Health Canada or Health Product Shortages Canada. It is intended for research, not clinical or operational decisions.</li>
       </ul>
     </div>
 
@@ -439,21 +436,21 @@
         <div class="subsection-label">Methodology</div>
         <div class="subsection-title">Data and Episode Construction</div>
 
-        <p><strong>Source.</strong> The current release includes the reports available in the latest dated source snapshot. The embedded dashboard displays the current report counts and snapshot date.</p>
+        <p><strong>Source.</strong> The dashboard shows the report count and date of the latest source snapshot.</p>
 
-        <p><strong>Episode construction.</strong> Each report is treated as one episode. Start date uses the actual start date when available, otherwise the anticipated start date. Only source-reported actual shortages with dates covering the snapshot are counted as active. Anticipated reports are not promoted to actual shortages when their start date passes. Observed/elapsed durations use resolved or actual-shortage reports only; anticipated, avoided and discontinuation reports do not receive a shortage duration. Future starts have no observed duration. A reported actual end after the snapshot is retained and flagged, while elapsed duration is censored at the snapshot. Estimated end dates are not observed ends.</p>
+        <p><strong>Episode construction.</strong> Each report is one episode. Start dates use the actual date when available, otherwise the anticipated date. Active counts include only reports labelled as actual shortages whose dates cover the snapshot. Anticipated reports do not become actual shortages simply because their start date has passed. Durations are calculated for resolved and actual shortages with usable dates. Ongoing durations end at the snapshot. Anticipated, avoided and discontinuation reports, and reports with future starts, have no observed shortage duration. Actual end dates after the snapshot are retained and flagged. Estimated end dates are not treated as observed resolution.</p>
 
-        <p><strong>Report types.</strong> Shortage and discontinuation are as classified in the source and are kept separate throughout. They are not combined in duration statistics or episode counts.</p>
+        <p><strong>Report types.</strong> Shortages and discontinuations follow the source classifications and are counted separately.</p>
 
-        <p><strong>Tier 3.</strong> Reported directly from the source. It is not inferred or reclassified by SORCShortages.</p>
+        <p><strong>Tier 3.</strong> Tier 3 labels come directly from the source.</p>
 
-        <p><strong>Pattern series.</strong> The report-interval series begins March 2017, the start of the mandatory reporting era. Pre-2017 records remain searchable. Intervals overlapping the reporting-era window are included even if their start date precedes 2017. The series uses reported actual or anticipated dates and includes avoided reports with valid intervals; it describes reporting, not confirmed patient-level unavailability. No interval is extended beyond its dated source observation. The median and duration histogram mix completed durations and elapsed censored observations and are not survival estimates of time to resolution.</p>
+        <p><strong>Pattern series.</strong> The chart begins in March 2017, when mandatory reporting began. Earlier records remain searchable. The chart includes valid actual, anticipated and avoided reporting intervals that overlap this period, including those that began earlier. It describes reporting rather than confirmed patient shortages. No interval extends beyond its source observation date. The duration median and histogram combine completed and ongoing observations. They do not estimate time to resolution.</p>
 
-        <p><strong>Quality handling.</strong> Original reported dates are retained or preserved in the downloadable original snapshot. Invalid calendar dates, ends before starts, and reported end dates after the snapshot are flagged. The dashboard displays current flag counts. Avoidance dates before anticipated starts are treated as an expected lifecycle pattern. Missing optional fields remain missing.</p>
+        <p><strong>Quality handling.</strong> Original dates are retained in the records or original snapshot. Invalid dates, ends before starts and actual end dates after the snapshot are flagged. The dashboard shows flag counts. Avoidance before an anticipated start is an expected reporting pattern. Missing optional fields remain missing.</p>
 
-        <p><strong>Update schedule.</strong> The dataset is refreshed monthly on the first of the month from the Health Product Shortages Canada API, with public export and original CSV ZIP recovery paths. SORCShortages is maintained separately from the hosted SORCTracks workflows.</p>
+        <p><strong>Update schedule.</strong> A new snapshot is collected on the first of each month.</p>
 
-        <p><strong>Research downloads.</strong> <a href="data/records.csv" class="inline-link" download>CSV records</a>, <a href="data/consolidated.json" class="inline-link" download>full JSON</a>, <a href="data/source-audit.json" class="inline-link">source audit</a>, and a <a href="shortages-data-guide.txt" class="inline-link">data guide</a> are available. The dashboard links the exact original compressed snapshot for its release. Original snapshots are retained from version 1.1 onward. They are periodic captures, not a complete archive of every source revision. Retain the dated file and its hash for reproducible research.</p>
+        <p><strong>Research downloads.</strong> Download <a href="data/records.csv" class="inline-link" download>CSV records</a>, the <a href="data/consolidated.json" class="inline-link" download>full JSON</a>, the <a href="data/source-audit.json" class="inline-link">source audit</a> or the <a href="shortages-data-guide.txt" class="inline-link">data guide</a>. The dashboard also links to its original compressed snapshot. Snapshots have been retained since version 1.1 and do not capture every source revision. Keep the dated snapshot and its hash with your analysis.</p>
         <p>For media or research inquiries, contact <a href="mailto:info@sorc.ca" class="inline-link">info@sorc.ca</a>.</p>
       </div>
     </div>
