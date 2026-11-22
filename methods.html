@@ -373,8 +373,8 @@
     <div class="section-label">SORCTracks</div>
     <h1 class="page-title">Methods</h1>
     <div class="hero-rule"></div>
-    <p class="page-intro">SORCTracks is a public-record reconstruction. For interpretive caveats that apply before consulting these methods, see the <a href="sorctracks.html" class="inline-link">SORCTracks page</a>.</p>
-    <p class="page-intro" style="margin-top: 1rem;">This page is a web-facing summary of the methods common across SORCTracks service layers. These methods reflect procedures in use as of Version 1.5 (Oct 14, 2026).</p>
+    <p class="page-intro">SORCTracks reconstructs temporary service restrictions from public AHS records. See the <a href="sorctracks.html" class="inline-link">SORCTracks page</a> for the map and a short guide to interpreting it.</p>
+    <p class="page-intro" style="margin-top: 1rem;">These methods apply across the service layers in Version 1.5, released October 14, 2026.</p>
   </div>
 
   <div class="section">
@@ -394,7 +394,7 @@
       <div class="method-section">
         <div class="method-heading">Definitions</div>
         <div class="method-body">
-          <p>A raw record is a source-specific posted assertion. Repeated assertions are reconciled while distinct service components and amendments retain their provenance.</p>
+          <p>A raw record captures a notice from one source. Repeated assertions are reconciled while distinct service components and amendments retain their provenance.</p>
           <p>A disruption interval is a source-supported period of posted unavailability or restriction. Unioned hours measure elapsed time after overlap is removed within each facility, service group, and reporting period. Totals across groups are service-hours.</p>
           <p>A documented correction interval has a recorded source, eligibility decision, and timing rationale. It is subject to the same overlap merging and contributes only time not already supported.</p>
         </div>
@@ -405,15 +405,15 @@
         <div class="method-body">
           <p>The ED layer includes full ED closure or unavailable onsite physician coverage. Partial ED treatment-space loss alone is excluded. Non-ED layers include posted service, physician, operative-capability, admissions, and partial-capacity restrictions during the reporting window.</p>
           <p>Non-ED hours are elapsed facility/service-group time under restriction, not lost bed-hours or complete hospital-closure time. General shortage wording, conditional risk without a supported restriction, unrelated service loss, and events outside the reporting window do not establish counted hours.</p>
-          <p>Unresolved scope, years, timing, or facility identity remain flagged; they are not assigned invented hours.</p>
+          <p>Records with unresolved scope, years, timing or facility identity remain flagged. Hours are assigned only where the sources support them.</p>
         </div>
       </div>
 
       <div class="method-section">
         <div class="method-heading">Interval Reconstruction</div>
         <div class="method-body">
-          <p>Intervals are reconstructed from the relevant source component. Printed dates and clocks retain their roles; forecast end dates are distinguished from reported restoration. A date-only boundary uses local 00:00 as an analytical convention, not a verified clinical clock. Intervals include their start and exclude their end.</p>
-          <p>Recurring restrictions are expanded only when their own wording and bounded affirmative source support establish the pattern. Ordinary opening hours alone do not establish disruption hours. Date-only weekday patterns use calendar-day bounds; an explicit first-onset clock does not shift every later recurrence.</p>
+          <p>Intervals are reconstructed from the relevant source component. Printed dates and clocks retain their roles. Forecast end dates are distinguished from reported restoration. A date-only boundary uses local 00:00 as an analytical convention, not a verified clinical clock. Intervals include their start and exclude their end.</p>
+          <p>Recurring restrictions are expanded only when their own wording and bounded affirmative source support establish the pattern. Ordinary opening hours alone do not establish disruption hours. Date-only weekday patterns use calendar-day bounds. An explicit first-onset clock does not shift every later recurrence.</p>
         </div>
       </div>
 
@@ -445,8 +445,8 @@
         <div class="method-heading">Hour Breakdown</div>
         <div class="method-body">
           <p>Timing structure and time-of-week partitions reconcile to the selected facility, service, and reporting-period total. The same logic applies to supported subtype views.</p>
-          <p><strong>Timing structure</strong> is classified from the complete support for each source component before reporting-window clipping and cross-source union. Explicit recurring restrictions have recurring timing; uninterrupted support of at least seven local calendar days is sustained; other supported periods have no recurring timing identified. Incomplete or conflicting classifications remain unclassified. Overlap is counted once without treating one source as clinically authoritative.</p>
-          <p><strong>Time of week</strong> uses Alberta local dates and clocks: weekday daytime 07:00–17:00, weekday evening 17:00–22:00, weekend or statutory holiday 07:00–22:00, and every night 22:00–07:00. Holidays use Alberta Employment Standards general holidays; optional holidays and public-service substitute days are excluded. Canada Day uses July 2 when July 1 falls on Sunday.</p>
+          <p><strong>Timing structure</strong> is classified from the complete support for each source component before reporting-window clipping and cross-source union. Explicit recurring restrictions have recurring timing. Uninterrupted support of at least seven local calendar days is sustained. Other supported periods have no recurring timing identified. Incomplete or conflicting classifications remain unclassified. Overlap is counted once without treating one source as clinically authoritative.</p>
+          <p><strong>Time of week</strong> uses Alberta local dates and clocks: weekday daytime 07:00 to 17:00, weekday evening 17:00 to 22:00, weekend or statutory holiday 07:00 to 22:00, and every night 22:00 to 07:00. Holidays use Alberta Employment Standards general holidays. Optional holidays and public-service substitute days are excluded. Canada Day uses July 2 when July 1 falls on Sunday.</p>
           <p>Disruption hours use integer elapsed seconds in UTC, retaining the actual duration across daylight-saving transitions. Calendar comparison denominators use the stated local civil-clock windows.</p>
           <p>When all analyzed services are selected, hours are summed across service groups. Overlap between different groups at the same facility is retained, so the result is service-hours.</p>
         </div>
@@ -456,11 +456,11 @@
       <div class="method-section">
         <div class="method-heading">Known Limitations</div>
         <div class="method-body">
-          <p>SORCTracks is a public-record reconstruction rather than an operational gold standard. Public wording is inconsistent across notices, site names are not always standardized, and some real disruptions cannot be timed defensibly from available source material.</p>
-          <p>Open-ended restrictions are bounded by accepted affirmative source support rather than carried forward indefinitely from a missing end date. A dated continuing assertion can support an interval interior without establishing eventual restoration; later unsupported time remains unknown. Comparisons across releases should account for their coverage periods and versioned interpretation rules.</p>
-          <p>Some disruptions may not have been posted, retained, or reconstructed. Some supported programme, regional, or unresolved facility records cannot be assigned to the map. The tool presents a known, reconstructable subset; provincial completeness and the direction of difference from actual clinical downtime are not established.</p>
+          <p>SORCTracks is based on public notices. Public wording is inconsistent across notices, site names are not always standardized, and some real disruptions cannot be assigned reliable dates or times from the available sources.</p>
+          <p>Open-ended restrictions are bounded by accepted affirmative source support rather than carried forward indefinitely from a missing end date. A dated continuing assertion can support an interval interior without establishing eventual restoration. Later unsupported time remains unknown. Comparisons across releases should account for their coverage periods and versioned interpretation rules.</p>
+          <p>Some disruptions may not have been posted, retained, or reconstructed. Some supported programme, regional, or unresolved facility records cannot be assigned to the map. The tool presents a known, reconstructable subset. Provincial completeness and the direction of difference from actual clinical downtime are not established.</p>
           <p>Disruption reasons are categorized from the verbatim text of source postings and reflect the stated reason as posted. They may not capture the underlying or proximate cause in all cases.</p>
-          <p>The public tool includes documentation and selected automation code for inspecting analytic logic and checking selected outputs against public source material. The full historical runtime and retained source evidence are not distributed with the public tool; independent reproduction would require reimplementation or scoped access to additional pipeline artifacts. Researchers seeking to validate specific records or coordinate on independent re-implementation are invited to contact <a href="mailto:info@sorc.ca" class="inline-link">info@sorc.ca</a>.</p>
+          <p>The public tool includes documentation and selected automation code for inspecting analytic logic and checking selected outputs against public source material. The full historical runtime and retained source evidence are not distributed with the public tool. Independent reproduction would require reimplementation or scoped access to additional pipeline artifacts. Researchers seeking to validate specific records or coordinate on independent re-implementation are invited to contact <a href="mailto:info@sorc.ca" class="inline-link">info@sorc.ca</a>.</p>
         </div>
       </div>
 
