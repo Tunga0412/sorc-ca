@@ -13,12 +13,29 @@
     :root { --navy:#0F2347; --navy2:#162E5A; --blue:#216B9E; --bg:#F8F9FC; --text:#0F2347; --mid:#1B3A6B; --muted:#5A6A85; --rule:#D0D8E8; --card:#fff; --gold:#B77A24; }
     *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
     html, body { min-height:100%; }
-    body { margin:0; color:var(--text); background:var(--bg); font-family:'Lato',sans-serif; font-weight:300; line-height:1.6; }
+    body { margin:0; color:var(--text); background:var(--bg); font-family:'Lato',sans-serif; font-weight:400; line-height:1.6; }
     .shell { max-width:none; margin:0; padding:0 1.5rem 2rem; }
-    .masthead { display:flex; justify-content:space-between; align-items:baseline; gap:2rem; flex-wrap:wrap; background:#fff; color:var(--text); margin:0 -1.5rem 1rem; padding:1rem 1.5rem; border-bottom:1px solid var(--rule); }
+    .masthead { background:#fff; color:var(--text); margin:0 -1.5rem 1.25rem; padding:1.25rem 1.5rem 1rem; border-bottom:1px solid var(--rule); }
+    .masthead-top { display:flex; justify-content:space-between; align-items:flex-start; gap:1rem 2rem; }
+    .dataset-date { flex-shrink:0; text-align:right; color:var(--muted); font-size:.8rem; }
+    .dataset-date p { font-weight:600; color:var(--mid); }
+    .dataset-date span { font-size:.75rem; }
+    .tool-actions { display:flex; align-items:center; flex-wrap:wrap; gap:.5rem; margin:1rem 0 .65rem; }
+    .tool-action { display:inline-flex; align-items:center; min-height:2.75rem; border:1px solid var(--rule); border-radius:2px; padding:.45rem .85rem; color:var(--navy); background:#fff; font-size:.82rem; font-weight:600; text-decoration:none; }
+    .tool-action.primary { color:#fff; background:var(--navy); border-color:var(--navy); }
+    .tool-action:hover { background:#edf2f7; }
+    .tool-action.primary:hover { background:var(--mid); }
+    .tool-links { display:flex; flex-wrap:wrap; gap:.35rem 1rem; margin-left:.5rem; font-size:.8rem; }
+    .tool-links a, .dek a { color:var(--blue); text-underline-offset:.15em; }
+    .scope-note { max-width:90ch; font-size:.78rem; color:var(--muted); }
+    a:focus-visible, button:focus-visible, summary:focus-visible, input:focus-visible, select:focus-visible { outline:2px solid var(--blue); outline-offset:3px; }
+    .data-notes { margin:.9rem 0 1.25rem; color:var(--muted); font-size:.8rem; }
+    .data-notes summary { width:fit-content; cursor:pointer; font-weight:600; color:var(--blue); }
+    .data-notes[open] { padding-bottom:.8rem; border-bottom:1px solid var(--rule); }
+    .data-notes p { max-width:90ch; margin:.6rem 0 0; }
     .eyebrow { font:400 .68rem/1.2 'Lato',sans-serif; letter-spacing:.15em; text-transform:uppercase; color:var(--blue); }
-    h1 { font-family:'Cormorant Garamond',serif; font-size:1.5rem; letter-spacing:0; line-height:1.2; margin:0; max-width:720px; font-weight:600; color:var(--navy); }
-    .dek { font-size:.78rem; letter-spacing:.04em; max-width:760px; margin:.2rem 0 0; color:var(--muted); }
+    h1 { font-family:'Cormorant Garamond',serif; font-size:1.9rem; letter-spacing:0; line-height:1.15; margin:0; max-width:720px; font-weight:600; color:var(--navy); }
+    .dek { font-size:.875rem; max-width:760px; margin:.35rem 0 0; color:var(--muted); }
     .source { text-align:right; font-size:.78rem; line-height:1.45; color:var(--muted); max-width:300px; }
     .source a { color:var(--blue); font-weight:400; text-decoration:none; }
     .notice { margin:0 0 1rem; padding:.65rem .85rem; border:1px solid var(--rule); background:#fff; font-size:.74rem; line-height:1.45; color:var(--mid); }
@@ -26,33 +43,33 @@
     .notice.error { border-color:var(--gold); color:#805d17; }
     .metrics { display:grid; grid-template-columns:repeat(5,1fr); gap:.55rem .85rem; margin:0 0 1rem; padding:0 0 .75rem; border-bottom:1px solid var(--rule); }
     .metric { background:transparent; border:0; padding:0; min-height:0; }
-    .metric .value { display:block; font:600 1.35rem/1.1 'Cormorant Garamond',serif; color:var(--navy); margin-bottom:.15rem; }
-    .metric .label { display:block; font-size:.64rem; line-height:1.25; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); }
-    .section-title { display:flex; justify-content:space-between; align-items:baseline; gap:1rem; margin:1.2rem 0 .55rem; }
+    .metric .value { display:block; font:600 1.55rem/1.2 'Lato',sans-serif; font-variant-numeric:tabular-nums; color:var(--navy); margin-bottom:.3rem; }
+    .metric .label { display:block; font-size:.75rem; line-height:1.35; color:var(--muted); }
+    .section-title { display:flex; flex-direction:column; align-items:flex-start; gap:.25rem; margin:1.4rem 0 .65rem; }
     h2 { font:600 1.38rem/1.15 'Cormorant Garamond',serif; letter-spacing:0; margin:0; color:var(--navy); }
-    .section-note { font-size:.69rem; color:var(--muted); text-align:right; }
+    .section-note { font-size:.8rem; color:var(--muted); max-width:100ch; }
     .grid { display:grid; grid-template-columns:minmax(0,1.6fr) minmax(0,1fr); gap:1rem; }
     .grid.two { grid-template-columns:repeat(2,minmax(0,1fr)); }
     .grid.single { grid-template-columns:minmax(0,1fr); }
     .grid.three { grid-template-columns:repeat(3,minmax(0,1fr)); }
     .card { background:#fff; border:1px solid var(--rule); border-radius:2px; padding:1rem 1.1rem; min-width:0; }
     .chart-wrap { height:220px; position:relative; }
-    .chart-caption { font-size:.69rem; color:var(--muted); line-height:1.35; margin-bottom:.35rem; }
+    .chart-caption { font-size:.8rem; color:var(--mid); line-height:1.4; margin-bottom:.5rem; }
     .filters { display:grid; grid-template-columns:2fr 1fr 1fr 1fr; gap:.55rem .85rem; margin:.55rem 0; }
-    label { display:block; font-size:.64rem; line-height:1.2; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); }
-    input, select { width:100%; margin-top:.3rem; border:1px solid var(--rule); background:#fff; color:var(--navy); padding:.42rem .55rem; font:400 .82rem 'Lato',sans-serif; border-radius:2px; }
+    label { display:block; font-size:.75rem; font-weight:600; line-height:1.3; color:var(--muted); }
+    input, select { width:100%; min-height:2.75rem; margin-top:.35rem; border:1px solid var(--rule); background:#fff; color:var(--navy); padding:.55rem .65rem; font:400 .875rem 'Lato',sans-serif; border-radius:2px; }
     .table-shell { overflow:hidden; border:1px solid var(--rule); background:#fff; }
     .table-toolbar { display:flex; justify-content:space-between; align-items:center; gap:.75rem; padding:.55rem .7rem; border-bottom:1px solid var(--rule); font-size:.72rem; color:var(--muted); }
     .pager { display:flex; gap:.35rem; align-items:center; }
-    .pager button { border:1px solid var(--rule); background:#fff; color:var(--mid); padding:.25rem .55rem; border-radius:2px; font:400 .72rem 'Lato',sans-serif; cursor:pointer; }
+    .pager button { min-height:2.25rem; border:1px solid var(--rule); background:#fff; color:var(--mid); padding:.35rem .65rem; border-radius:2px; font:400 .8rem 'Lato',sans-serif; cursor:pointer; }
     .pager button:disabled { color:#a6b1bf; cursor:not-allowed; background:#f7f8fa; }
     .table-scroll { max-height:530px; overflow:auto; }
     table { width:100%; border-collapse:collapse; min-width:920px; }
     table.mini-table { min-width:0; }
     table.mini-table th { position:static; }
     table.mini-table td { font-size:.74rem; padding:.48rem .55rem; }
-    th { text-align:left; background:#fff; color:var(--muted); padding:.5rem .65rem; border-bottom:1px solid var(--rule); font:400 .64rem 'Lato',sans-serif; text-transform:uppercase; letter-spacing:.08em; position:sticky; top:0; z-index:1; }
-    td { padding:.55rem .65rem; border-bottom:1px solid rgba(208,216,232,.7); font-size:.78rem; vertical-align:top; }
+    th { text-align:left; background:#fff; color:var(--muted); padding:.6rem .65rem; border-bottom:1px solid var(--rule); font:600 .75rem 'Lato',sans-serif; position:sticky; top:0; z-index:1; }
+    td { padding:.6rem .65rem; border-bottom:1px solid rgba(208,216,232,.7); font-size:.82rem; vertical-align:top; }
     tbody tr:hover { background:#f7f9fc; }
     .pill { display:inline-block; padding:.12rem .3rem; margin:.12rem .25rem 0 0; font-size:.62rem; line-height:1.2; text-transform:uppercase; letter-spacing:.05em; background:#e8eef5; color:var(--mid); border:1px solid #d6e0eb; border-radius:2px; }
     .pill.tier { background:#f7edd9; color:#805d17; border-color:#ead5a6; }
@@ -69,58 +86,75 @@
     .detail-head h2 { margin-top:.12rem; }
     .detail-close { border:1px solid var(--rule); background:#fff; color:var(--mid); padding:.28rem .55rem; border-radius:2px; font:400 .72rem 'Lato',sans-serif; cursor:pointer; }
     .detail-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:.65rem 1rem; }
-    .detail-label { display:block; margin-bottom:.12rem; color:var(--muted); font-size:.62rem; letter-spacing:.08em; text-transform:uppercase; }
-    .detail-value { color:var(--navy); font-size:.78rem; }
+    .detail-label { display:block; margin-bottom:.2rem; color:var(--muted); font-size:.72rem; font-weight:600; }
+    .detail-value { color:var(--navy); font-size:.85rem; }
     .detail-description { margin-top:.85rem; padding-top:.7rem; border-top:1px solid var(--rule); }
     .detail-description p { margin:.1rem 0 0; color:var(--mid); font-size:.78rem; line-height:1.45; }
     .foot { margin-top:1rem; padding:.75rem 0 0; border-top:1px solid var(--rule); font-size:.72rem; line-height:1.45; color:var(--muted); }
     .foot strong { color:var(--navy); }
     .foot a { color:var(--blue); text-decoration:none; }
     @media (max-width:950px) { .metrics { grid-template-columns:repeat(3,1fr); } .grid,.grid.two,.grid.single,.grid.three { grid-template-columns:1fr; } .detail-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } .source { text-align:left; } .masthead { flex-direction:column; align-items:flex-start; } }
-    @media (max-width:620px) { .shell { padding:0 .85rem 1.5rem; } .masthead { margin:0 -.85rem 1rem; padding:.65rem .85rem; gap:.55rem; } .metrics { grid-template-columns:repeat(2,1fr); } .filters { grid-template-columns:1fr 1fr; } .detail-grid { grid-template-columns:1fr 1fr; } .chart-wrap { height:190px; } }
+    @media (max-width:620px) { .shell { padding:0 .85rem 1.5rem; } .masthead { margin:0 -.85rem 1rem; padding:1rem .85rem; } .masthead-top { flex-direction:column; gap:.5rem; } .dataset-date { text-align:left; } .dataset-date p, .dataset-date span { display:inline; } .dataset-date span { margin-left:.6rem; } .tool-links { flex-basis:100%; margin:.35rem 0 0; } .tool-links a { display:inline-flex; align-items:center; min-height:2.75rem; } .metrics { grid-template-columns:repeat(2,1fr); gap:.85rem; } .filters { grid-template-columns:1fr 1fr; } .table-toolbar { flex-direction:column; align-items:flex-start; } .pager { width:100%; justify-content:space-between; } .pager button { min-height:2.75rem; } .detail-grid { grid-template-columns:1fr; } .chart-wrap { height:190px; } }
   </style>
 </head>
 <body>
 <main class="shell">
   <header class="masthead">
-    <div>
-      <h1>SORCShortages <small style="font-size:.65em">1.1</small></h1>
-      <p class="dek">Canadian drug shortage and discontinuation reports.</p>
-      <p id="snapshot-label">Loading source snapshot…</p>
-      <p class="dek">Reports may be anticipated, avoided or later revised. They do not measure local inventory or patient impact.</p>
-      <p><a href="data/records.csv" download>Download records (CSV)</a> · <a href="data/consolidated.json" download>Full dataset (JSON)</a> · <a id="download-source" hidden download>Original snapshot (GZIP)</a> · <a href="data/source-audit.json" download>Source audit</a> · <a href="shortages-data-guide.txt" target="_blank">Data guide</a> · <a href="sorcshortages.html" target="_top">Methods and citation</a></p>
-      <p class="dek">Summary and charts describe the full snapshot. Explorer filters do not change the download files.</p>
-      <p id="quality-summary" class="dek"></p>
+    <div class="masthead-top">
+      <div>
+        <h1>SORCShortages</h1>
+        <p class="dek">Shortage and discontinuation reports from <a href="https://healthproductshortages.ca/" target="_blank" rel="noreferrer">Health Product Shortages Canada</a>.</p>
+      </div>
+      <div class="dataset-date"><p id="snapshot-label">Loading data…</p><span>Version 1.1</span></div>
     </div>
+    <nav class="tool-actions" aria-label="Dashboard actions">
+      <a class="tool-action primary" href="#explorer-section">Search reports</a>
+      <a class="tool-action" href="data/records.csv" download>Download CSV</a>
+      <a class="tool-action" href="data/consolidated.json" download>Download JSON</a>
+      <div class="tool-links">
+        <a id="download-source" hidden download>Original source (.gz)</a>
+        <a href="data/source-audit.json" download>Data checks</a>
+        <a href="shortages-data-guide.txt" target="_blank">Data guide</a>
+        <a href="sorcshortages.html" target="_top">Methods and citation</a>
+      </div>
+    </nav>
+    <p class="scope-note">Reports may describe anticipated or avoided shortages and can be revised. They do not show local stock levels or patient impact.</p>
   </header>
 
   <div id="data-error" class="notice error" hidden><strong>Data unavailable:</strong> the dataset could not be loaded or has not passed source validation. Please retry later or consult the original Health Product Shortages Canada reports.</div>
 
   <section class="metrics" aria-label="Summary metrics">
     <div class="metric"><span class="value" id="m-shortages">—</span><span class="label">Shortage reports</span></div>
-    <div class="metric"><span class="value" id="m-active">—</span><span class="label">Active in latest snapshot</span></div>
-    <div class="metric"><span class="value" id="m-duration">—</span><span class="label">Median observed / elapsed days</span></div>
-    <div class="metric"><span class="value" id="m-tier">—</span><span class="label">Tier 3 shortages</span></div>
+    <div class="metric"><span class="value" id="m-active">—</span><span class="label">Active at data date</span></div>
+    <div class="metric"><span class="value" id="m-duration">—</span><span class="label">Median days observed</span></div>
+    <div class="metric"><span class="value" id="m-tier">—</span><span class="label">Tier 3 shortage reports</span></div>
     <div class="metric"><span class="value" id="m-disc">—</span><span class="label">Discontinuations</span></div>
   </section>
-  <div class="section-title"><h2>Reports by month</h2><span class="section-note">Reported intervals · includes anticipated and avoided reports · March 2017 onward · latest month is partial</span></div>
+  <details class="data-notes">
+    <summary>About the counts and dates</summary>
+    <p>Active counts use reports labelled as actual shortages whose dates cover the data date. Tier 3 counts include flagged shortage reports across all statuses.</p>
+    <p>The median includes completed shortages and ongoing observations. Ongoing durations end at the last observation. The median does not estimate time to resolution.</p>
+    <p id="quality-summary"></p>
+  </details>
+  <div class="section-title"><h2>Reports by month</h2><span class="section-note">Includes actual, anticipated and avoided reporting intervals from March 2017. The latest month is incomplete.</span></div>
   <section class="grid two">
-    <div class="card"><div class="chart-caption">Reports with dates overlapping each month</div><div class="chart-wrap"><canvas id="active-chart" aria-label="Reports overlapping each month"></canvas></div></div>
-    <div class="card"><div class="chart-caption">Reports with a start date in each month</div><div class="chart-wrap"><canvas id="new-chart" aria-label="New shortages by month"></canvas></div></div>
+    <div class="card"><div class="chart-caption">Reports overlapping each month</div><div class="chart-wrap"><canvas id="active-chart" aria-label="Reports overlapping each month"></canvas></div></div>
+    <div class="card"><div class="chart-caption">Reported starts by month</div><div class="chart-wrap"><canvas id="new-chart" aria-label="Reported starts by month"></canvas></div></div>
   </section>
 
-  <div class="section-title"><h2>Duration</h2><span class="section-note">Elapsed episode days · ongoing observations end at the snapshot; not time to resolution</span></div>
+  <div class="section-title"><h2>Duration</h2><span class="section-note">Completed shortages and ongoing shortages measured to their last observation. This is not an estimate of time to resolution.</span></div>
   <section class="grid single">
     <div class="card"><div class="chart-caption">Duration distribution</div><div class="chart-wrap"><canvas id="duration-chart" aria-label="Duration distribution"></canvas></div></div>
   </section>
 
-  <div class="section-title"><h2>Ingredients and companies</h2><span class="section-note">Ranked by open actual reports, then total reports</span></div>
+  <div class="section-title"><h2>Ingredients and companies</h2><span class="section-note">Sorted by active reports, then total reports.</span></div>
   <section class="grid two">
-    <div class="card"><div class="chart-caption">Ingredients ranked by open actual reports</div><div id="ingredient-signals"></div></div>
-    <div class="card"><div class="chart-caption">Companies ranked by open actual reports</div><div id="company-signals"></div></div>
+    <div class="card"><div class="chart-caption">Active ingredients</div><div id="ingredient-signals"></div></div>
+    <div class="card"><div class="chart-caption">Companies</div><div id="company-signals"></div></div>
   </section>
 
   <div id="explorer-section" class="section-title"><h2>Search reports</h2><span class="section-note">Search by drug, company, ingredient or DIN</span></div>
+  <p class="scope-note">Filters apply to the table below. The charts and downloads include all reports.</p>
   <section class="filters" aria-label="Report filters">
     <label>Search<input id="search" type="search" placeholder="Brand, company, ingredient, DIN…"></label>
     <label>Type<select id="type-filter"><option value="all">All reports</option><option value="shortage">Shortages</option><option value="discontinuation">Discontinuations</option></select></label>
@@ -129,7 +163,7 @@
   </section>
   <div class="table-shell">
     <div class="table-toolbar"><span id="result-count">—</span><div class="pager"><button id="prev-page" type="button">Previous</button><span id="page-label">Page 1</span><button id="next-page" type="button">Next</button></div></div>
-    <div class="table-scroll"><table><thead><tr><th>Report</th><th>Product / company</th><th>Status</th><th>Start</th><th>Duration endpoint</th><th>Duration</th><th>ATC code</th></tr></thead><tbody id="report-body"></tbody></table><div id="empty" class="empty" hidden>No reports match these filters.</div></div>
+    <div class="table-scroll"><table><thead><tr><th>Report</th><th>Drug and company</th><th>Status</th><th>Start date</th><th>Measured through</th><th>Duration</th><th>ATC code</th></tr></thead><tbody id="report-body"></tbody></table><div id="empty" class="empty" hidden>No reports match these filters.</div></div>
   </div>
 
   <section id="detail-panel" class="detail-panel" hidden aria-live="polite">
@@ -149,7 +183,21 @@ function fmt(n) { return n == null ? '—' : new Intl.NumberFormat().format(n); 
 function chart(id, type, labels, values, color, opts={}) { if (!window.Chart) return; const doughnut=type==='doughnut'; const c = new Chart($(id), {type, data:{labels,datasets:[{data:values,backgroundColor:color,hoverBackgroundColor:color,borderColor:doughnut?'transparent':color,borderWidth:doughnut?0:2,offset:doughnut?[12,0]:0,hoverOffset:doughnut?8:0,fill:type==='line' && opts.fill!==false,tension:opts.stepped?0:.24,stepped:opts.stepped===true,pointRadius:type==='line'?0:2,pointHoverRadius:4}]}, options:{responsive:true,maintainAspectRatio:false,cutout:doughnut?'62%':undefined,interaction:{mode:'index',intersect:false},plugins:{legend:{display:doughnut,labels:{font:{family:'Lato',size:11}}},tooltip:{mode:'index',intersect:false}},scales:doughnut?{}:{x:{grid:{display:false},ticks:{font:{family:'Lato',size:10},autoSkip:true,autoSkipPadding:14,maxTicksLimit:8,maxRotation:0,minRotation:0}},y:{beginAtZero:true,grid:{color:'#D0D8E8'},ticks:{precision:0,font:{family:'Lato',size:10}}}},...opts}}); charts.push(c); }
 function renderCharts() { charts.forEach(c=>c.destroy()); charts=[]; const s=DATA.series; chart('active-chart','line',s.active_shortages.map(x=>x.month),s.active_shortages.map(x=>x.value),'#216B9E'); chart('new-chart','bar',s.new_shortages.map(x=>x.month),s.new_shortages.map(x=>x.value),'#0F2347'); chart('duration-chart','bar',s.duration_distribution.map(x=>x.label),s.duration_distribution.map(x=>x.value),'#B77A24'); }
 function escapeHtml(s) { return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c])); }
-function renderMetrics() { const s=DATA.summary; $('m-shortages').textContent=fmt(s.shortages); $('m-active').textContent=fmt(s.active_shortages); $('m-duration').textContent=s.median_duration_days==null?'—':fmt(s.median_duration_days); $('m-tier').textContent=fmt(s.tier_3_shortages); $('m-disc').textContent=fmt(s.discontinuations); const snapshot=DATA.latest_snapshot+' · '+DATA.snapshot_count+' snapshot'+(DATA.snapshot_count===1?'':'s'); if($('snapshot-label')) $('snapshot-label').textContent=snapshot; $('footer-snapshot').textContent='Latest snapshot: '+DATA.latest_snapshot; const flags=DATA.summary; $('quality-summary').textContent=fmt(flags.duration_records)+' reports contribute observed/elapsed durations; '+fmt(flags.right_censored_records)+' are right-censored. '+fmt(flags.date_order_issues)+' date-order flags, '+fmt(flags.date_plausibility_issues)+' invalid-date flags, '+fmt(flags.end_after_snapshot_records)+' end-after-snapshot flags. Withheld durations are excluded from duration statistics; each affected report explains why. These flags do not independently validate product availability.'; if(DATA.provenance&&DATA.provenance.raw_snapshot_path) { $('download-source').href='data/'+DATA.provenance.raw_snapshot_path; $('download-source').hidden=false; } }
+function renderMetrics() {
+  const s=DATA.summary;
+  $('m-shortages').textContent=fmt(s.shortages);
+  $('m-active').textContent=fmt(s.active_shortages);
+  $('m-duration').textContent=s.median_duration_days==null?'—':fmt(s.median_duration_days);
+  $('m-tier').textContent=fmt(s.tier_3_shortages);
+  $('m-disc').textContent=fmt(s.discontinuations);
+  $('snapshot-label').textContent='Data as of '+DATA.latest_snapshot;
+  $('footer-snapshot').textContent='Data date: '+DATA.latest_snapshot;
+  $('quality-summary').textContent=fmt(s.duration_records)+' reports have a usable duration. '+fmt(s.right_censored_records)+' were ongoing when last recorded. '+fmt(s.date_order_issues)+' reports have an end date before their start date, '+fmt(s.date_plausibility_issues)+' contain unusable source dates, and '+fmt(s.end_after_snapshot_records)+' have a reported end after the data date. A date flag does not establish a reporting error. Withheld durations are excluded from duration statistics. Each affected report explains why.';
+  if(DATA.provenance&&DATA.provenance.raw_snapshot_path) {
+    $('download-source').href='data/'+DATA.provenance.raw_snapshot_path;
+    $('download-source').hidden=false;
+  }
+}
 function rowKey(r) { return r.record_key || (r.type+':'+r.report_id); }
 function isActive(r) { return r.active_at_snapshot===true || (r.active_at_snapshot==null && r.censored===true); }
 function bindRecordLinks() { document.querySelectorAll('.record-link').forEach(function(button) { button.addEventListener('click',function() { openRecord(button.getAttribute('data-record-key')); }); }); }
@@ -158,10 +206,10 @@ function renderSignalTable(id, field) { const items=signalGroups(field).slice(0,
 function renderSignals() { renderSignalTable('ingredient-signals','active_ingredient'); renderSignalTable('company-signals','company_name'); }
 function qualityFlags(r) {
   const flags=[];
-  if(r.date_order_issue) flags.push('End before start');
-  if(r.date_plausibility_issue) flags.push('Invalid source date: '+(r.invalid_date_fields||[]).join(', '));
-  if(r.end_after_snapshot) flags.push('Reported end is after snapshot');
-  if(r.present_in_latest_snapshot===false) flags.push('Absent from latest snapshot');
+  if(r.date_order_issue) flags.push('Reported end date precedes start date');
+  if(r.date_plausibility_issue) flags.push('Unusable source date: '+(r.invalid_date_fields||[]).map(field=>field.replaceAll('_',' ')).join(', '));
+  if(r.end_after_snapshot) flags.push('Reported end is after the data date');
+  if(r.present_in_latest_snapshot===false) flags.push('Not in the most recent source capture');
   return flags;
 }
 function durationNote(r) { return r.duration_exclusion_reason || 'Not applicable / unavailable'; }
@@ -169,7 +217,7 @@ function openRecord(key) {
   const r=DATA.records.find(item=>rowKey(item)===key); if(!r) return;
   $('detail-title').textContent=(r.brand_name||r.common_name||r.active_ingredient||'Unnamed report')+' · #'+(r.report_id||'—');
   const endpoint=r.duration_days==null?'—':(r.censored?(r.last_seen_snapshot||DATA.latest_snapshot):r.end_date);
-  const items=[['Type',r.type],['Source status',statusLabel(r.status)],['Company',r.company_name||'—'],['DIN',r.din||'—'],['Ingredient',r.active_ingredient||'—'],['Strength / form',[r.strength,r.dosage_form].filter(Boolean).join(' · ')||'—'],['Route / package',[r.route,r.packaging].filter(Boolean).join(' · ')||'—'],['Selected start',r.start_date||'—'],['Start date basis',r.start_date_source?r.start_date_source.replaceAll('_',' '):'—'],['Reported actual end',r.actual_end_date||'—'],['Estimated end (not observed)',r.estimated_end_date||'—'],['Anticipated discontinuation',r.anticipated_discontinuation_date||'—'],['Reported discontinuation',r.actual_discontinuation_date||'—'],['Duration endpoint',endpoint],['Source snapshot',DATA.latest_snapshot],['Source report last updated',r.updated_date||'—'],['Product market status at capture',r.market_status||'Not supplied'],['Product information updated',r.product_updated_date||'—'],['Observed / elapsed duration',r.duration_days==null?durationNote(r):fmt(r.duration_days)+' days'+(r.censored?' · right-censored':'' )],['ATC',r.atc_description||r.atc_code||'—'],['Source Tier 3 flag',r.tier_3?'Yes':'No'],['Reason',r.reason||'—'],['Data quality',qualityFlags(r).join('; ')||'No date flag']];
+  const items=[['Type',r.type],['Source status',statusLabel(r.status)],['Company',r.company_name||'—'],['DIN',r.din||'—'],['Ingredient',r.active_ingredient||'—'],['Strength / form',[r.strength,r.dosage_form].filter(Boolean).join(' · ')||'—'],['Route / package',[r.route,r.packaging].filter(Boolean).join(' · ')||'—'],['Start date used',r.start_date||'—'],['Source date field',r.start_date_source?r.start_date_source.replaceAll('_',' '):'—'],['Actual end reported',r.actual_end_date||'—'],['Estimated end (unconfirmed)',r.estimated_end_date||'—'],['Anticipated discontinuation',r.anticipated_discontinuation_date||'—'],['Reported discontinuation',r.actual_discontinuation_date||'—'],['Duration endpoint',endpoint],['Data date',DATA.latest_snapshot],['Source report last updated',r.updated_date||'—'],['Product market status at capture',r.market_status||'Not supplied'],['Product information updated',r.product_updated_date||'—'],['Observed duration',r.duration_days==null?durationNote(r):fmt(r.duration_days)+' days'+(r.censored?' · right-censored':'' )],['ATC',r.atc_description||r.atc_code||'—'],['Source Tier 3 flag',r.tier_3?'Yes':'No'],['Reason',r.reason||'—'],['Date notes',qualityFlags(r).join('; ')||'No date flag']];
   $('detail-grid').innerHTML=items.map(item=>'<div><span class="detail-label">'+escapeHtml(item[0])+'</span><span class="detail-value">'+escapeHtml(item[1])+'</span></div>').join('');
   $('detail-description-text').textContent=r.company_comments_en||'Not supplied.';
   $('detail-hc').textContent=r.health_canada_comments_en||'Not supplied.';
