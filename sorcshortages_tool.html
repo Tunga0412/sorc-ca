@@ -95,6 +95,75 @@
     .foot a { color:var(--blue); text-decoration:none; }
     @media (max-width:950px) { .metrics { grid-template-columns:repeat(3,1fr); } .grid,.grid.two,.grid.single,.grid.three { grid-template-columns:1fr; } .detail-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } .source { text-align:left; } .masthead { flex-direction:column; align-items:flex-start; } }
     @media (max-width:620px) { .shell { padding:0 .85rem 1.5rem; } .masthead { margin:0 -.85rem 1rem; padding:1rem .85rem; } .masthead-top { flex-direction:column; gap:.5rem; } .dataset-date { text-align:left; } .dataset-date p, .dataset-date span { display:inline; } .dataset-date span { margin-left:.6rem; } .tool-links { flex-basis:100%; margin:.35rem 0 0; } .tool-links a { display:inline-flex; align-items:center; min-height:2.75rem; } .metrics { grid-template-columns:repeat(2,1fr); gap:.85rem; } .filters { grid-template-columns:1fr 1fr; } .table-toolbar { flex-direction:column; align-items:flex-start; } .pager { width:100%; justify-content:space-between; } .pager button { min-height:2.75rem; } .detail-grid { grid-template-columns:1fr; } .chart-wrap { height:190px; } }
+
+    .report-section-title { flex-direction:row; align-items:center; justify-content:space-between; }
+    .control-button, .pager button, .detail-close { display:inline-flex; align-items:center; justify-content:center; min-height:2.75rem; padding:.45rem .85rem; border:1px solid var(--rule); border-radius:2px; background:#fff; color:var(--navy); font:600 .8rem/1.4 'Lato',sans-serif; cursor:pointer; }
+    .control-button { white-space:nowrap; }
+    .control-button:hover, .pager button:not(:disabled):hover, .detail-close:hover { background:#edf2f7; }
+    .pager button:disabled { color:var(--muted); background:#f7f8fa; opacity:.6; cursor:default; }
+    .table-toolbar { padding:.8rem 1rem; font-size:.82rem; }
+    .result-summary { display:flex; flex-direction:column; gap:.15rem; }
+    #result-count { font-weight:600; color:var(--navy); }
+    #result-range { font-size:.75rem; }
+    .pager { gap:.65rem; }
+    #page-label { font-variant-numeric:tabular-nums; white-space:nowrap; }
+    .table-help { font-size:.75rem; color:var(--muted); padding:.5rem 1rem; border-bottom:1px solid var(--rule); }
+    .table-scroll { max-height:620px; }
+    .report-table { min-width:1100px; table-layout:fixed; }
+    .report-table th, .report-table td { padding:.8rem .75rem; }
+    .report-table th { font-size:.75rem; z-index:2; }
+    .report-table th:first-child, .report-table td:first-child { position:sticky; left:0; background:#fff; }
+    .report-table th:first-child { z-index:3; }
+    .report-table td:first-child { z-index:1; }
+    .report-table tr:hover td:first-child { background:#f7f9fc; }
+    .report-table tr.is-selected td { background:#edf4f9; }
+    .record-link { font-size:.85rem; font-weight:700; min-height:1.75rem; }
+    .record-link[aria-expanded="true"] { color:var(--navy); text-decoration:underline; }
+    .report-badges { display:flex; flex-wrap:wrap; gap:.25rem; margin-top:.25rem; }
+    .pill { margin:0; font-size:.68rem; font-weight:400; line-height:1.35; letter-spacing:0; text-transform:none; padding:.15rem .35rem; }
+    .pill.warning { color:#765314; background:#fcf5e7; border-color:#e9d6af; }
+    .product-name { display:block; font-size:.9rem; font-weight:600; line-height:1.4; overflow-wrap:anywhere; }
+    .product-company, .product-description, .cell-note { display:block; color:var(--muted); font-size:.76rem; line-height:1.45; margin-top:.25rem; }
+    .product-description { font-size:.73rem; }
+    .date-cell, .duration-value { font-variant-numeric:tabular-nums; }
+    .duration-note { min-width:0; max-width:none; line-height:1.5; }
+    .duration-note.withheld { font-weight:400; }
+    .status-text { font-size:.8rem; line-height:1.45; }
+    .rank-table td:not(:first-child), .rank-table th:not(:first-child) { text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap; }
+    .rank-table .signal-link { font-size:.8rem; font-weight:600; line-height:1.4; padding:.2rem 0; }
+    .empty { font-style:normal; padding:2rem 1rem; }
+    .empty strong { display:block; color:var(--navy); font-size:1rem; margin-bottom:.3rem; }
+    .detail-panel { padding:1.25rem; margin-top:1.5rem; scroll-margin-top:1rem; }
+    .detail-head { gap:1rem; margin-bottom:1rem; }
+    .detail-head h2 { font-size:1.65rem; line-height:1.2; overflow-wrap:anywhere; }
+    #detail-title:focus { outline:none; }
+    .detail-meta { color:var(--muted); font-size:.82rem; margin-top:.35rem; }
+    .detail-source-links { display:flex; flex-wrap:wrap; gap:.5rem 1rem; font-size:.82rem; margin:.8rem 0 1.2rem; }
+    .detail-source-links a { color:var(--blue); text-underline-offset:.15em; }
+    .detail-duration { border-left:3px solid var(--blue); background:#f4f7fb; padding:.85rem 1rem; margin:0 0 .8rem; }
+    .detail-duration.withheld { border-color:var(--gold); background:#fcf7ed; }
+    .detail-duration .detail-label { font-size:.75rem; margin-bottom:.3rem; }
+    #detail-duration-value { font-size:.95rem; line-height:1.5; color:var(--navy); }
+    #detail-duration-context { font-size:.8rem; color:var(--muted); margin-top:.35rem; }
+    .detail-sections { display:grid; grid-template-columns:1fr 1fr; gap:1.25rem 2rem; }
+    .detail-section { border-top:1px solid var(--rule); padding-top:1rem; min-width:0; }
+    .detail-section.wide { grid-column:1 / -1; }
+    .detail-section h3, .source-notes h3 { font:600 1.2rem/1.25 'Cormorant Garamond',serif; color:var(--navy); margin:0 0 .75rem; }
+    .detail-list { display:grid; grid-template-columns:1fr 1fr; gap:.85rem 1rem; }
+    .detail-list > div { min-width:0; }
+    .detail-list dt { color:var(--muted); font-size:.73rem; font-weight:600; margin-bottom:.2rem; }
+    .detail-list dd { font-size:.85rem; line-height:1.5; overflow-wrap:anywhere; }
+    .detail-section.wide .detail-list { grid-template-columns:repeat(3,minmax(0,1fr)); }
+    .detail-section-note { font-size:.78rem; color:var(--muted); margin:-.25rem 0 .8rem; }
+    .date-note-list { margin:0; padding-left:1.1rem; color:var(--mid); font-size:.85rem; }
+    .date-note-list li + li { margin-top:.35rem; }
+    .source-notes { border-top:1px solid var(--rule); margin-top:1.25rem; padding-top:1rem; }
+    .source-note + .source-note { margin-top:1rem; }
+    .source-note h4 { color:var(--muted); font:600 .75rem/1.4 'Lato',sans-serif; margin-bottom:.3rem; }
+    .source-note p { white-space:pre-wrap; overflow-wrap:anywhere; font-size:.85rem; line-height:1.55; }
+    .empty-note { color:var(--muted); font-size:.82rem; }
+    @media (max-width:700px) { .detail-sections { grid-template-columns:1fr; } .detail-section.wide { grid-column:auto; } .detail-section.wide .detail-list { grid-template-columns:1fr 1fr; } .detail-panel { padding:1rem; } .detail-head { align-items:flex-start; } }
+    @media (max-width:620px) { .record-link, .rank-table .signal-link { min-height:2.75rem; } .report-section-title { align-items:flex-start; gap:.75rem; } .report-section-title h2 { margin-bottom:.2rem; } .table-toolbar { padding:.75rem; } .pager { gap:.35rem; } .detail-head { flex-direction:column; } .detail-head .detail-close { align-self:flex-end; } .detail-list, .detail-section.wide .detail-list { grid-template-columns:1fr; } }
   </style>
 </head>
 <body>
@@ -147,36 +216,41 @@
     <div class="card"><div class="chart-caption">Duration distribution</div><div class="chart-wrap"><canvas id="duration-chart" aria-label="Duration distribution"></canvas></div></div>
   </section>
 
-  <div class="section-title"><h2>Ingredients and companies</h2><span class="section-note">Sorted by active reports, then total reports.</span></div>
+  <div class="section-title"><h2>Ingredients and companies</h2><span class="section-note">Sorted by active reports, then total reports. Select an ingredient or company to filter the report table.</span></div>
   <section class="grid two">
     <div class="card"><div class="chart-caption">Active ingredients</div><div id="ingredient-signals"></div></div>
     <div class="card"><div class="chart-caption">Companies</div><div id="company-signals"></div></div>
   </section>
 
-  <div id="explorer-section" class="section-title"><h2>Search reports</h2><span class="section-note">Search by drug, company, ingredient or DIN</span></div>
+  <div id="explorer-section" class="section-title report-section-title"><div><h2>Search reports</h2><p class="section-note">Search by drug, company, ingredient, DIN or report number.</p></div><button id="reset-filters" class="control-button" type="button">Clear filters</button></div>
   <p class="scope-note">Filters apply to the table below. The charts and downloads include all reports.</p>
   <section class="filters" aria-label="Report filters">
-    <label>Search<input id="search" type="search" placeholder="Brand, company, ingredient, DIN…"></label>
-    <label>Type<select id="type-filter"><option value="all">All reports</option><option value="shortage">Shortages</option><option value="discontinuation">Discontinuations</option></select></label>
+    <label>Search<input id="search" type="search" placeholder="Drug, company, ingredient, DIN or report number"></label>
+    <label>Report type<select id="type-filter"><option value="all">All reports</option><option value="shortage">Shortages</option><option value="discontinuation">Discontinuations</option></select></label>
     <label>Status<select id="status-filter"><option value="all">All statuses</option></select></label>
-    <label>Tier 3<select id="tier-filter"><option value="all">Both</option><option value="yes">Tier 3 only</option><option value="no">Other reports</option></select></label>
+    <label>Tier 3 status<select id="tier-filter"><option value="all">All reports</option><option value="yes">Tier 3 reports</option><option value="no">Other reports</option></select></label>
   </section>
   <div class="table-shell">
-    <div class="table-toolbar"><span id="result-count">—</span><div class="pager"><button id="prev-page" type="button">Previous</button><span id="page-label">Page 1</span><button id="next-page" type="button">Next</button></div></div>
-    <div class="table-scroll"><table><thead><tr><th>Report</th><th>Drug and company</th><th>Status</th><th>Start date</th><th>Measured through</th><th>Duration</th><th>ATC code</th></tr></thead><tbody id="report-body"></tbody></table><div id="empty" class="empty" hidden>No reports match these filters.</div></div>
+    <div class="table-toolbar">
+      <div class="result-summary" role="status" aria-live="polite"><span id="result-count">Loading reports…</span><span id="result-range"></span></div>
+      <nav class="pager" aria-label="Report pages"><button id="prev-page" class="control-button" type="button">Previous</button><span id="page-label">Page 1</span><button id="next-page" class="control-button" type="button">Next</button></nav>
+    </div>
+    <p class="table-help">Select a report number to view its details. Scroll sideways to see all columns.</p>
+    <div class="table-scroll"><table class="report-table" aria-label="Shortage and discontinuation reports"><colgroup><col style="width:14%"><col style="width:24%"><col style="width:11%"><col style="width:12%"><col style="width:12%"><col style="width:20%"><col style="width:7%"></colgroup><thead><tr><th scope="col">Report</th><th scope="col">Drug and company</th><th scope="col">Status</th><th scope="col">Start date</th><th scope="col">Measured through</th><th scope="col">Duration</th><th scope="col">ATC code</th></tr></thead><tbody id="report-body"></tbody></table><div id="empty" class="empty" hidden><strong>No matching reports</strong>Try a different search or use Clear filters to start again.</div></div>
   </div>
 
-  <section id="detail-panel" class="detail-panel" hidden aria-live="polite">
-    <div class="detail-head"><div><div class="eyebrow">Report detail</div><h2 id="detail-title">—</h2></div><button id="close-detail" class="detail-close" type="button">Close</button></div>
-    <div id="detail-grid" class="detail-grid"></div>
-    <p><a id="detail-source" target="_blank" rel="noreferrer">Original source report ↗</a> · <a id="detail-history" target="_blank" rel="noreferrer">Source revision history ↗</a></p>
-    <div class="detail-description"><span class="detail-label">Company comments</span><p id="detail-description-text">—</p><span class="detail-label">Health Canada comments</span><p id="detail-hc">—</p><span class="detail-label">Supply mitigation reported by source</span><p id="detail-mitigation">—</p></div>
+  <section id="detail-panel" class="detail-panel" hidden aria-labelledby="detail-title">
+    <div class="detail-head"><div><h2 id="detail-title" tabindex="-1">Report details</h2><p id="detail-meta" class="detail-meta"></p></div><button id="close-detail" class="control-button detail-close" type="button">Close details</button></div>
+    <div id="detail-duration" class="detail-duration"><span class="detail-label">Duration</span><p id="detail-duration-value"></p><p id="detail-duration-context"></p></div>
+    <nav class="detail-source-links" aria-label="Original report"><a id="detail-source" target="_blank" rel="noreferrer">View original report</a><a id="detail-history" target="_blank" rel="noreferrer">View revision history</a></nav>
+    <div id="detail-grid" class="detail-sections"></div>
+    <section class="source-notes" aria-labelledby="source-notes-title"><h3 id="source-notes-title">Comments and mitigation</h3><p id="detail-notes-empty" class="empty-note" hidden>No company comments, Health Canada comments or mitigation details were reported.</p><div id="detail-notes-content"><div class="source-note"><h4>Company comments</h4><p id="detail-description-text"></p></div><div class="source-note"><h4>Health Canada comments</h4><p id="detail-hc"></p></div><div class="source-note"><h4>Supply mitigation</h4><p id="detail-mitigation"></p></div></div></section>
   </section>
 
   <footer class="foot"><strong>SORCShortages.</strong> Source: <a href="https://healthproductshortages.ca/" target="_blank" rel="noreferrer">Health Product Shortages Canada ↗</a> · <span id="footer-snapshot">Latest snapshot: —</span></footer>
 </main>
 <script>
-let DATA = window.SORC_DATA || null, charts = [], tablePage = 0;
+let DATA = window.SORC_DATA || null, charts = [], tablePage = 0, selectedRecordKey = null;
 const PAGE_SIZE = 50;
 const $ = id => document.getElementById(id);
 function fmt(n) { return n == null ? '—' : new Intl.NumberFormat().format(n); }
@@ -200,9 +274,30 @@ function renderMetrics() {
 }
 function rowKey(r) { return r.record_key || (r.type+':'+r.report_id); }
 function isActive(r) { return r.active_at_snapshot===true || (r.active_at_snapshot==null && r.censored===true); }
-function bindRecordLinks() { document.querySelectorAll('.record-link').forEach(function(button) { button.addEventListener('click',function() { openRecord(button.getAttribute('data-record-key')); }); }); }
+function bindRecordLinks() {
+  document.querySelectorAll('.record-link').forEach(function(button) {
+    const active=button.getAttribute('data-record-key')===selectedRecordKey;
+    button.setAttribute('aria-expanded',String(active));
+    button.closest('tr').classList.toggle('is-selected',active);
+    button.addEventListener('click',function() { openRecord(button.getAttribute('data-record-key')); });
+  });
+}
 function signalGroups(field) { const groups={}; DATA.records.filter(function(r) { return r.type==='shortage'; }).forEach(function(r) { const label=String(r[field]||'').trim(); if(!label) return; if(!groups[label]) groups[label]={label:label,total:0,active:0,tier3:0}; groups[label].total+=1; if(isActive(r)) groups[label].active+=1; if(r.tier_3) groups[label].tier3+=1; }); return Object.keys(groups).map(function(k) { return groups[k]; }).sort(function(a,b) { return b.active-a.active || b.total-a.total || a.label.localeCompare(b.label); }); }
-function renderSignalTable(id, field) { const items=signalGroups(field).slice(0,8); if(!items.length) { $(id).innerHTML='<div class="empty">No populated values to rank.</div>'; return; } $(id).innerHTML='<table class="mini-table rank-table"><thead><tr><th>Value</th><th>Reports</th><th>Active</th><th>Tier 3</th></tr></thead><tbody>'+items.map(function(item) { return '<tr><td><button class="signal-link" data-search="'+escapeHtml(item.label)+'">'+escapeHtml(item.label)+'</button></td><td>'+fmt(item.total)+'</td><td>'+fmt(item.active)+'</td><td>'+fmt(item.tier3)+'</td></tr>'; }).join('')+'</tbody></table>'; document.querySelectorAll('.signal-link').forEach(function(button) { button.addEventListener('click',function() { $('search').value=button.getAttribute('data-search'); $('type-filter').value='shortage'; $('status-filter').value='all'; $('tier-filter').value='all'; tablePage=0; renderTable(); $('explorer-section').scrollIntoView({behavior:'smooth',block:'start'}); }); }); }
+function renderSignalTable(id, field) {
+  const items=signalGroups(field).slice(0,8), heading=field==='company_name'?'Company':'Ingredient';
+  if(!items.length) { $(id).innerHTML='<p class="empty-note">No '+heading.toLowerCase()+' names were reported.</p>'; return; }
+  $(id).innerHTML='<table class="mini-table rank-table"><thead><tr><th scope="col">'+heading+'</th><th scope="col">Reports</th><th scope="col">Active</th><th scope="col">Tier 3</th></tr></thead><tbody>'+items.map(function(item) {
+    return '<tr><td><button type="button" class="signal-link" title="Filter reports for '+escapeHtml(item.label)+'" data-search="'+escapeHtml(item.label)+'">'+escapeHtml(item.label)+'</button></td><td>'+fmt(item.total)+'</td><td>'+fmt(item.active)+'</td><td>'+fmt(item.tier3)+'</td></tr>';
+  }).join('')+'</tbody></table>';
+  $(id).querySelectorAll('.signal-link').forEach(function(button) {
+    button.addEventListener('click',function() {
+      closeRecord(false);
+      $('search').value=button.getAttribute('data-search'); $('type-filter').value='shortage'; $('status-filter').value='all'; $('tier-filter').value='all'; tablePage=0; renderTable();
+      $('explorer-section').scrollIntoView({behavior:'smooth',block:'start'});
+      $('search').focus({preventScroll:true});
+    });
+  });
+}
 function renderSignals() { renderSignalTable('ingredient-signals','active_ingredient'); renderSignalTable('company-signals','company_name'); }
 function qualityFlags(r) {
   const flags=[];
@@ -215,22 +310,77 @@ function qualityFlags(r) {
 function durationNote(r) { return r.duration_exclusion_reason || 'Not applicable / unavailable'; }
 function openRecord(key) {
   const r=DATA.records.find(item=>rowKey(item)===key); if(!r) return;
-  $('detail-title').textContent=(r.brand_name||r.common_name||r.active_ingredient||'Unnamed report')+' · #'+(r.report_id||'—');
-  const endpoint=r.duration_days==null?'—':(r.censored?(r.last_seen_snapshot||DATA.latest_snapshot):r.end_date);
-  const items=[['Type',r.type],['Source status',statusLabel(r.status)],['Company',r.company_name||'—'],['DIN',r.din||'—'],['Ingredient',r.active_ingredient||'—'],['Strength / form',[r.strength,r.dosage_form].filter(Boolean).join(' · ')||'—'],['Route / package',[r.route,r.packaging].filter(Boolean).join(' · ')||'—'],['Start date used',r.start_date||'—'],['Source date field',r.start_date_source?r.start_date_source.replaceAll('_',' '):'—'],['Actual end reported',r.actual_end_date||'—'],['Estimated end (unconfirmed)',r.estimated_end_date||'—'],['Anticipated discontinuation',r.anticipated_discontinuation_date||'—'],['Reported discontinuation',r.actual_discontinuation_date||'—'],['Duration endpoint',endpoint],['Data date',DATA.latest_snapshot],['Source report last updated',r.updated_date||'—'],['Product market status at capture',r.market_status||'Not supplied'],['Product information updated',r.product_updated_date||'—'],['Observed duration',r.duration_days==null?durationNote(r):fmt(r.duration_days)+' days'+(r.censored?' · right-censored':'' )],['ATC',r.atc_description||r.atc_code||'—'],['Source Tier 3 flag',r.tier_3?'Yes':'No'],['Reason',r.reason||'—'],['Date notes',qualityFlags(r).join('; ')||'No date flag']];
-  $('detail-grid').innerHTML=items.map(item=>'<div><span class="detail-label">'+escapeHtml(item[0])+'</span><span class="detail-value">'+escapeHtml(item[1])+'</span></div>').join('');
-  $('detail-description-text').textContent=r.company_comments_en||'Not supplied.';
-  $('detail-hc').textContent=r.health_canada_comments_en||'Not supplied.';
-  $('detail-mitigation').textContent=r.mitigation_en||'Not supplied.';
+  selectedRecordKey=key;
+  $('detail-title').textContent=r.brand_name||r.common_name||r.active_ingredient||'Name not reported';
+  $('detail-meta').textContent=reportTypeLabel(r.type)+' report #'+r.report_id+' · '+statusLabel(r.status);
+  const endpoint=r.duration_days==null?null:(r.censored?(r.last_seen_snapshot||DATA.latest_snapshot):r.end_date);
+  const note=r.duration_days==null?durationNote(r):fmt(r.duration_days)+' days';
+  $('detail-duration-value').textContent=note;
+  $('detail-duration').classList.toggle('withheld',note.startsWith('Duration Withheld:'));
+  $('detail-duration-context').textContent=endpoint?'Measured through '+endpoint+'.'+(r.censored?' The shortage was ongoing when last recorded (right-censored).':''):'';
+  $('detail-duration-context').hidden=!endpoint;
+  const product=[['Company',r.company_name],['DIN',r.din],['Active ingredient',r.active_ingredient],['Common name',r.common_name],['Strength',r.strength],['Dosage form',r.dosage_form],['Route',r.route],['Package size',r.packaging],['ATC code',r.atc_code],['ATC description',r.atc_description],['Market status at capture',r.market_status],['Product information updated',r.product_updated_date]];
+  const dates=r.type==='shortage'?[['Start date used',r.start_date||'Not available'],['Start date basis',dateBasisLabel(r.start_date_source)],['Actual start',sourceDateText(r,'actual_start_date')],['Anticipated start',sourceDateText(r,'anticipated_start_date')],['Actual end reported',sourceDateText(r,'actual_end_date')],['Estimated end',sourceDateText(r,'estimated_end_date')],['Measured through',endpoint||(note.startsWith('Duration Withheld:')?'Not calculated':'Not applicable')]]:[['Discontinuation date reported',sourceDateText(r,'actual_discontinuation_date')],['Anticipated discontinuation',sourceDateText(r,'anticipated_discontinuation_date')],['Remaining supply date',sourceDateText(r,'remaining_supply_date')]];
+  dates.push(['Last observed',r.last_seen_snapshot||DATA.latest_snapshot],['Latest data date',DATA.latest_snapshot]);
+  const report=[['Report type',reportTypeLabel(r.type)],['Status',statusLabel(r.status)],['Tier 3',r.tier_3?'Yes':'No'],['Reason reported',r.reason],['Report created',r.created_date],['Report last updated',r.updated_date]];
+  const flags=qualityFlags(r);
+  $('detail-grid').innerHTML=detailSection('product','Product',product)+detailSection('dates','Dates',dates,false,r.type==='shortage'?'Estimated dates are not confirmed end dates.':'The remaining supply date is reported by the source. It does not show stock at individual locations.')+detailSection('report','Source report',report,true)+'<section class="detail-section wide" aria-labelledby="date-notes-title"><h3 id="date-notes-title">Date notes</h3>'+(flags.length?'<ul class="date-note-list">'+flags.map(flag=>'<li>'+escapeHtml(flag)+'</li>').join('')+'</ul>':'<p class="empty-note">No date issues were flagged for this report.</p>')+'</section>';
+  const notes=[r.company_comments_en,r.health_canada_comments_en,r.mitigation_en];
+  $('detail-description-text').textContent=notes[0]||'Not reported.';
+  $('detail-hc').textContent=notes[1]||'Not reported.';
+  $('detail-mitigation').textContent=notes[2]||'Not reported.';
+  $('detail-notes-empty').hidden=notes.some(Boolean);
+  $('detail-notes-content').hidden=!notes.some(Boolean);
   $('detail-source').href='https://healthproductshortages.ca/'+(r.type==='discontinuation'?'discontinuance':'shortage')+'/'+encodeURIComponent(r.report_id);
   $('detail-history').href='https://healthproductshortages.ca/history/'+encodeURIComponent(r.report_id);
-  $('detail-panel').hidden=false; $('detail-panel').scrollIntoView({behavior:'smooth',block:'start'});
+  document.querySelectorAll('.record-link').forEach(function(button) { const active=button.getAttribute('data-record-key')===key; button.setAttribute('aria-expanded',String(active)); button.closest('tr').classList.toggle('is-selected',active); });
+  $('detail-panel').hidden=false; $('detail-panel').scrollIntoView({behavior:'smooth',block:'start'}); $('detail-title').focus({preventScroll:true});
 }
-
+function detailSection(id,heading,items,wide=false,note='') {
+  return '<section class="detail-section'+(wide?' wide':'')+'" aria-labelledby="detail-'+id+'-title"><h3 id="detail-'+id+'-title">'+escapeHtml(heading)+'</h3>'+(note?'<p class="detail-section-note">'+escapeHtml(note)+'</p>':'')+'<dl class="detail-list">'+items.map(item=>'<div><dt>'+escapeHtml(item[0])+'</dt><dd>'+escapeHtml(item[1]==null||item[1]===''?'Not reported':item[1])+'</dd></div>').join('')+'</dl></section>';
+}
+function reportTypeLabel(type) { return type==='discontinuation'?'Discontinuation':'Shortage'; }
+function dateBasisLabel(field) {
+  const names={actual_start_date:'Actual start date',anticipated_start_date:'Anticipated start date',actual_discontinuation_date:'Actual discontinuation date',anticipated_discontinuation_date:'Anticipated discontinuation date'};
+  return names[field]||(field?field.replaceAll('_',' '):'Not available');
+}
+function sourceDateText(r,field) { return r[field]||((r.invalid_date_fields||[]).includes(field)?'Unusable source date':'Not reported'); }
+function closeRecord(restoreFocus=true) {
+  const key=selectedRecordKey;
+  selectedRecordKey=null; $('detail-panel').hidden=true;
+  document.querySelectorAll('.record-link').forEach(function(button) { button.setAttribute('aria-expanded','false'); button.closest('tr').classList.remove('is-selected'); if(restoreFocus&&button.getAttribute('data-record-key')===key) button.focus(); });
+}
+function clearFilters() {
+  closeRecord(false); $('search').value=''; $('type-filter').value='all'; $('status-filter').value='all'; $('tier-filter').value='all'; tablePage=0; renderTable(); $('search').focus({preventScroll:true});
+}
 function statusLabel(value) { const raw=String(value||'Unknown'); const known={active_confirmed:'Actual shortage',anticipated_shortage:'Anticipated shortage',avoided_shortage:'Avoided shortage',discontinued:'Discontinued',resolved:'Resolved',reversed:'Reversed',to_be_discontinued:'To be discontinued'}; if(known[raw.toLowerCase()]) return known[raw.toLowerCase()]; return raw.replace(/_/g,' ').replace(/\b\w/g,function(ch) { return ch.toUpperCase(); }); }
-function setupFilters() { const statuses=[...new Set(DATA.records.map(function(r) { return r.status; }).filter(Boolean))].sort(); $('status-filter').innerHTML='<option value="all">All statuses</option>'+statuses.map(function(s) { return '<option value="'+escapeHtml(s)+'">'+escapeHtml(statusLabel(s))+'</option>'; }).join(''); ['search','type-filter','status-filter','tier-filter'].forEach(function(id) { $(id).addEventListener('input',function() { tablePage=0; $('detail-panel').hidden=true; renderTable(); }); }); $('prev-page').addEventListener('click',function() { tablePage--; renderTable(); }); $('next-page').addEventListener('click',function() { tablePage++; renderTable(); }); $('close-detail').addEventListener('click',function() { $('detail-panel').hidden=true; }); }
+function setupFilters() {
+  const statuses=[...new Set(DATA.records.map(function(r) { return r.status; }).filter(Boolean))].sort();
+  $('status-filter').innerHTML='<option value="all">All statuses</option>'+statuses.map(function(s) { return '<option value="'+escapeHtml(s)+'">'+escapeHtml(statusLabel(s))+'</option>'; }).join('');
+  ['search','type-filter','status-filter','tier-filter'].forEach(function(id) { $(id).addEventListener('input',function() { tablePage=0; closeRecord(false); renderTable(); }); });
+  $('prev-page').addEventListener('click',function() { closeRecord(false); tablePage--; renderTable(); });
+  $('next-page').addEventListener('click',function() { closeRecord(false); tablePage++; renderTable(); });
+  $('close-detail').addEventListener('click',function() { closeRecord(); });
+  $('reset-filters').addEventListener('click',clearFilters);
+  document.addEventListener('keydown',function(event) { if(event.key==='Escape'&&!$('detail-panel').hidden) { event.preventDefault(); closeRecord(); } });
+}
 function filteredRows() { const q=$('search').value.toLowerCase().trim(), type=$('type-filter').value, status=$('status-filter').value, tier=$('tier-filter').value; return DATA.records.filter(function(r) { const hay=[r.brand_name,r.common_name,r.company_name,r.active_ingredient,r.strength,r.route,r.packaging,r.din,r.report_id,r.dosage_form,r.atc_code,r.atc_description,r.reason,r.status].join(' ').toLowerCase(); return (!q||hay.includes(q))&&(type==='all'||r.type===type)&&(status==='all'||r.status===status)&&(tier==='all'||(tier==='yes'?r.tier_3:!r.tier_3)); }); }
-function renderTable() { const rows=filteredRows(), totalPages=Math.max(1,Math.ceil(rows.length/PAGE_SIZE)); tablePage=Math.min(Math.max(0,tablePage),totalPages-1); const pageRows=rows.slice(tablePage*PAGE_SIZE,(tablePage+1)*PAGE_SIZE); $('result-count').textContent=fmt(rows.length)+' matching reports'; $('page-label').textContent='Page '+(tablePage+1)+' of '+totalPages; $('prev-page').disabled=tablePage===0; $('next-page').disabled=tablePage>=totalPages-1; $('empty').hidden=rows.length>0; $('report-body').innerHTML=pageRows.map(function(r) { const key=rowKey(r); return '<tr><td><button class="record-link" data-record-key="'+escapeHtml(key)+'">#'+escapeHtml(r.report_id||'—')+'</button><br><span class="pill '+(r.type==='discontinuation'?'disc':'')+'">'+escapeHtml(r.type)+'</span>'+(r.tier_3?'<span class="pill tier">Tier 3</span>':'')+(r.date_plausibility_issue?'<span class="pill disc">date flag</span>':'')+(r.date_order_issue?'<span class="pill disc">date order flag</span>':'')+(r.end_after_snapshot?'<span class="pill disc">future end flag</span>':'')+'</td><td><strong>'+escapeHtml(r.brand_name||'—')+'</strong><br><span style="color:var(--muted)">'+escapeHtml(r.company_name||'—')+'</span><br><small>'+escapeHtml(r.active_ingredient||'')+' · '+escapeHtml(r.dosage_form||'')+'</small></td><td>'+escapeHtml(statusLabel(r.status))+'</td><td>'+escapeHtml(r.start_date||'—')+'<br><small>'+(r.start_date_source?escapeHtml(r.start_date_source.replaceAll('_',' ')):'')+'</small></td><td>'+escapeHtml(r.duration_days==null?'—':(r.censored?(r.last_seen_snapshot||DATA.latest_snapshot):(r.end_date||'—')))+(r.censored?'<br><small>snapshot · right-censored</small>':'')+'</td><td>'+(r.duration_days==null?'<span class="duration-note'+(durationNote(r).startsWith('Duration Withheld:')?' withheld':'')+'">'+escapeHtml(durationNote(r))+'</span>':fmt(r.duration_days)+' days')+(r.censored?' <span title="right-censored">†</span>':'')+'</td><td>'+escapeHtml(r.atc_code||'—')+'</td></tr>'; }).join(''); bindRecordLinks(); }
+function renderTable() {
+  const rows=filteredRows(), totalPages=Math.max(1,Math.ceil(rows.length/PAGE_SIZE)); tablePage=Math.min(Math.max(0,tablePage),totalPages-1);
+  const pageRows=rows.slice(tablePage*PAGE_SIZE,(tablePage+1)*PAGE_SIZE);
+  $('result-count').textContent=fmt(rows.length)+' matching reports';
+  $('result-range').textContent=pageRows.length?'Showing '+fmt(tablePage*PAGE_SIZE+1)+'–'+fmt(tablePage*PAGE_SIZE+pageRows.length):'No reports to display';
+  $('page-label').textContent='Page '+(tablePage+1)+' of '+totalPages;
+  $('prev-page').disabled=tablePage===0; $('next-page').disabled=tablePage>=totalPages-1; $('empty').hidden=rows.length>0;
+  $('report-body').innerHTML=pageRows.map(function(r) {
+    const key=rowKey(r), noDuration=r.duration_days==null, note=noDuration?durationNote(r):null;
+    const endpoint=noDuration?(note.startsWith('Duration Withheld:')?'Not calculated':'Not applicable'):(r.censored?(r.last_seen_snapshot||DATA.latest_snapshot):(r.end_date||'Not reported'));
+    const description=[r.active_ingredient,r.dosage_form].filter(Boolean).join(' · ');
+    const badges='<span class="pill">'+reportTypeLabel(r.type)+'</span>'+(r.tier_3?'<span class="pill tier">Tier 3</span>':'')+(r.date_plausibility_issue?'<span class="pill warning">Unusable date</span>':'')+(r.date_order_issue?'<span class="pill warning">Dates out of order</span>':'')+(r.end_after_snapshot?'<span class="pill disc">Future reported end</span>':'')+(r.present_in_latest_snapshot===false?'<span class="pill disc">Not in latest data</span>':'');
+    return '<tr><td><button type="button" class="record-link" aria-controls="detail-panel" aria-expanded="false" data-record-key="'+escapeHtml(key)+'">#'+escapeHtml(r.report_id||'Not reported')+'</button><div class="report-badges">'+badges+'</div></td><td><strong class="product-name">'+escapeHtml(r.brand_name||'Name not reported')+'</strong><span class="product-company">'+escapeHtml(r.company_name||'Company not reported')+'</span>'+(description?'<span class="product-description">'+escapeHtml(description)+'</span>':'')+'</td><td><span class="status-text">'+escapeHtml(statusLabel(r.status))+'</span></td><td class="date-cell">'+escapeHtml(r.start_date||'Not available')+(r.start_date_source?'<span class="cell-note">'+escapeHtml(dateBasisLabel(r.start_date_source))+'</span>':'')+'</td><td class="date-cell">'+escapeHtml(endpoint)+(r.censored?'<span class="cell-note">Last observation</span>':'')+'</td><td>'+(noDuration?'<span class="duration-note'+(note.startsWith('Duration Withheld:')?' withheld':'')+'">'+escapeHtml(note)+'</span>':'<span class="duration-value">'+fmt(r.duration_days)+' days</span>')+(r.censored?'<span class="cell-note">Ongoing when last recorded</span>':'')+'</td><td>'+escapeHtml(r.atc_code||'Not reported')+'</td></tr>';
+  }).join('');
+  bindRecordLinks();
+}
 async function boot() { if(!DATA) { try { const response=await fetch('data/consolidated.json',{cache:'no-store'}); if(response.ok) DATA=await response.json(); } catch(e) {} } if(!DATA || DATA.schema_version!==2 || !DATA.source_audit || DATA.source_audit.passed!==true) { $('data-error').hidden=false; return; } renderMetrics(); renderCharts(); renderSignals(); setupFilters(); renderTable(); }
 boot();
 </script>
